@@ -3,6 +3,11 @@ var NODESIZE = {
     species: 8
 };
 
+var sbmlDoc;
+var $sbmlDoc;
+var text;
+var circle;
+var path;
 
 var simpleModel;
 var glycolysisModel;
@@ -36,8 +41,8 @@ $("button#btnViewNetwork").click(function() {
     $("#helpText").show("slow");
 
 
-    var sbmlDoc = $.parseXML(str);
-    var $sbmlDoc = $(sbmlDoc);
+    sbmlDoc = $.parseXML(str);
+    $sbmlDoc = $(sbmlDoc);
     var links = [];
 
     $sbmlDoc.find("reaction").each(function(n) {
@@ -45,8 +50,8 @@ $("button#btnViewNetwork").click(function() {
         var lor = a[1]; // listOfReactants
         var lop = a[3]; // listOfProducts
 
-        var reactants = lor.getElementsByTagName("speciesReference")
-        var products = lop.getElementsByTagName("speciesReference")
+        var reactants = lor.getElementsByTagName("speciesReference");
+        var products = lop.getElementsByTagName("speciesReference");
 
         var listReactantNames = [];
         var listProductNames = [];
@@ -92,13 +97,13 @@ $("button#btnViewNetwork").click(function() {
                 nodes[link.source] = {
                     name: link.source,
                     type: 'reaction'
-                }
+                };
             }
             else {
                 nodes[link.source] = {
                     name: link.source,
                     type: 'species'
-                }
+                };
             }
         }
 
@@ -107,13 +112,13 @@ $("button#btnViewNetwork").click(function() {
                 nodes[link.target] = {
                     name: link.target,
                     type: 'reaction'
-                }
+                };
             }
             else {
                 nodes[link.target] = {
                     name: link.target,
                     type: 'species'
-                }
+                };
             }
         }
         link.source = nodes[link.source];
@@ -146,17 +151,17 @@ $("button#btnViewNetwork").click(function() {
     // Per-type markers, as they don't inherit styles.
     svg.append("svg:defs").selectAll("marker").data(["suit", "licensing", "resolved"]).enter().append("svg:marker").attr("id", String).attr("viewBox", "0 -5 10 10").attr("refX", 15).attr("refY", - 1.5).attr("markerWidth", 6).attr("markerHeight", 6).attr("orient", "auto").append("svg:path").attr("d", "M0,-5L10,0L0,5");
 
-    var path = svg.append("svg:g").selectAll("path").data(force.links()).enter().append("svg:path").attr("class", function(d) {
+    path = svg.append("svg:g").selectAll("path").data(force.links()).enter().append("svg:path").attr("class", function(d) {
         return "link " + d.type;
     }).attr("marker-end", function(d) {
         return "url(#" + d.type + ")";
     });
 
-    var circle = svg.append("svg:g").selectAll("circle").data(force.nodes()).enter().append("svg:circle")
+    circle = svg.append("svg:g").selectAll("circle").data(force.nodes()).enter().append("svg:circle")
     //.attr("r", function(d) {return nodeSize[d.type]; })
     .attr("r", function(d) {
         return getNodeSize(d.name);
-    }).call(force.drag);
+    }).on("click", click).call(force.drag);
 
     // adding titles to the nodes
     circle.append("title").text(function(d) {
@@ -164,14 +169,14 @@ $("button#btnViewNetwork").click(function() {
             var t = 'Initial Concentration: ';
             t += $sbmlDoc.find("listOfSpecies").find('#' + d.name).attr("initialAmount");
 
-            return t
+            return t;
         }
         else if (d.type == 'reaction') {
             return d.name;
         }
     });
 
-    var text = svg.append("svg:g").selectAll("g").data(force.nodes()).enter().append("svg:g");
+    text = svg.append("svg:g").selectAll("g").data(force.nodes()).enter().append("svg:g");
 
     // A copy of the text with a thick white stroke for legibility.
     text.append("svg:text").attr("x", 8).attr("y", ".31em").attr("class", "shadow").text(function(d) {
@@ -192,121 +197,90 @@ $("button#btnViewNetwork").click(function() {
         }
     });
 
-    // Use elliptical arc path segments to doubly-encode directionality.
-    function tick() {
-        path.attr("d", function(d) {
-            var dx = d.target.x - d.source.x,
-                dy = d.target.y - d.source.y,
-                dr = Math.sqrt(dx * dx + dy * dy);
-            return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
-        });
-
-        circle.attr("transform", function(d) {
-            return "translate(" + d.x + "," + d.y + ")";
-        });
-
-        text.attr("transform", function(d) {
-            return "translate(" + d.x + "," + d.y + ")";
-        });
-    }
-
-
-    // get node size from the name of the node
-    function getNodeSize(name) {
-        if (isReaction(name)) { //is a reaction node
-            return NODESIZE.reaction;
-        }
-        else { // is a species node
-            return NODESIZE.species;
-        }
-    }
-
-    // return if name is a reactant or product aggregrate
-    function isReaction(name) {
-        if ($sbmlDoc.find("listOfReactions").find("#" + name).length > 0) {
-            return true;
-        }
-        else {
-            return false;
-        }
-        //                    if ((name.search('[rp]') == 0) && (name.search('[0-9]') == 1)) {
-        //                        return true;
-        //                    }
-        //                    else {
-        //                        return false;
-        //                    }
-    }
-
-
-    function update() {
-        var nodes = flatten(root),
-            links = d3.layout.tree().links(nodes);
-
-        // Restart the force layout.
-        force.nodes(nodes).links(links).start();
-
-        // Update the links…
-        link = vis.selectAll("line.link").data(links, function(d) {
-            return d.target.id;
-        });
-
-        // Enter any new links.
-        link.enter().insert("svg:line", ".node").attr("class", "link").attr("x1", function(d) {
-            return d.source.x;
-        }).attr("y1", function(d) {
-            return d.source.y;
-        }).attr("x2", function(d) {
-            return d.target.x;
-        }).attr("y2", function(d) {
-            return d.target.y;
-        });
-
-        // Exit any old links.
-        link.exit().remove();
-
-        // Update the nodes…
-        node = vis.selectAll("circle.node").data(nodes, function(d) {
-            return d.id;
-        }).style("fill", color);
-
-        // Enter any new nodes.
-        node.enter().append("svg:circle").attr("class", "node").attr("cx", function(d) {
-            return d.x;
-        }).attr("cy", function(d) {
-            return d.y;
-        }).attr("r", function(d) {
-            return Math.sqrt(d.size) / 10 || 4.5;
-        }).style("fill", color).on("click", click).call(force.drag);
-
-        // Exit any old nodes.
-        node.exit().remove();
-    }
-
-    // Toggle children on click.
-    function click(d) {
-        if (d.children) {
-            d._children = d.children;
-            d.children = null;
-        }
-        else {
-            d.children = d._children;
-            d._children = null;
-        }
-        update();
-    }
-
-    // Returns a list of all nodes under the root.
-    function flatten(root) {
-        var nodes = [],
-            i = 0;
-
-        function recurse(node) {
-            if (node.children) node.children.forEach(recurse);
-            if (!node.id) node.id = ++i;
-            nodes.push(node);
-        }
-
-        recurse(root);
-        return nodes;
-    }
 });
+
+// Use elliptical arc path segments to doubly-encode directionality.
+function tick() {
+    path.attr("d", function(d) {
+        var dx = d.target.x - d.source.x,
+            dy = d.target.y - d.source.y,
+            dr = Math.sqrt(dx * dx + dy * dy);
+        return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
+    });
+
+    circle.attr("transform", function(d) {
+        return "translate(" + d.x + "," + d.y + ")";
+    });
+
+    text.attr("transform", function(d) {
+        return "translate(" + d.x + "," + d.y + ")";
+    });
+}
+
+
+// get node size from the name of the node
+function getNodeSize(name) {
+    if (isReaction(name)) { //is a reaction node
+        return NODESIZE.reaction;
+    }
+    else { // is a species node
+        return NODESIZE.species;
+    }
+}
+
+// return if name is a reactant or product aggregrate
+function isReaction(name) {
+    if ($sbmlDoc.find("listOfReactions").find("#" + name).length > 0) {
+        return true;
+    }
+    else {
+        return false;
+    }
+    //                    if ((name.search('[rp]') == 0) && (name.search('[0-9]') == 1)) {
+    //                        return true;
+    //                    }
+    //                    else {
+    //                        return false;
+    //                    }
+}
+
+
+// Toggle children on click.
+function click(d) {
+    if (isReaction(d.name)) {
+        $('#reactionEquation').children().detach();
+        $('#reactionEquation').append('<p>The equation for this reaction is:</p>');
+        var equation = $sbmlDoc.find("#" + d.name).find("math").clone()[0];
+        $('#reactionEquation').append(equation);
+    } else {
+        $('#reactionEquation').children().detach();
+        $('#reactionEquation').append('<p>The species node you selected is:</p>');
+        $('#reactionEquation').append('<p>' + d.name + '</p>');
+        $('#reactionEquation').append('<p></p>');
+    }
+    
+    //        if (d.children) {
+    //            d._children = d.children;
+    //            d.children = null;
+    //        }
+    //        else {
+    //            d.children = d._children;
+    //            d._children = null;
+    //        }
+    //        update();
+}
+
+// Returns a list of all nodes under the root.
+function flatten(root) {
+    var nodes = [],
+        i = 0;
+
+    function recurse(node) {
+        if (node.children) node.children.forEach(recurse);
+        if (!node.id) node.id = ++i;
+        nodes.push(node);
+    }
+
+    recurse(root);
+    return nodes;
+}
