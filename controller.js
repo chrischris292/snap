@@ -135,8 +135,8 @@ $("button#btnViewNetwork").click(function() {
     });
     //    var w = 960,
     //        h = 500;
-    var w = window.innerWidth,
-        h = window.innerHeight;
+    var w = window.innerWidth*.9,
+        h = window.innerHeight*.7;
 
     var force = d3.layout.force().nodes(d3.values(nodes)).links(links).size([w, h]).linkDistance(60).linkStrength(1).charge(-300).on("tick", tick).start();
 
@@ -147,7 +147,9 @@ $("button#btnViewNetwork").click(function() {
 
 
     var svg = d3.select("body").append("svg:svg").attr("width", w).attr("height", h);
-
+    // Making a border around SVG drawing area
+    svg.append("svg:rect").attr("width", w).attr("height", h).attr("style", "fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)");
+    
     // Per-type markers, as they don't inherit styles.
     svg.append("svg:defs").selectAll("marker").data(["suit", "licensing", "resolved"]).enter().append("svg:marker").attr("id", String).attr("viewBox", "0 -5 10 10").attr("refX", 15).attr("refY", - 1.5).attr("markerWidth", 6).attr("markerHeight", 6).attr("orient", "auto").append("svg:path").attr("d", "M0,-5L10,0L0,5");
 
@@ -245,19 +247,24 @@ function isReaction(name) {
 }
 
 
-// Toggle children on click.
+// Open dialog box on click.
 function click(d) {
+    var title;
     if (isReaction(d.name)) {
         $('#reactionEquation').children().detach();
+        title = 'Reaction';
         $('#reactionEquation').append('<p>The equation for this reaction is:</p>');
         var equation = $sbmlDoc.find("#" + d.name).find("math").clone()[0];
         $('#reactionEquation').append(equation);
     } else {
         $('#reactionEquation').children().detach();
+        title = 'Species';
+        $('#reactionEquation').attr('title', 'Species');
         $('#reactionEquation').append('<p>The species node you selected is:</p>');
         $('#reactionEquation').append('<p>' + d.name + '</p>');
         $('#reactionEquation').append('<p></p>');
     }
+    $('#reactionEquation').dialog({title: title});
     
     //        if (d.children) {
     //            d._children = d.children;
