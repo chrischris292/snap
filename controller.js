@@ -33,6 +33,10 @@ $("button#btnLoadGlycolysis").click(function() {
     $("textarea").val(glycolysisModel);
 });
 
+
+var links = [];
+var nodes = {};
+
 $("button#btnViewNetwork").click(function() {
     var str = $("textarea").val();
     $("p").hide("slow");
@@ -43,98 +47,59 @@ $("button#btnViewNetwork").click(function() {
 
     sbmlDoc = $.parseXML(str);
     $sbmlDoc = $(sbmlDoc);
-    var links = [];
-
+    
+    
+    // generating nodes from listOfSpecies
+    $sbmlDoc.find("species").each(function(n) {
+        nodes[this.getAttribute('id')] = {
+            name: this.getAttribute('id'),
+            compartment: this.getAttribute('compartment'),
+            initialAmount: this.getAttribute('initialAmount'),
+            substanceUnits: this.getAttribute('substanceUnits'),
+            type: 'species',
+            boundaryCondition: this.getAttribute('boundaryCondition') || false
+        };
+    });
+    
+    // creating nodes from reactions
     $sbmlDoc.find("reaction").each(function(n) {
-        var a = this.childNodes;
-        var lor = a[1]; // listOfReactants
-        var lop = a[3]; // listOfProducts
-
-        var reactants = lor.getElementsByTagName("speciesReference");
-        var products = lop.getElementsByTagName("speciesReference");
-
-        var listReactantNames = [];
-        var listProductNames = [];
+        var reactionName = this.getAttribute('id');
+        nodes[reactionName] = {
+            name: reactionName,
+            type: 'reaction',
+            reversible: this.getAttribute('reversible') || false,
+            fast: this.getAttribute('fast') || false,
+            listOfReactants: $(this.getElementsByTagName('listOfReactants')).find('speciesReference'),
+            listOfProducts: $(this.getElementsByTagName('listOfProducts')).find('speciesReference'),
+            kineticLaw: this.getElementsByTagName('kineticLaw')[0]
+        };
+        
+        // making links from reactants to reaction node
+        var reactants = nodes[reactionName].listOfReactants;
         for (var i = 0; i < reactants.length; i++) {
-            listReactantNames.push(reactants[i].getAttribute("species"));
-        }
-        for (var j = 0; j < products.length; j++) {
-            listProductNames.push(products[j].getAttribute("species"));
-        }
-
-        // names of the reactants and products
-
-        var r1 = this.getAttribute('id');
-
-        listReactantNames.forEach(function(i) {
+            var species = reactants[i].getAttribute('species');
             links.push({
-                source: i,
-                target: r1,
-                type: ''
+                source: nodes[species],
+                target: nodes[reactionName],
+                type: 'toProduct'
             });
-        });
-
-        listProductNames.forEach(function(i) {
+        }
+        // making links from reaction node to products
+        var products = nodes[reactionName].listOfProducts;
+        for (var i = 0; i < products.length; i++) {
+            var species = products[i].getAttribute('species');
             links.push({
-                source: r1,
-                target: i,
-                type: 'suit'
+                source: nodes[reactionName],
+                target: nodes[species],
+                type: 'fromReactant'
             });
-        });
-
-        //links.push({source: a, target: b, type: "suit"});
-
-
-    });
-
-    var nodes = {};
-    // specifying the different sizes of nodes
-
-    // Computethe distinct nodes from the links.
-    links.forEach(function(link) {
-        if (typeof(nodes[link.source]) == 'undefined') {
-            if (isReaction(link.source)) {
-                nodes[link.source] = {
-                    name: link.source,
-                    type: 'reaction'
-                };
-            }
-            else {
-                nodes[link.source] = {
-                    name: link.source,
-                    type: 'species'
-                };
-            }
         }
-
-        if (typeof(nodes[link.target]) == 'undefined') {
-            if (isReaction(link.target)) {
-                nodes[link.target] = {
-                    name: link.target,
-                    type: 'reaction'
-                };
-            }
-            else {
-                nodes[link.target] = {
-                    name: link.target,
-                    type: 'species'
-                };
-            }
-        }
-        link.source = nodes[link.source];
-        link.target = nodes[link.target];
-
-        //                    link.source = nodes[link.source] || (nodes[link.source] = {
-        //                        name: link.source,
-        //                        type: 'species'
-        //                    });
-        //                    link.target = nodes[link.target] || (nodes[link.target] = {
-        //                        name: link.target,
-        //                        type: 'species'
-        //                    });
+            
     });
-    //    var w = 960,
-    //        h = 500;
+    
+    // parsing SBML DOM for parameter info
+
+
     var w = window.innerWidth*.9,
         h = window.innerHeight*.7;
 
@@ -151,7 +116,7 @@ $("button#btnViewNetwork").click(function() {
     svg.append("svg:rect").attr("width", w).attr("height", h).attr("style", "fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)");
     
     // Per-type markers, as they don't inherit styles.
-    svg.append("svg:defs").selectAll("marker").data(["suit", "licensing", "resolved"]).enter().append("svg:marker").attr("id", String).attr("viewBox", "0 -5 10 10").attr("refX", 15).attr("refY", - 1.5).attr("markerWidth", 6).attr("markerHeight", 6).attr("orient", "auto").append("svg:path").attr("d", "M0,-5L10,0L0,5");
+    svg.append("svg:defs").selectAll("marker").data(["toProduct", "licensing", "resolved"]).enter().append("svg:marker").attr("id", String).attr("viewBox", "0 -5 10 10").attr("refX", 15).attr("refY", - 1.5).attr("markerWidth", 6).attr("markerHeight", 6).attr("orient", "auto").append("svg:path").attr("d", "M0,-5L10,0L0,5");
 
     path = svg.append("svg:g").selectAll("path").data(force.links()).enter().append("svg:path").attr("class", function(d) {
         return "link " + d.type;
