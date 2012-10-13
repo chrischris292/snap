@@ -57,6 +57,7 @@ $("button#btnViewNetwork").click(function() {
             initialAmount: this.getAttribute('initialAmount'),
             substanceUnits: this.getAttribute('substanceUnits'),
             type: 'species',
+            visible: true,
             boundaryCondition: this.getAttribute('boundaryCondition') || false
         };
     });
@@ -76,25 +77,37 @@ $("button#btnViewNetwork").click(function() {
         
         // making links from reactants to reaction node
         var reactants = nodes[reactionName].listOfReactants;
-        for (var i = 0; i < reactants.length; i++) {
-            var species = reactants[i].getAttribute('species');
-            links.push({
-                source: nodes[species],
-                target: nodes[reactionName],
-                type: 'toProduct'
-            });
-        }
-        // making links from reaction node to products
         var products = nodes[reactionName].listOfProducts;
-        for (var i = 0; i < products.length; i++) {
-            var species = products[i].getAttribute('species');
-            links.push({
-                source: nodes[reactionName],
-                target: nodes[species],
-                type: 'fromReactant'
-            });
+        if (reactants.length > 1 || products.length > 1) {
+            for (var i = 0; i < reactants.length; i++) {
+                var species = reactants[i].getAttribute('species');
+                links.push({
+                    source: nodes[species],
+                    target: nodes[reactionName],
+                    type: 'fromReactants'
+                });
+            }
+            // making links from reaction node to products
+            for (var i = 0; i < products.length; i++) {
+                var species = products[i].getAttribute('species');
+                links.push({
+                    source: nodes[reactionName],
+                    target: nodes[species],
+                    type: 'toProducts'
+                });
+            }
+            // make reaction node visible
+            nodes[reactionName].visible = true;
         }
-            
+        else { // make direct connection if there is only one product and one reactant
+            links.push({
+                source: nodes[reactants[0].getAttribute('species')],
+                target: nodes[products[0].getAttribute('species')],
+                type: 'toProducts'
+            });
+            // make node invisible
+            nodes[reactionName].visible = false;
+        }
     });
     
     // parsing SBML DOM for parameter info
@@ -105,18 +118,12 @@ $("button#btnViewNetwork").click(function() {
 
     var force = d3.layout.force().nodes(d3.values(nodes)).links(links).size([w, h]).linkDistance(60).linkStrength(1).charge(-300).on("tick", tick).start();
 
-    //    var force = d3.layout.force()
-    //    .on("tick", tick)
-    //    .size([w, h])
-    //    .start();
-
-
     var svg = d3.select("body").append("svg:svg").attr("width", w).attr("height", h);
     // Making a border around SVG drawing area
     svg.append("svg:rect").attr("width", w).attr("height", h).attr("style", "fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)");
     
     // Per-type markers, as they don't inherit styles.
-    svg.append("svg:defs").selectAll("marker").data(["toProduct", "licensing", "resolved"]).enter().append("svg:marker").attr("id", String).attr("viewBox", "0 -5 10 10").attr("refX", 15).attr("refY", - 1.5).attr("markerWidth", 6).attr("markerHeight", 6).attr("orient", "auto").append("svg:path").attr("d", "M0,-5L10,0L0,5");
+    svg.append("svg:defs").selectAll("marker").data(["toProducts", "licensing", "resolved"]).enter().append("svg:marker").attr("id", String).attr("viewBox", "0 -5 10 10").attr("refX", 15).attr("refY", - 1.5).attr("markerWidth", 6).attr("markerHeight", 6).attr("orient", "auto").append("svg:path").attr("d", "M0,-5L10,0L0,5");
 
     path = svg.append("svg:g").selectAll("path").data(force.links()).enter().append("svg:path").attr("class", function(d) {
         return "link " + d.type;
@@ -127,7 +134,7 @@ $("button#btnViewNetwork").click(function() {
     circle = svg.append("svg:g").selectAll("circle").data(force.nodes()).enter().append("svg:circle")
     //.attr("r", function(d) {return nodeSize[d.type]; })
     .attr("r", function(d) {
-        return getNodeSize(d.name);
+        return getNodeSize(d);
     }).on("click", click).call(force.drag);
 
     // adding titles to the nodes
@@ -186,12 +193,15 @@ function tick() {
 
 
 // get node size from the name of the node
-function getNodeSize(name) {
-    if (isReaction(name)) { //is a reaction node
+function getNodeSize(node) {
+    if (node.type == 'reaction' && node.visible) { //is a reaction node
         return NODESIZE.reaction;
     }
-    else { // is a species node
+    else if (node.visible) { // is a species node
         return NODESIZE.species;
+    }
+    else { // node should not be visible
+        return 0;
     }
 }
 
@@ -203,12 +213,6 @@ function isReaction(name) {
     else {
         return false;
     }
-    //                    if ((name.search('[rp]') == 0) && (name.search('[0-9]') == 1)) {
-    //                        return true;
-    //                    }
-    //                    else {
-    //                        return false;
-    //                    }
 }
 
 
@@ -217,42 +221,29 @@ function click(d) {
     var title;
     if (isReaction(d.name)) {
         $('#reactionEquation').children().detach();
-        title = 'Reaction';
-        $('#reactionEquation').append('<p>The equation for this reaction is:</p>');
-        var equation = $sbmlDoc.find("#" + d.name).find("math").clone()[0];
-        $('#reactionEquation').append(equation);
+        title = 'Reaction Node';
+//        $('#reactionEquation').append('<p>The equation for this reaction is:</p>');
+//        var equation = $sbmlDoc.find("#" + d.name).find("math").clone()[0];
+//        $('#reactionEquation').append(equation);
+         $('#reactionEquation').append(printObject(d));
+
     } else {
         $('#reactionEquation').children().detach();
-        title = 'Species';
-        $('#reactionEquation').attr('title', 'Species');
-        $('#reactionEquation').append('<p>The species node you selected is:</p>');
-        $('#reactionEquation').append('<p>' + d.name + '</p>');
-        $('#reactionEquation').append('<p></p>');
+        title = 'Species Node';
+//        $('#reactionEquation').attr('title', 'Species Node');
+//        $('#reactionEquation').append('<p>The species node you selected is:</p>');
+//        $('#reactionEquation').append('<p>' + d.name + '</p>');
+//        $('#reactionEquation').append('<p></p>');
+         $('#reactionEquation').append(printObject(d));
     }
     $('#reactionEquation').dialog({title: title});
-    
-    //        if (d.children) {
-    //            d._children = d.children;
-    //            d.children = null;
-    //        }
-    //        else {
-    //            d.children = d._children;
-    //            d._children = null;
-    //        }
-    //        update();
 }
 
-// Returns a list of all nodes under the root.
-function flatten(root) {
-    var nodes = [],
-        i = 0;
-
-    function recurse(node) {
-        if (node.children) node.children.forEach(recurse);
-        if (!node.id) node.id = ++i;
-        nodes.push(node);
+// Returns string of properties within an object
+function printObject(object) {
+    var output = '';
+    for (var property in object) {
+        output += '<p>' + property + ': ' + object[property] + '; </p>';
     }
-
-    recurse(root);
-    return nodes;
+    return output;
 }
