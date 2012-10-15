@@ -4,14 +4,61 @@
     <head>
         <meta http-equiv="Content-type" content="text/html; charset=utf-8">
         <title>SBML Network Viewer</title>
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+        <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
         <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/d3/2.10.0/d3.v2.min.js"></script>
         <script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script src="lib/numeric-1.2.3.js"></script>
-        <LINK href="css/jquery-ui-1.9.0.custom.css" rel="stylesheet"
+        -->
+        <script src="./lib/jquery-1.8.2.min.js"></script>
+        <script src="./lib/jquery-ui-1.9.0.custom.min.js"></script>
+        <script src="./lib/d3.v2.min.js"></script>
+        <script src="./lib/numeric-1.2.3.js"></script>
+        <LINK href="./css/jquery-ui-1.9.0.custom.css" rel="stylesheet"
         type="text/css">
         <LINK href="nodes.css" rel="stylesheet" type="text/css">
+        <style>
+            body {
+                font-size: 62.5%;
+            }
+            label, input {
+                display:block;
+            }
+            input.text {
+                margin-bottom:12px;
+                width:95%;
+                padding: .4em;
+            }
+            fieldset {
+                padding:0;
+                border:0;
+                margin-top:25px;
+            }
+            h1 {
+                font-size: 1.2em;
+                margin: .6em 0;
+            }
+            div#users-contain {
+                width: 350px;
+                margin: 20px 0;
+            }
+            div#users-contain table {
+                margin: 1em 0;
+                border-collapse: collapse;
+                width: 100%;
+            }
+            div#users-contain table td, div#users-contain table th {
+                border: 1px solid #eee;
+                padding: .6em 10px;
+                text-align: left;
+            }
+            .ui-dialog .ui-state-error {
+                padding: .3em;
+            }
+            .validateTips {
+                border: 1px solid transparent;
+                padding: 0.3em;
+            }
+        </style>
     </head>
     
     <body>
@@ -22,19 +69,23 @@
         <p>Click "View Reaction Network" to generate the graph.</p>
         <p id="helpText">Mouse over or click nodes for additional information</p>
         <div id="reactionEquation"></div>
-        <div id="dialog-form" title="Create new user">
+        <div id="dialog-form-species" title="Species Node">
             <p class="validateTips">All form fields are required.</p>
+
             <form>
                 <fieldset>
-                    <label for="name">Name</label>
-                    <input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all"
+                    <label for="id">ID</label>
+                    <input type="text" name="id" id="selectedId" class="text ui-widget-content ui-corner-all"
                     />
-                    <label for="email">Email</label>
-                    <input type="text" name="email" id="email" value="" class="text ui-widget-content ui-corner-all"
-                    />
-                    <label for="password">Password</label>
-                    <input type="password" name="password" id="password" value=""
+                    <label for="compartment">Compartment</label>
+                    <input type="text" name="compartment" id="selectedCompartment"
+                    value="" class="text ui-widget-content ui-corner-all" />
+                    <label for="initialAmount">Initial Amount</label>
+                    <input type="number" name="initialAmount" id="selectedInitialAmount"
                     class="text ui-widget-content ui-corner-all" />
+                    <input type="checkbox" name="boundaryCondition" id="selectedBoundaryCondition"
+                    class="text ui-widget-content ui-corner-all" value=true>Boundary Condition
+                    <br>
                 </fieldset>
             </form>
         </div>
@@ -56,6 +107,7 @@
                 </td>
                 <tr/>
         </table>
+        <div id="dialog-message" title="Download complete"></div>
         <script src="./controller.js"></script>
     </body>
 
