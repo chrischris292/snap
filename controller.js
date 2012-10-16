@@ -13,7 +13,7 @@ $(document).ready(function() {
 
     var simpleModel;
     var glycolysisModel;
-    
+
     var selectedNode;
     var svg;
 
@@ -47,9 +47,9 @@ $(document).ready(function() {
         $("p").hide("slow");
         $("textarea").hide("slow");
         $(this).hide("slow").add($("button#btnLoadSimple")).add($("button#btnLoadGlycolysis")).hide("slow");
-        
+
         $("#helpText").show("slow");
-        
+
         sbmlDoc = $.parseXML(str);
         $sbmlDoc = $(sbmlDoc);
 
@@ -179,7 +179,7 @@ $(document).ready(function() {
 
 
         $('body').append('<br/><button type="button" id=btnSimulate>Simulate</button>')
-        
+
         $('button#btnSimulate').click(function() {
             $('svg#modelGraph').hide('slow');
             $(this).hide('slow');
@@ -189,8 +189,8 @@ $(document).ready(function() {
                 x[0] * x[1] - (8 / 3) * x[2]];
             };
             var sol = numeric.dopri(0, 20, [-1, 3, 4], f, 1e-6, 2000);
-            var y = numeric.transpose(sol.y);
-            
+            numSol = numeric.transpose(sol.y);
+
             var margin = {
                 top: 20,
                 right: 20,
@@ -200,41 +200,43 @@ $(document).ready(function() {
             width = 960 - margin.left - margin.right,
                 height = 500 - margin.top - margin.bottom;
 
-            var x = d3.time.scale().range([0, width]);
-
+            var x = d3.scale.linear().range([0, width]);
             var y = d3.scale.linear().range([height, 0]);
-
             var xAxis = d3.svg.axis().scale(x).orient("bottom");
-
             var yAxis = d3.svg.axis().scale(y).orient("left");
-
             var line = d3.svg.line().x(function(d) {
-                return x(d.date);
+                return x(d[0]);
             }).y(function(d) {
-                return y(d.close);
+                return y(d[1]);
             });
 
             var svg = d3.select("body").append("svg").attr("width", width + margin.left + margin.right).attr("id", "simulationGraph").attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            //            d3.tsv("data.tsv", function(error, data) {
+            //                data.forEach(function(d) {
+            //                    d.date = parseDate(d.date);
+            //                    d.close = +d.close;
+            //                });
+            var preData = numSol.slice(0, 2);
+            var data = [];
+            for (var i = 0; i<preData[0].length; i++) {
+                data[i] = [preData[0][i],preData[1][i]];
+            }
             
-            d3.tsv("data.tsv", function(error, data) {
-                data.forEach(function(d) {
-                    d.date = parseDate(d.date);
-                    d.close = +d.close;
-                });
+            //data = preData[0].concat(preData[1]);
+            x.domain(d3.extent(data, function(d) {
+                return d[0];
+            }));
+            y.domain(d3.extent(data, function(d) {
+                return d[1];
+            }));
 
-                x.domain(d3.extent(data, function(d) {
-                    return d.date;
-                }));
-                y.domain(d3.extent(data, function(d) {
-                    return d.close;
-                }));
+            svg.append("g").attr("class", "x axis").attr("transform", "translate(0," + height + ")").call(xAxis);
 
-                svg.append("g").attr("class", "x axis").attr("transform", "translate(0," + height + ")").call(xAxis);
+            svg.append("g").attr("class", "y axis").call(yAxis).append("text").attr("transform", "rotate(-90)").attr("y", 6).attr("dy", ".71em").style("text-anchor", "end").text("y-axis");
 
-                svg.append("g").attr("class", "y axis").call(yAxis).append("text").attr("transform", "rotate(-90)").attr("y", 6).attr("dy", ".71em").style("text-anchor", "end").text("Price ($)");
-
-                svg.append("path").datum(data).attr("class", "line").attr("d", line);
-            });
+            svg.append("path").datum(data).attr("class", "line").attr("d", line);
+            //            });
 
         });
 
@@ -290,7 +292,7 @@ $(document).ready(function() {
             }
         }
     });
-    
+
 
 
     // Use elliptical arc path segments to doubly-encode directionality.
@@ -383,6 +385,6 @@ $(document).ready(function() {
         }
         return output;
     }
-    
-    
+
+
 });
