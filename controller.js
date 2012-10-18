@@ -17,6 +17,9 @@ $(document).ready(function() {
     var selectedNode;
     var svg;
 
+    var autoLayoutButton;
+    var forceButton;
+
     $.get('./00011-sbml-l2v4.xml', function(data) {
         simpleModel = (new XMLSerializer()).serializeToString(data);
     });
@@ -38,11 +41,12 @@ $(document).ready(function() {
         $("textarea").val(glycolysisModel);
     });
 
-
+    var force;
     var links = [];
     var nodes = {};
 
     $("button#btnViewNetwork").click(function() {
+        console.log('clicked btnViewNetwork');
         var str = $("textarea").val();
         $("p").hide("slow");
         $("textarea").hide("slow");
@@ -83,36 +87,36 @@ $(document).ready(function() {
             // making links from reactants to reaction node
             var reactants = nodes[reactionName].listOfReactants;
             var products = nodes[reactionName].listOfProducts;
-            if (reactants.length > 1 || products.length > 1) {
-                for (var i = 0; i < reactants.length; i++) {
-                    var species = reactants[i].getAttribute('species');
-                    links.push({
-                        source: nodes[species],
-                        target: nodes[reactionName],
-                        type: 'fromReactants'
-                    });
-                }
-                // making links from reaction node to products
-                for (var i = 0; i < products.length; i++) {
-                    var species = products[i].getAttribute('species');
-                    links.push({
-                        source: nodes[reactionName],
-                        target: nodes[species],
-                        type: 'toProducts'
-                    });
-                }
-                // make reaction node visible
-                nodes[reactionName].visible = true;
-            }
-            else { // make direct connection if there is only one product and one reactant
+            //            if (reactants.length > 1 || products.length > 1) {
+            for (var i = 0; i < reactants.length; i++) {
+                var species = reactants[i].getAttribute('species');
                 links.push({
-                    source: nodes[reactants[0].getAttribute('species')],
-                    target: nodes[products[0].getAttribute('species')],
+                    source: nodes[species],
+                    target: nodes[reactionName],
+                    type: 'fromReactants'
+                });
+            }
+            // making links from reaction node to products
+            for (var i = 0; i < products.length; i++) {
+                var species = products[i].getAttribute('species');
+                links.push({
+                    source: nodes[reactionName],
+                    target: nodes[species],
                     type: 'toProducts'
                 });
-                // make node invisible
-                nodes[reactionName].visible = false;
             }
+            // make reaction node visible
+            nodes[reactionName].visible = true;
+            //            }
+            //            else { // make direct connection if there is only one product and one reactant
+            //                links.push({
+            //                    source: nodes[reactants[0].getAttribute('species')],
+            //                    target: nodes[products[0].getAttribute('species')],
+            //                    type: 'toProducts'
+            //                });
+            //                // make node invisible
+            //                nodes[reactionName].visible = false;
+            //            }
         });
 
         // parsing SBML DOM for parameter info
@@ -121,7 +125,7 @@ $(document).ready(function() {
         var w = window.innerWidth * 0.9,
             h = window.innerHeight * 0.7;
 
-        var force = d3.layout.force().nodes(d3.values(nodes)).links(links).size([w, h]).linkDistance(60).linkStrength(1).charge(-300).on("tick", tick).start();
+        force = d3.layout.force().nodes(d3.values(nodes)).links(links).size([w, h]).linkDistance(60).linkStrength(1).charge(-300).on("tick", tick).start();
 
         svg = d3.select("body").append("svg:svg").attr("width", w).attr("height", h).attr("id", "modelGraph");
         // Making a border around SVG drawing area
@@ -136,11 +140,9 @@ $(document).ready(function() {
             return "url(#" + d.type + ")";
         });
 
-        circle = svg.append("svg:g").selectAll("circle").data(force.nodes()).enter().append("svg:circle")
-        //.attr("r", function(d) {return nodeSize[d.type]; })
-        .attr("r", function(d) {
+        circle = svg.append("svg:g").selectAll("circle").data(force.nodes()).enter().append("svg:circle").attr("r", function(d) {
             return getNodeSize(d);
-        }).on("click", click).call(force.drag);
+        }).on("click", svgClick).call(node_drag); // Starts dragging //.call(force.drag); 
 
         // adding titles to the nodes
         circle.append("title").text(function(d) {
@@ -181,15 +183,17 @@ $(document).ready(function() {
         $('body').append('<br/><button type="button" id=btnSimulate>Simulate</button>')
 
         $('button#btnSimulate').click(function() {
+            console.log('inside simulate button')
+            $('p#helpText').hide('slow');
             $('svg#modelGraph').hide('slow');
             $(this).hide('slow');
             var f = function(t, x) {
-                return [10 * (x[1] - x[0]),
-                x[0] * (28 - x[2]) - x[1],
-                x[0] * x[1] - (8 / 3) * x[2]];
+                return -.75 * x[0] + 0.25 * x[2], - 0.75 * x[1] + 0.25 * x[2],
+                0.75 * x[0] * x[1] - 0.25 * x[2];
             };
-            var sol = numeric.dopri(0, 20, [-1, 3, 4], f, 1e-6, 2000);
-            numSol = numeric.transpose(sol.y);
+            var sol = numeric.dopri(0, 50, [.001, .002, .001], f, 1e-6, 2000);
+            var time = sol.x;
+            var numSol = numeric.transpose(sol.y);
 
             var margin = {
                 top: 20,
@@ -217,12 +221,12 @@ $(document).ready(function() {
             //                    d.date = parseDate(d.date);
             //                    d.close = +d.close;
             //                });
-            var preData = numSol.slice(0, 2);
+            var preData = [time, numSol[0]];
             var data = [];
-            for (var i = 0; i<preData[0].length; i++) {
-                data[i] = [preData[0][i],preData[1][i]];
+            for (var i = 0; i < preData[0].length; i++) {
+                data[i] = [preData[0][i], preData[1][i]];
             }
-            
+
             //data = preData[0].concat(preData[1]);
             x.domain(d3.extent(data, function(d) {
                 return d[0];
@@ -231,17 +235,37 @@ $(document).ready(function() {
                 return d[1];
             }));
 
-            svg.append("g").attr("class", "x axis").attr("transform", "translate(0," + height + ")").call(xAxis);
+            svg.append("g").attr("class", "x axis").attr("transform", "translate(0," + height + ")").call(xAxis).append("text").attr("x", 0.5 * width).attr("y", 30).style("text-anchor", "end").text("time");
 
-            svg.append("g").attr("class", "y axis").call(yAxis).append("text").attr("transform", "rotate(-90)").attr("y", 6).attr("dy", ".71em").style("text-anchor", "end").text("y-axis");
+            svg.append("g").attr("class", "y axis").call(yAxis); //.append("text").attr("transform", "rotate(-90)").attr("y", 6).attr("dy", ".71em").text("concentration");
 
             svg.append("path").datum(data).attr("class", "line").attr("d", line);
             //            });
 
         });
 
+        // Button to autolayout
+        $('body').append('<br/><button type="button" id=btnAutoLayout>Auto-Layout</button>');
+        $('button#btnAutoLayout').click(function() {
+            for (var prop in nodes) {
+                nodes[prop].fixed = false;
+                tick();
+            }
+            console.log('inside auto-layout button');
+        });
+        // Button to turn off force
+        $('body').append('<br/><button type="button" id=btnForce>Turn Off Auto-Layout</button>');
+        $('button#btnForce').click(function() {
+            for (var prop in nodes) {
+                nodes[prop].fixed = true;
+                tick();
+            }
+            console.log('inside force button');
+        });
+
 
     });
+
 
     var selectedId = $("#selectedId"),
         selectedCompartment = $("#selectedCompartment"),
@@ -293,6 +317,26 @@ $(document).ready(function() {
         }
     });
 
+    var node_drag = d3.behavior.drag().on("dragstart", dragstart).on("drag", dragmove).on("dragend", dragend);
+
+    function dragstart(d, i) {
+        force.stop() // stops the force auto positioning before you start dragging
+    }
+
+    function dragmove(d, i) {
+        d.px += d3.event.dx;
+        d.py += d3.event.dy;
+        d.x += d3.event.dx;
+        d.y += d3.event.dy;
+        tick(); // this is the key to make it work together with updating both px,py,x,y on d !
+    }
+
+    function dragend(d, i) {
+        d.fixed = true; // of course set the node to fixed so the force doesn't include the node in its auto positioning stuff
+        tick();
+        force.resume();
+    }
+
 
 
     // Use elliptical arc path segments to doubly-encode directionality.
@@ -339,7 +383,7 @@ $(document).ready(function() {
 
 
     // Open dialog box on click.
-    function click(d) {
+    function svgClick(d) {
         var title;
         selectedNode = d;
         if (isReaction(d.name)) { // selected a reaction node
@@ -375,6 +419,14 @@ $(document).ready(function() {
 
         }
         //$('#reactionEquation ').dialog({title: title});
+    }
+
+    function getStoichiometry() {
+        for (var prop in nodes) {
+            if (nodes[prop].type == 'reaction') {
+                console.log(nodes[prop].name);
+            }
+        }
     }
 
     // Returns string of properties within an object
