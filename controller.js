@@ -187,7 +187,58 @@ $(document).ready(function() {
             $('p#helpText').hide('slow');
             $('svg#modelGraph').hide('slow');
             $(this).hide('slow');
+            
+            
+            // finding infix
+            for (var i = 0; i < $sbmlDoc.find('reaction').length; i++) {
+                var a = $sbmlDoc.find('reaction')[i].getElementsByTagName('ci');
+                var infixString = a[0].textContent;
+                for (var j = 1; j < a.length; j++) {
+                    infixString += '*' + a[j].textContent;
+                }
+                nodes[$sbmlDoc.find('reaction')[i].getAttribute('id')].infixString = infixString; // saves infix string to node
+            }
+            
+            // defines parameters
+            var parameters = {};
+            for (var i = 0; i < $sbmlDoc.find('parameter').length; i++) { // from parameters
+                parameters[$sbmlDoc.find('parameter')[i].getAttribute('id')] = $sbmlDoc.find('parameter')[i].getAttribute('value');
+            }
+            for (var i = 0; i < $sbmlDoc.find('compartment').length; i++) { // from compartments
+                parameters[$sbmlDoc.find('compartment')[i].getAttribute('id')] = $sbmlDoc.find('compartment')[i].getAttribute('size');
+            }
+            
+            // calculate stoichiometry matrix
+            var listOfSpecies = [];
+            for (var i = 0; i < $sbmlDoc.find('species').length; i++) {
+                listOfSpecies[i] = $sbmlDoc.find('species')[i].getAttribute('id');
+            };
+         
+            for (var colRxn = []; colRxn.length<$sbmlDoc.find('reaction').length; colRxn.push(0));            
+            for (var stoichiometryMatrix = []; stoichiometryMatrix.length<listOfSpecies.length; stoichiometryMatrix.push(new Array(colRxn)));
+            
+            for (var i = 0; i < $sbmlDoc.find('reaction').length; i++) {
+                var a = $sbmlDoc.find('reaction')[i];
+                var listOfProducts = $(a).find('listOfProducts').find('speciesReference');
+                for (var j = 0; j < listOfProducts.length; j++) {
+                    var ind = listOfSpecies.indexOf(listOfProducts[j].getAttribute('species'));
+                    stoichiometryMatrix[ind][i] = 1;
+                }
+                var listOfReactants = $(a).find('listOfReactants').find('speciesReference')
+                for (var j = 0; j < listOfReactants.length; j++) {
+                    var ind = listOfSpecies.indexOf(listOfReactants[j].getAttribute('species'));
+                    stoichiometryMatrix[ind][i] = -1;
+                }
+            }
+            
             var f = function(t, x) {
+                var stringFunction = '';
+                for (var prop in nodes) {
+                    if (nodes[prop].type == 'species') {
+                           
+                    }
+                }
+                
                 return -.75 * x[0] + 0.25 * x[2], - 0.75 * x[1] + 0.25 * x[2],
                 0.75 * x[0] * x[1] - 0.25 * x[2];
             };
