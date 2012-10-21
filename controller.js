@@ -139,10 +139,22 @@ $(document).ready(function() {
         }).attr("marker-end", function(d) {
             return "url(#" + d.type + ")";
         });
+        
 
+        
         circle = svg.append("svg:g").selectAll("circle").data(force.nodes()).enter().append("svg:circle").attr("r", function(d) {
             return getNodeSize(d);
-        }).on("click", svgClick).call(node_drag); // Starts dragging //.call(force.drag); 
+        }).on("click", svgClick).call(force.drag); // Starts dragging //.call(force.drag); 
+        
+        $('body').append('<br/><button type="button" id=btnLockDrag>Lock Dragged Nodes</button>');
+        $('button#btnLockDrag').click(function() {
+            circle.call(node_drag); 
+        });
+        
+        $('body').append('<br/><button type="button" id=btnUnlockDrag>Unlock Dragged Nodes</button>');
+        $('button#btnUnlockDrag').click(function() {
+            circle.call(force.drag); 
+        });
 
         // adding titles to the nodes
         circle.append("title").text(function(d) {
@@ -185,19 +197,14 @@ $(document).ready(function() {
         $('button#btnSimulate').click(function() {
             console.log('inside simulate button')
             $('p#helpText').hide('slow');
+            
+            
+            
             $('svg#modelGraph').hide('slow');
-            $(this).hide('slow');
+//            $(this).hide('slow');
+            $('button').hide('slow');
             
             
-            // finding infix
-            for (var i = 0; i < $sbmlDoc.find('reaction').length; i++) {
-                var a = $sbmlDoc.find('reaction')[i].getElementsByTagName('ci');
-                var infixString = a[0].textContent;
-                for (var j = 1; j < a.length; j++) {
-                    infixString += '*' + a[j].textContent;
-                }
-                nodes[$sbmlDoc.find('reaction')[i].getAttribute('id')].infixString = infixString; // saves infix string to node
-            }
             
             // defines parameters
             var parameters = {};
@@ -207,6 +214,7 @@ $(document).ready(function() {
             for (var i = 0; i < $sbmlDoc.find('compartment').length; i++) { // from compartments
                 parameters[$sbmlDoc.find('compartment')[i].getAttribute('id')] = $sbmlDoc.find('compartment')[i].getAttribute('size');
             }
+       
             
             // calculate stoichiometry matrix
             var listOfSpecies = [];
@@ -231,18 +239,78 @@ $(document).ready(function() {
                 }
             }
             
+                 
+            // finding infix
+            
+            var listOfReactionInfix = []
+            for (var i = 0; i < $sbmlDoc.find('reaction').length; i++) {
+                var a = $sbmlDoc.find('reaction')[i].getElementsByTagName('ci');
+                
+                var key = a[0].textContent.replace(/\s+/g, '');
+                var token;
+                if (parameters[key] != undefined) {
+                    token = parameters[key];
+                } else if (listOfSpecies.indexOf(key) > -1) {
+                    token = 'x[' + listOfSpecies.indexOf(key) + ']'
+                } else {
+                    token = key;
+                }
+                
+                var infixString = token;
+                for (var j = 1; j < a.length; j++) {
+                    key = a[j].textContent.replace(/\s+/g, '');
+                    if (parameters[key] != undefined) {
+                        token = parameters[key];
+                    }
+                    else if (listOfSpecies.indexOf(key) > -1) {
+                        token = 'x[' + listOfSpecies.indexOf(key) + ']'
+                    }
+                    else {
+                        token = key;
+                    }
+                    infixString += '*' + token;
+                }
+                nodes[$sbmlDoc.find('reaction')[i].getAttribute('id')].infixString = infixString; // saves infix string to node
+                
+                listOfReactionInfix[i] = infixString;
+                
+            }
+            
+            
             var f = function(t, x) {
-                var stringFunction = '';
+                var odeString = '';
+
+                var numSpecies = listOfSpecies.length;
+                var count = 0;
                 for (var prop in nodes) {
                     if (nodes[prop].type == 'species') {
-                           
+                        count += 1;
+                        var speciesInd = listOfSpecies.indexOf(prop);
+                        for (var i = 0; i < listOfReactionInfix.length; i++) {
+                            var stoich = stoichiometryMatrix[speciesInd][i];
+                            odeString += stoich + ' * (' + listOfReactionInfix[i] + ')';
+                            if (i < listOfReactionInfix.length - 1) {
+                                odeString += ' + ';
+                            }
+                        }
+                        if (count < numSpecies) {
+                            odeString += ' , ';
+                        }
                     }
                 }
                 
-                return -.75 * x[0] + 0.25 * x[2], - 0.75 * x[1] + 0.25 * x[2],
-                0.75 * x[0] * x[1] - 0.25 * x[2];
+                return eval(odeString);
+
             };
-            var sol = numeric.dopri(0, 50, [.001, .002, .001], f, 1e-6, 2000);
+            
+            var initialConditions = [];
+            for (var i = 0; i<listOfSpecies.length; i++) {
+                initialConditions.push(parseFloat(nodes[listOfSpecies[i]].initialAmount));
+            }
+            
+//            var sol = numeric.dopri(0, 50, [.001, .002, .001], f, 1e-6, 2000);
+            var sol = numeric.dopri(0, 50, initialConditions, f, 1e-6, 2000);
+
             var time = sol.x;
             var numSol = numeric.transpose(sol.y);
 
@@ -300,7 +368,7 @@ $(document).ready(function() {
         $('button#btnAutoLayout').click(function() {
             for (var prop in nodes) {
                 nodes[prop].fixed = false;
-                tick();
+                force.resume();
             }
             console.log('inside auto-layout button');
         });
@@ -309,7 +377,7 @@ $(document).ready(function() {
         $('button#btnForce').click(function() {
             for (var prop in nodes) {
                 nodes[prop].fixed = true;
-                tick();
+                force.resume();
             }
             console.log('inside force button');
         });
