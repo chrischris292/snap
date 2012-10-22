@@ -28,10 +28,13 @@ $(document).ready(function() {
         glycolysisModel = (new XMLSerializer()).serializeToString(data);
     });
 
+	$('div#accordion').accordion(
+		{collapsible: true}
+	);
 
     $("textarea").val(simpleModel);
 
-    $("#helpText").hide();
+    //$("#helpText").hide();
 
     $("button#btnLoadSimple").click(function() {
         $("textarea").val(simpleModel);
@@ -48,11 +51,12 @@ $(document).ready(function() {
     $("button#btnViewNetwork").click(function() {
         console.log('clicked btnViewNetwork');
         var str = $("textarea").val();
-        $("p").hide("slow");
-        $("textarea").hide("slow");
-        $(this).hide("slow").add($("button#btnLoadSimple")).add($("button#btnLoadGlycolysis")).hide("slow");
+        $('#accordion').accordion('activate',1);
+        //$("p").hide("slow");
+        //$("textarea").hide("slow");
+        //$(this).hide("slow").add($("button#btnLoadSimple")).add($("button#btnLoadGlycolysis")).hide("slow");
 
-        $("#helpText").show("slow");
+        //$("#helpText").show("slow");
 
         sbmlDoc = $.parseXML(str);
         $sbmlDoc = $(sbmlDoc);
@@ -127,7 +131,7 @@ $(document).ready(function() {
 
         force = d3.layout.force().nodes(d3.values(nodes)).links(links).size([w, h]).linkDistance(60).linkStrength(1).charge(-300).on("tick", tick).start();
 
-        svg = d3.select("body").append("svg:svg").attr("width", w).attr("height", h).attr("id", "modelGraph");
+        svg = d3.select("div#modelView").append("svg:svg").attr("width", w).attr("height", h).attr("id", "modelGraph");
         // Making a border around SVG drawing area
         svg.append("svg:rect").attr("width", w).attr("height", h).attr("style", "fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)");
 
@@ -146,12 +150,12 @@ $(document).ready(function() {
             return getNodeSize(d);
         }).on("click", svgClick).call(force.drag); // Starts dragging //.call(force.drag); 
         
-        $('body').append('<br/><button type="button" id=btnLockDrag>Lock Dragged Nodes</button>');
+        $('div#modelView').append('<br/><button type="button" id=btnLockDrag>Lock Dragged Nodes</button>');
         $('button#btnLockDrag').click(function() {
             circle.call(node_drag); 
         });
         
-        $('body').append('<br/><button type="button" id=btnUnlockDrag>Unlock Dragged Nodes</button>');
+        $('div#modelView').append('<br/><button type="button" id=btnUnlockDrag>Unlock Dragged Nodes</button>');
         $('button#btnUnlockDrag').click(function() {
             circle.call(force.drag); 
         });
@@ -192,17 +196,17 @@ $(document).ready(function() {
 
 
 
-        $('body').append('<br/><button type="button" id=btnSimulate>Simulate</button>')
+        $('div#modelView').append('<br/><button type="button" id=btnSimulate>Simulate</button>')
 
         $('button#btnSimulate').click(function() {
             console.log('inside simulate button')
-            $('p#helpText').hide('slow');
+            //$('p#helpText').hide('slow');
             
             
             
-            $('svg#modelGraph').hide('slow');
-//            $(this).hide('slow');
-            $('button').hide('slow');
+            //$('svg#modelGraph').hide('slow');
+			//$(this).hide('slow');
+            //$('button').hide('slow');
             
             
             
@@ -333,7 +337,7 @@ $(document).ready(function() {
                 return y(d[1]);
             });
 
-            var svg = d3.select("body").append("svg").attr("width", width + margin.left + margin.right).attr("id", "simulationGraph").attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            var svg = d3.select("div#modelView").append("svg").attr("width", width + margin.left + margin.right).attr("id", "simulationGraph").attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
             //            d3.tsv("data.tsv", function(error, data) {
             //                data.forEach(function(d) {
@@ -364,7 +368,7 @@ $(document).ready(function() {
         });
 
         // Button to autolayout
-        $('body').append('<br/><button type="button" id=btnAutoLayout>Auto-Layout</button>');
+        $('div#modelView').append('<br/><button type="button" id=btnAutoLayout>Auto-Layout</button>');
         $('button#btnAutoLayout').click(function() {
             for (var prop in nodes) {
                 nodes[prop].fixed = false;
@@ -373,7 +377,7 @@ $(document).ready(function() {
             console.log('inside auto-layout button');
         });
         // Button to turn off force
-        $('body').append('<br/><button type="button" id=btnForce>Turn Off Auto-Layout</button>');
+        $('div#modelView').append('<br/><button type="button" id=btnForce>Turn Off Auto-Layout</button>');
         $('button#btnForce').click(function() {
             for (var prop in nodes) {
                 nodes[prop].fixed = true;
