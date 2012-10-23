@@ -194,9 +194,29 @@ $(document).ready(function() {
             }
         });
 
+        // Button to autolayout
+        $('div#modelView').append('<br/><button type="button" id=btnAutoLayout>Auto-Layout</button>');
+        $('button#btnAutoLayout').click(function() {
+            for (var prop in nodes) {
+                nodes[prop].fixed = false;
+                force.resume();
+            }
+            console.log('inside auto-layout button');
+        });
+        // Button to turn off force
+        $('div#modelView').append('<br/><button type="button" id=btnForce>Turn Off Auto-Layout</button>');
+        $('button#btnForce').click(function() {
+            for (var prop in nodes) {
+                nodes[prop].fixed = true;
+                force.resume();
+            }
+            console.log('inside force button');
+        });
 
 
         $('div#modelView').append('<br/><button type="button" id=btnSimulate>Simulate</button>')
+        
+        
 
         $('button#btnSimulate').click(function() {
             console.log('inside simulate button')
@@ -337,54 +357,29 @@ $(document).ready(function() {
                 return y(d[1]);
             });
 
-            var svg = d3.select("div#modelView").append("svg").attr("width", width + margin.left + margin.right).attr("id", "simulationGraph").attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-            //            d3.tsv("data.tsv", function(error, data) {
-            //                data.forEach(function(d) {
-            //                    d.date = parseDate(d.date);
-            //                    d.close = +d.close;
-            //                });
-            var preData = [time, numSol[0]];
-            var data = [];
-            for (var i = 0; i < preData[0].length; i++) {
-                data[i] = [preData[0][i], preData[1][i]];
-            }
-
-            //data = preData[0].concat(preData[1]);
-            x.domain(d3.extent(data, function(d) {
-                return d[0];
-            }));
-            y.domain(d3.extent(data, function(d) {
-                return d[1];
-            }));
-
-            svg.append("g").attr("class", "x axis").attr("transform", "translate(0," + height + ")").call(xAxis).append("text").attr("x", 0.5 * width).attr("y", 30).style("text-anchor", "end").text("time");
-
-            svg.append("g").attr("class", "y axis").call(yAxis); //.append("text").attr("transform", "rotate(-90)").attr("y", 6).attr("dy", ".71em").text("concentration");
-
-            svg.append("path").datum(data).attr("class", "line").attr("d", line);
-            //            });
-
+			for (var ithSpecies = 0; ithSpecies<numSol.length; ithSpecies++) {
+				var preData = [time, numSol[ithSpecies]];
+				var data = [];
+				for (var i = 0; i < preData[0].length; i++) {
+					data[i] = [preData[0][i], preData[1][i]];
+				}
+				var svg = d3.select("div#modelView").append("svg").attr("width", width + margin.left + margin.right).attr("id", "simulationGraph").attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	
+				x.domain(d3.extent(data, function(d) {
+					return d[0];
+				}));
+				y.domain(d3.extent(data, function(d) {
+					return d[1];
+				}));
+	
+				svg.append("g").attr("class", "x axis").attr("transform", "translate(0," + height + ")").call(xAxis).append("text").attr("x", 0.5 * width).attr("y", 30).style("text-anchor", "end").text("time");
+	
+				svg.append("g").attr("class", "y axis").call(yAxis); //.append("text").attr("transform", "rotate(-90)").attr("y", 6).attr("dy", ".71em").text("concentration");
+	
+				svg.append("path").datum(data).attr("class", "line").attr("d", line);
+			}
         });
 
-        // Button to autolayout
-        $('div#modelView').append('<br/><button type="button" id=btnAutoLayout>Auto-Layout</button>');
-        $('button#btnAutoLayout').click(function() {
-            for (var prop in nodes) {
-                nodes[prop].fixed = false;
-                force.resume();
-            }
-            console.log('inside auto-layout button');
-        });
-        // Button to turn off force
-        $('div#modelView').append('<br/><button type="button" id=btnForce>Turn Off Auto-Layout</button>');
-        $('button#btnForce').click(function() {
-            for (var prop in nodes) {
-                nodes[prop].fixed = true;
-                force.resume();
-            }
-            console.log('inside force button');
-        });
 
 
     });
