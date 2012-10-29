@@ -1,5 +1,5 @@
-$(document).ready(function () {
-	"use strict";
+$(document).ready(function() {
+    "use strict";
     var NODESIZE = {
         reaction: 2,
         species: 8
@@ -19,9 +19,9 @@ $(document).ready(function () {
         glycolysisModel = (new XMLSerializer()).serializeToString(data);
     });
 
-	$('div#accordion').accordion(
-		{collapsible: true}
-	);
+    $('div#accordion').accordion({
+        collapsible: true
+    });
 
     $("textarea").val(simpleModel);
 
@@ -42,7 +42,7 @@ $(document).ready(function () {
     $("button#btnViewNetwork").click(function() {
         console.log('clicked btnViewNetwork');
         var str = $("textarea").val();
-        $('#accordion').accordion('activate',1);
+        $('#accordion').accordion('activate', 1);
         //$("p").hide("slow");
         //$("textarea").hide("slow");
         //$(this).hide("slow").add($("button#btnLoadSimple")).add($("button#btnLoadGlycolysis")).hide("slow");
@@ -134,21 +134,21 @@ $(document).ready(function () {
         }).attr("marker-end", function(d) {
             return "url(#" + d.type + ")";
         });
-        
 
-        
+
+
         circle = svg.append("svg:g").selectAll("circle").data(force.nodes()).enter().append("svg:circle").attr("r", function(d) {
             return getNodeSize(d);
         }).on("click", svgClick).call(force.drag); // Starts dragging //.call(force.drag); 
-        
+
         $('div#modelView').append('<br/><button type="button" id=btnLockDrag>Lock Dragged Nodes</button>');
         $('button#btnLockDrag').click(function() {
-            circle.call(node_drag); 
+            circle.call(node_drag);
         });
-        
+
         $('div#modelView').append('<br/><button type="button" id=btnUnlockDrag>Unlock Dragged Nodes</button>');
         $('button#btnUnlockDrag').click(function() {
-            circle.call(force.drag); 
+            circle.call(force.drag);
         });
 
         // adding titles to the nodes
@@ -206,11 +206,11 @@ $(document).ready(function () {
 
 
         $('div#modelView').append('<br/><button type="button" id=btnSimulate>Simulate</button>')
-        
-        
+
+
 
         $('button#btnSimulate').click(function() {
-        	printGraph();
+            printGraph();
         });
 
 
@@ -222,21 +222,21 @@ $(document).ready(function () {
         selectedCompartment = $("#selectedCompartment"),
         selectedInitialAmount = $("#selectedInitialAmount"),
         allFields = $([]).add(selectedId).add(selectedCompartment).add(selectedInitialAmount);
-	
+
     $("#dialog-form-species").dialog({
         autoOpen: false,
-        open: function(event, ui) { 
+        open: function(event, ui) {
             $('#initialAmountSlider').slider({
-                min: selectedInitialAmount.val()/2,
-                max: selectedInitialAmount.val()*2,
+                min: selectedInitialAmount.val() / 2,
+                max: selectedInitialAmount.val() * 2,
                 slide: function(event, ui) {
-                    selectedInitialAmount.val($('#initialAmountSlider').slider('option','value'));
+                    selectedInitialAmount.val($('#initialAmountSlider').slider('option', 'value'));
                     selectedNode.initialAmount = selectedInitialAmount.val();
                     printGraph();
                 }
             });
-            $('#initialAmountSlider').slider('option','step',selectedInitialAmount.val()/10);
-            $('#initialAmountSlider').slider('option','value',parseFloat(selectedInitialAmount.val()));
+            $('#initialAmountSlider').slider('option', 'step', selectedInitialAmount.val() / 10);
+            $('#initialAmountSlider').slider('option', 'value', parseFloat(selectedInitialAmount.val()));
         },
         buttons: {
             Save: function() {
@@ -278,15 +278,15 @@ $(document).ready(function () {
                 $(this).dialog("close");
             }
         },
-//         focus: setSlider(),
-//        open: function() {
-//			$('#initialAmountSlider').slider("option", "min", selectedInitialAmount.val()/2);
-//			$('#initialAmountSlider').slider("option", "max", selectedInitialAmount.val()*2);
-//        	$('#initialAmountSlider').slider("option", "range", true);
-//        	$('#initialAmountSlider').slider("option", "value", parseFloat(selectedInitialAmount.val()));
-//
-//
-//		}
+        //         focus: setSlider(),
+        //        open: function() {
+        //			$('#initialAmountSlider').slider("option", "min", selectedInitialAmount.val()/2);
+        //			$('#initialAmountSlider').slider("option", "max", selectedInitialAmount.val()*2);
+        //        	$('#initialAmountSlider').slider("option", "range", true);
+        //        	$('#initialAmountSlider').slider("option", "value", parseFloat(selectedInitialAmount.val()));
+        //
+        //
+        //		}
 
     });
 
@@ -411,180 +411,182 @@ $(document).ready(function () {
         return output;
     }
 
-	function printGraph() {
-	
-		//console.log('inside simulate button')
-		//$('p#helpText').hide('slow');
-		
-		
-		
-		//$('svg#modelGraph').hide('slow');
-		//$(this).hide('slow');
-		//$('button').hide('slow');
-		
-		
-		
-		// defines parameters
-		var parameters = {};
-		for (var i = 0; i < $sbmlDoc.find('parameter').length; i++) { // from parameters
-			parameters[$sbmlDoc.find('parameter')[i].getAttribute('id')] = $sbmlDoc.find('parameter')[i].getAttribute('value');
-		}
-		for (var i = 0; i < $sbmlDoc.find('compartment').length; i++) { // from compartments
-			parameters[$sbmlDoc.find('compartment')[i].getAttribute('id')] = $sbmlDoc.find('compartment')[i].getAttribute('size');
-		}
-   
-		
-		// calculate stoichiometry matrix
-		var listOfSpecies = [];
-		for (var i = 0; i < $sbmlDoc.find('species').length; i++) {
-			listOfSpecies[i] = $sbmlDoc.find('species')[i].getAttribute('id');
-		};
-	 
-		for (var colRxn = []; colRxn.length<$sbmlDoc.find('reaction').length; colRxn.push(0));            
-		for (var stoichiometryMatrix = []; stoichiometryMatrix.length<listOfSpecies.length; stoichiometryMatrix.push(new Array(colRxn)));
-		
-		for (var i = 0; i < $sbmlDoc.find('reaction').length; i++) {
-			var a = $sbmlDoc.find('reaction')[i];
-			var listOfProducts = $(a).find('listOfProducts').find('speciesReference');
-			for (var j = 0; j < listOfProducts.length; j++) {
-				var ind = listOfSpecies.indexOf(listOfProducts[j].getAttribute('species'));
-				stoichiometryMatrix[ind][i] = 1;
-			}
-			var listOfReactants = $(a).find('listOfReactants').find('speciesReference')
-			for (var j = 0; j < listOfReactants.length; j++) {
-				var ind = listOfSpecies.indexOf(listOfReactants[j].getAttribute('species'));
-				stoichiometryMatrix[ind][i] = -1;
-			}
-		}
-		
-			 
-		// finding infix
-		
-		var listOfReactionInfix = []
-		for (var i = 0; i < $sbmlDoc.find('reaction').length; i++) {
-			var a = $sbmlDoc.find('reaction')[i].getElementsByTagName('ci');
-			
-			var key = a[0].textContent.replace(/\s+/g, '');
-			var token;
-			if (parameters[key] != undefined) {
-				token = parameters[key];
-			} else if (listOfSpecies.indexOf(key) > -1) {
-				token = 'x[' + listOfSpecies.indexOf(key) + ']'
-			} else {
-				token = key;
-			}
-			
-			var infixString = token;
-			for (var j = 1; j < a.length; j++) {
-				key = a[j].textContent.replace(/\s+/g, '');
-				if (parameters[key] != undefined) {
-					token = parameters[key];
-				}
-				else if (listOfSpecies.indexOf(key) > -1) {
-					token = 'x[' + listOfSpecies.indexOf(key) + ']'
-				}
-				else {
-					token = key;
-				}
-				infixString += '*' + token;
-			}
-			nodes[$sbmlDoc.find('reaction')[i].getAttribute('id')].infixString = infixString; // saves infix string to node
-			
-			listOfReactionInfix[i] = infixString;
-			
-		}
-		
-		
-		var f = function(t, x) {
-			var odeString = '';
+    function printGraph() {
 
-			var numSpecies = listOfSpecies.length;
-			var count = 0;
-			for (var prop in nodes) {
-				if (nodes[prop].type == 'species') {
-					count += 1;
-					var speciesInd = listOfSpecies.indexOf(prop);
-					for (var i = 0; i < listOfReactionInfix.length; i++) {
-						var stoich = stoichiometryMatrix[speciesInd][i];
-						odeString += stoich + ' * (' + listOfReactionInfix[i] + ')';
-						if (i < listOfReactionInfix.length - 1) {
-							odeString += ' + ';
-						}
-					}
-					if (count < numSpecies) {
-						odeString += ' , ';
-					}
-				}
-			}
-			
-			return eval(odeString);
+        //console.log('inside simulate button')
+        //$('p#helpText').hide('slow');
 
-		};
-		
-		var initialConditions = [];
-		for (var i = 0; i<listOfSpecies.length; i++) {
-			initialConditions.push(parseFloat(nodes[listOfSpecies[i]].initialAmount));
-		}
-		
-//            var sol = numeric.dopri(0, 50, [.001, .002, .001], f, 1e-6, 2000);
-		var sol = numeric.dopri(0, 50, initialConditions, f, 1e-6, 2000);
 
-		var time = sol.x;
-		var numSol = numeric.transpose(sol.y);
+
+        //$('svg#modelGraph').hide('slow');
+        //$(this).hide('slow');
+        //$('button').hide('slow');
+
+
+
+        // defines parameters
+        var parameters = {};
+        for (var i = 0; i < $sbmlDoc.find('parameter').length; i++) { // from parameters
+            parameters[$sbmlDoc.find('parameter')[i].getAttribute('id')] = $sbmlDoc.find('parameter')[i].getAttribute('value');
+        }
+        for (var i = 0; i < $sbmlDoc.find('compartment').length; i++) { // from compartments
+            parameters[$sbmlDoc.find('compartment')[i].getAttribute('id')] = $sbmlDoc.find('compartment')[i].getAttribute('size');
+        }
+
+
+        // calculate stoichiometry matrix
+        var listOfSpecies = [];
+        for (var i = 0; i < $sbmlDoc.find('species').length; i++) {
+            listOfSpecies[i] = $sbmlDoc.find('species')[i].getAttribute('id');
+        };
+
+        for (var colRxn = []; colRxn.length < $sbmlDoc.find('reaction').length; colRxn.push(0));
+        for (var stoichiometryMatrix = []; stoichiometryMatrix.length < listOfSpecies.length; stoichiometryMatrix.push(new Array(colRxn)));
+
+        for (var i = 0; i < $sbmlDoc.find('reaction').length; i++) {
+            var a = $sbmlDoc.find('reaction')[i];
+            var listOfProducts = $(a).find('listOfProducts').find('speciesReference');
+            for (var j = 0; j < listOfProducts.length; j++) {
+                var ind = listOfSpecies.indexOf(listOfProducts[j].getAttribute('species'));
+                stoichiometryMatrix[ind][i] = 1;
+            }
+            var listOfReactants = $(a).find('listOfReactants').find('speciesReference')
+            for (var j = 0; j < listOfReactants.length; j++) {
+                var ind = listOfSpecies.indexOf(listOfReactants[j].getAttribute('species'));
+                stoichiometryMatrix[ind][i] = -1;
+            }
+        }
+
+
+        // finding infix
+
+        var listOfReactionInfix = []
+        for (var i = 0; i < $sbmlDoc.find('reaction').length; i++) {
+            var a = $sbmlDoc.find('reaction')[i].getElementsByTagName('ci');
+
+            var key = a[0].textContent.replace(/\s+/g, '');
+            var token;
+            if (parameters[key] != undefined) {
+                token = parameters[key];
+            }
+            else if (listOfSpecies.indexOf(key) > -1) {
+                token = 'x[' + listOfSpecies.indexOf(key) + ']'
+            }
+            else {
+                token = key;
+            }
+
+            var infixString = token;
+            for (var j = 1; j < a.length; j++) {
+                key = a[j].textContent.replace(/\s+/g, '');
+                if (parameters[key] != undefined) {
+                    token = parameters[key];
+                }
+                else if (listOfSpecies.indexOf(key) > -1) {
+                    token = 'x[' + listOfSpecies.indexOf(key) + ']'
+                }
+                else {
+                    token = key;
+                }
+                infixString += '*' + token;
+            }
+            nodes[$sbmlDoc.find('reaction')[i].getAttribute('id')].infixString = infixString; // saves infix string to node
+
+            listOfReactionInfix[i] = infixString;
+
+        }
+
+
+        var f = function(t, x) {
+            var odeString = '';
+
+            var numSpecies = listOfSpecies.length;
+            var count = 0;
+            for (var prop in nodes) {
+                if (nodes[prop].type == 'species') {
+                    count += 1;
+                    var speciesInd = listOfSpecies.indexOf(prop);
+                    for (var i = 0; i < listOfReactionInfix.length; i++) {
+                        var stoich = stoichiometryMatrix[speciesInd][i];
+                        odeString += stoich + ' * (' + listOfReactionInfix[i] + ')';
+                        if (i < listOfReactionInfix.length - 1) {
+                            odeString += ' + ';
+                        }
+                    }
+                    if (count < numSpecies) {
+                        odeString += ' , ';
+                    }
+                }
+            }
+
+            return eval(odeString);
+
+        };
+
+        var initialConditions = [];
+        for (var i = 0; i < listOfSpecies.length; i++) {
+            initialConditions.push(parseFloat(nodes[listOfSpecies[i]].initialAmount));
+        }
+
+        //            var sol = numeric.dopri(0, 50, [.001, .002, .001], f, 1e-6, 2000);
+        var sol = numeric.dopri(0, 50, initialConditions, f, 1e-6, 2000);
+
+        var time = sol.x;
+        var numSol = numeric.transpose(sol.y);
         // creating a simulation solution data structure
         var data = [];
-        
-        for (i = 0; i<time.length; i++) {
+
+        for (i = 0; i < time.length; i++) {
             var iter = {};
             iter.time = time[i];
-//            for (var j = 0; j<numSol.length; j++) {
-//                iter[listOfSpecies[j]] = numSol[j][i];
-//           };
+            //            for (var j = 0; j<numSol.length; j++) {
+            //                iter[listOfSpecies[j]] = numSol[j][i];
+            //           };
             iter.value = sol.y[i];
             data.push(iter);
         }
 
-		var margin = {
-			top: 20,
-			right: 20,
-			bottom: 30,
-			left: 50
-		},
-		width = 960 - margin.left - margin.right,
-			height = 500 - margin.top - margin.bottom;
+        var margin = {
+            top: 20,
+            right: 20,
+            bottom: 30,
+            left: 50
+        },
+        width = 960 - margin.left - margin.right,
+            height = 500 - margin.top - margin.bottom;
 
-		var x = d3.scale.linear().range([0, width]);
-		var y = d3.scale.linear().range([height, 0]);
-		var xAxis = d3.svg.axis().scale(x).orient("bottom");
-		var yAxis = d3.svg.axis().scale(y).orient("left");
+        var x = d3.scale.linear().range([0, width]);
+        var y = d3.scale.linear().range([height, 0]);
+        var xAxis = d3.svg.axis().scale(x).orient("bottom");
+        var yAxis = d3.svg.axis().scale(y).orient("left");
         var color = d3.scale.category10();
-		var line = d3.svg.line().x(function(d) {
-			return x(d.time);
-		}).y(function(d) {
-			return y(d.value);
-		});
+        var line = d3.svg.line().x(function(d) {
+            return x(d.time);
+        }).y(function(d) {
+            return y(d.value);
+        });
 
-		// for (var ithSpecies = 0; ithSpecies<numSol.length; ithSpecies++) {
-// 			var preData = [time, numSol[ithSpecies]];
-// 			var data = [];
-// 			for (var i = 0; i < preData[0].length; i++) {
-// 				data[i] = [preData[0][i], preData[1][i]];
-// 			}
-			var svg = d3.select("div#modelView").append("svg").attr("width", width + margin.left + margin.right).attr("id", "simulationGraph").attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        // for (var ithSpecies = 0; ithSpecies<numSol.length; ithSpecies++) {
+        // 			var preData = [time, numSol[ithSpecies]];
+        // 			var data = [];
+        // 			for (var i = 0; i < preData[0].length; i++) {
+        // 				data[i] = [preData[0][i], preData[1][i]];
+        // 			}
+        var svg = d3.select("div#modelView").append("svg").attr("width", width + margin.left + margin.right).attr("id", "simulationGraph").attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-			x.domain(d3.extent(data, function(d) {
-				return d.time;
-			}));
-			y.domain(d3.extent(data, function(d) {
-				return d.value;
-			}));
+        x.domain(d3.extent(data, function(d) {
+            return d.time;
+        }));
+        y.domain(d3.extent(data, function(d) {
+            return d.value;
+        }));
 
-			svg.append("g").attr("class", "x axis").attr("transform", "translate(0," + height + ")").call(xAxis).append("text").attr("x", 0.5 * width).attr("y", 30).style("text-anchor", "end").text("time");
+        svg.append("g").attr("class", "x axis").attr("transform", "translate(0," + height + ")").call(xAxis).append("text").attr("x", 0.5 * width).attr("y", 30).style("text-anchor", "end").text("time");
 
-			svg.append("g").attr("class", "y axis").call(yAxis); //.append("text").attr("transform", "rotate(-90)").attr("y", 6).attr("dy", ".71em").text("concentration");
+        svg.append("g").attr("class", "y axis").call(yAxis); //.append("text").attr("transform", "rotate(-90)").attr("y", 6).attr("dy", ".71em").text("concentration");
 
-			svg.append("path").data(data).attr("class", "line").attr("d", line);
-// 		}
-	}
+        svg.append("path").data(data).attr("class", "line").attr("d", line);
+        // 		}
+    }
 
 });
