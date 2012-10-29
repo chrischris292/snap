@@ -1,18 +1,9 @@
-$(document).ready(function() {
-
+$(document).ready(function () {
+	"use strict";
     var NODESIZE = {
         reaction: 2,
         species: 8
-    };
-
-    var sbmlDoc;
-    var $sbmlDoc;
-    var text;
-    var circle;
-    var path;
-
-    var simpleModel;
-    var glycolysisModel;
+    }, sbmlDoc, $sbmlDoc, text, circle, path, simpleModel, glycolysisModel;
 
     var selectedNode;
     var svg;
@@ -540,6 +531,18 @@ $(document).ready(function() {
 
 		var time = sol.x;
 		var numSol = numeric.transpose(sol.y);
+        // creating a simulation solution data structure
+        var data = [];
+        
+        for (i = 0; i<time.length; i++) {
+            var iter = {};
+            iter.time = time[i];
+//            for (var j = 0; j<numSol.length; j++) {
+//                iter[listOfSpecies[j]] = numSol[j][i];
+//           };
+            iter.value = sol.y[i];
+            data.push(iter);
+        }
 
 		var margin = {
 			top: 20,
@@ -556,32 +559,32 @@ $(document).ready(function() {
 		var yAxis = d3.svg.axis().scale(y).orient("left");
         var color = d3.scale.category10();
 		var line = d3.svg.line().x(function(d) {
-			return x(d[0]);
+			return x(d.time);
 		}).y(function(d) {
-			return y(d[1]);
+			return y(d.value);
 		});
 
-		for (var ithSpecies = 0; ithSpecies<numSol.length; ithSpecies++) {
-			var preData = [time, numSol[ithSpecies]];
-			var data = [];
-			for (var i = 0; i < preData[0].length; i++) {
-				data[i] = [preData[0][i], preData[1][i]];
-			}
+		// for (var ithSpecies = 0; ithSpecies<numSol.length; ithSpecies++) {
+// 			var preData = [time, numSol[ithSpecies]];
+// 			var data = [];
+// 			for (var i = 0; i < preData[0].length; i++) {
+// 				data[i] = [preData[0][i], preData[1][i]];
+// 			}
 			var svg = d3.select("div#modelView").append("svg").attr("width", width + margin.left + margin.right).attr("id", "simulationGraph").attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 			x.domain(d3.extent(data, function(d) {
-				return d[0];
+				return d.time;
 			}));
 			y.domain(d3.extent(data, function(d) {
-				return d[1];
+				return d.value;
 			}));
 
 			svg.append("g").attr("class", "x axis").attr("transform", "translate(0," + height + ")").call(xAxis).append("text").attr("x", 0.5 * width).attr("y", 30).style("text-anchor", "end").text("time");
 
 			svg.append("g").attr("class", "y axis").call(yAxis); //.append("text").attr("transform", "rotate(-90)").attr("y", 6).attr("dy", ".71em").text("concentration");
 
-			svg.append("path").datum(data).attr("class", "line").attr("d", line);
-		}
+			svg.append("path").data(data).attr("class", "line").attr("d", line);
+// 		}
 	}
 
 });
