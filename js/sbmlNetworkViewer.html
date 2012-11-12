@@ -60,75 +60,84 @@
                 stroke: #000;
                 shape-rendering: crispEdges;
             }
-
             .line {
                 fill: none;
                 stroke: steelblue;
                 stroke-width: 1.5px;
             }
-            .scrollable-content { overflow: scroll; }
-
+            .scrollable-content {
+                overflow: scroll;
+            }
         </style>
     </head>
     
     <body>
         <h1>SBML Reaction Viewer</h1>
-        
         <div id='accordion'>
-        	<h2>Load Model</h2>
-			<div id='loadModel'>
-				<p>This makes a force directed graph from species within an SBML model.</p>
-				<p>Click one of the buttons on the right to load a model or copy-and-paste
-					an SBML model into the box below.</p>
-				<p>Click "View Reaction Network" to generate the graph.</p>
-				<p id="helpText">Mouse over or click nodes for additional information</p>
-				<div id="reactionEquation"></div>
-				<div id="dialog-form-species" title="Species Node">
-					<p class="validateTips">All form fields are required.</p>
-					<form>
-						<fieldset>
-							<label for="id">ID</label>
-							<input type="text" name="id" id="selectedId" class="text ui-widget-content ui-corner-all"
-							/>
-							<label for="compartment">Compartment</label>
-							<input type="text" name="compartment" id="selectedCompartment"
-							value="" class="text ui-widget-content ui-corner-all" />
-							<label for="initialAmount">Initial Amount</label>
-							<input type="number" name="initialAmount" id="selectedInitialAmount"
-							class="text ui-widget-content ui-corner-all" />
-							<div id="initialAmountSlider"></div>
-							<input type="checkbox" name="boundaryCondition" id="selectedBoundaryCondition"
-							class="text ui-widget-content ui-corner-all" value=true>Boundary Condition
-							<br>
-						</fieldset>
-					</form>
-				</div>
-				<p>Input SBML Below:</p>
-				<table>
-					<tr>
-						<td>
-							<textarea rows="10" cols="30"></textarea>
-						</td>
-						<td>
-							<button type="button" id="btnLoadSimple">Load a Simple Model</button>
-							<br/>
-							<button type="button" id="btnLoadGlycolysis">Load a Glycolysis Model</button>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<button type="button" id="btnViewNetwork">View Reaction Network</button>
-						</td>
-						<tr/>
-				</table>
-			</div>
-			<h2>Model View</h2>
-            <div style="width: 100%; overflow: hidden;">
-			    <div id='modelView' class="scrollable-content" style="width: 600px; float: left;"> </div>
-                <div id='simulationView' style="margin-left: 620px;"> </div>
-			</div>
-		</div>
+            <h2>Load Model</h2>
+            <div id='loadModel'>
+                <p>This makes a force directed graph from species within an SBML model.</p>
+                <p>Click one of the buttons on the right to load a model or copy-and-paste
+                    an SBML model into the box below.</p>
+                <p>Click "View Reaction Network" to generate the graph.</p>
+                <p id="helpText">Mouse over or click nodes for additional information</p>
+                <div id="reactionEquation"></div>            
+                <p>Input SBML Below:</p>
+                <table>
+                    <tr>
+                        <td>
+                            <textarea rows="10" cols="30"></textarea>
+                        </td>
+                        <td>
+                            <button type="button" id="btnLoadSimple">Load a Simple Model</button>
+                            <br/>
+                            <button type="button" id="btnLoadGlycolysis">Load a Glycolysis Model</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button type="button" id="btnViewNetwork">View Reaction Network</button>
+                        </td>
+                        <tr/>
+                </table>
+            </div>
+            <h2>Model View</h2>
+            <div style="width: 100%">
+                <div id='modelView' class="scrollable-content" style="width: 600px; float: left;"></div>
+                <div id='simulationView' style="margin-left: 620px;"></div>
+            </div>
+        </div>
+        
+        <script src="./helperFunctions.js"></script>
         <script src="./controller.js"></script>
+        <div id="dialog-form-species" title="Species Node">
+            <form>
+                <fieldset>
+                    <label for="id">ID</label>
+                    <input type="text" name="id" id="selectedId" class="text ui-widget-content ui-corner-all"
+                    />
+                    <label for="compartment">Compartment</label>
+                    <input type="text" name="compartment" id="selectedCompartment"
+                    value="" class="text ui-widget-content ui-corner-all" />
+                    <label for="initialAmount">Initial Amount</label>
+                    <input type="number" name="initialAmount" id="selectedInitialAmount"
+                    class="text ui-widget-content ui-corner-all" />
+                    <div id="initialAmountSlider"></div>
+                    <input type="checkbox" name="boundaryCondition" id="selectedBoundaryCondition"
+                    class="text ui-widget-content ui-corner-all" value=true>Boundary Condition
+                    <br>
+                </fieldset>
+            </form>
+        </div>
+        <div id="dialog-form-reaction" title="Reaction Node">
+            <form>
+                <fieldset>
+                    <label for="id">ID</label>
+                    <input type="text" name="id" id="selectedReactionId" class="reactionParam"
+                    />
+                </fieldset>
+            </form>
+        </div>
     </body>
 
 </html>

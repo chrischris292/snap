@@ -11,6 +11,8 @@ $(document).ready(function() {
     var autoLayoutButton;
     var forceButton;
 
+    var listOfSpecies, parameters;
+
     $.get('./00011-sbml-l2v4.xml', function(data) {
         simpleModel = (new XMLSerializer()).serializeToString(data);
     });
@@ -207,7 +209,7 @@ $(document).ready(function() {
 
         $('div#modelView').append('<br/><button type="button" id=btnSimulate>Simulate</button>')
 
-
+        printGraph();
 
         $('button#btnSimulate').click(function() {
             printGraph();
@@ -215,13 +217,77 @@ $(document).ready(function() {
 
 
 
+
+
     });
 
+    var node_drag = d3.behavior.drag().on("dragstart", dragstart).on("drag", dragmove).on("dragend", dragend);
+
+    function dragstart(d, i) {
+        force.stop() // stops the force auto positioning before you start dragging
+    }
+
+    function dragmove(d, i) {
+        d.px += d3.event.dx;
+        d.py += d3.event.dy;
+        d.x += d3.event.dx;
+        d.y += d3.event.dy;
+        tick(); // this is the key to make it work together with updating both px,py,x,y on d !
+    }
+
+    function dragend(d, i) {
+        d.fixed = true; // of course set the node to fixed so the force doesn't include the node in its auto positioning stuff
+        tick();
+        force.resume();
+    }
+
+    // Use elliptical arc path segments to doubly-encode directionality.
+    function tick() {
+        path.attr("d", function(d) {
+            var dx = d.target.x - d.source.x,
+                dy = d.target.y - d.source.y,
+                dr = Math.sqrt(dx * dx + dy * dy);
+            return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
+        });
+
+        circle.attr("transform", function(d) {
+            return "translate(" + d.x + "," + d.y + ")";
+        });
+
+        text.attr("transform", function(d) {
+            return "translate(" + d.x + "," + d.y + ")";
+        });
+    }
+
+
+    // get node size from the name of the node
+    function getNodeSize(node) {
+        if (node.type == 'reaction' && node.visible) { //is a reaction node
+            return NODESIZE.reaction;
+        }
+        else if (node.visible) { // is a species node
+            return NODESIZE.species;
+        }
+        else { // node should not be visible
+            return 0;
+        }
+    }
+
+    // return if name is a reactant or product aggregrate
+    function isReaction(name) {
+        if ($sbmlDoc.find("listOfReactions").find("#" + name).length > 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 
     var selectedId = $("#selectedId"),
         selectedCompartment = $("#selectedCompartment"),
         selectedInitialAmount = $("#selectedInitialAmount"),
         allFields = $([]).add(selectedId).add(selectedCompartment).add(selectedInitialAmount);
+
 
     $("#dialog-form-species").dialog({
         autoOpen: false,
@@ -277,107 +343,85 @@ $(document).ready(function() {
             Cancel: function() {
                 $(this).dialog("close");
             }
-        },
-        //         focus: setSlider(),
-        //        open: function() {
-        //			$('#initialAmountSlider').slider("option", "min", selectedInitialAmount.val()/2);
-        //			$('#initialAmountSlider').slider("option", "max", selectedInitialAmount.val()*2);
-        //        	$('#initialAmountSlider').slider("option", "range", true);
-        //        	$('#initialAmountSlider').slider("option", "value", parseFloat(selectedInitialAmount.val()));
-        //
-        //
-        //		}
-
+        }
     });
+    
+    // Building reaction dialog form
+    
+    $("#dialog-form-reaction").dialog({
+        autoOpen: false,
+        open: function(event, ui) {
+            $('#initialAmountSlider').slider({
+                min: selectedInitialAmount.val() / 10,
+                max: selectedInitialAmount.val() * 10,
+                slide: function(event, ui) {
+                    selectedInitialAmount.val($('#initialAmountSlider').slider('option', 'value'));
+                    selectedNode.initialAmount = selectedInitialAmount.val();
+                    updateGraph();
+                }
+            });
+            $('#initialAmountSlider').slider('option', 'step', selectedInitialAmount.val() / 10);
+            $('#initialAmountSlider').slider('option', 'value', parseFloat(selectedInitialAmount.val()));
+        },
+        buttons: {
+            Save: function() {
+                links.forEach(function(link) {
+                    if (link.target == selectedId.val()) {
+                        link.target = selectedId.val();
+                    }
+                    if (link.source == selectedId.val()) {
+                        link.source = selectedId.val();
+                    }
+                });
 
-    var node_drag = d3.behavior.drag().on("dragstart", dragstart).on("drag", dragmove).on("dragend", dragend);
+                selectedNode.name = selectedId.val();
+                selectedNode.compartment = selectedCompartment.val();
+                selectedNode.initialAmount = selectedInitialAmount.val();
+                $(this).dialog("close");
 
-    function dragstart(d, i) {
-        force.stop() // stops the force auto positioning before you start dragging
-    }
+                // A copy of the text with a thick white stroke for legibility.
+                text.append("svg:text").attr("x", 8).attr("y", ".31em").attr("class", "shadow").text(function(d) {
+                    if (d.type == 'reaction') {
+                        return "";
+                    }
+                    else {
+                        return d.name;
+                    }
+                });
 
-    function dragmove(d, i) {
-        d.px += d3.event.dx;
-        d.py += d3.event.dy;
-        d.x += d3.event.dx;
-        d.y += d3.event.dy;
-        tick(); // this is the key to make it work together with updating both px,py,x,y on d !
-    }
+                text.append("svg:text").attr("x", 8).attr("y", ".31em").text(function(d) {
+                    if (d.type == 'reaction') {
+                        return "";
+                    }
+                    else {
+                        return d.name;
+                    }
+                });
 
-    function dragend(d, i) {
-        d.fixed = true; // of course set the node to fixed so the force doesn't include the node in its auto positioning stuff
-        tick();
-        force.resume();
-    }
-
-
-
-    // Use elliptical arc path segments to doubly-encode directionality.
-    function tick() {
-        path.attr("d", function(d) {
-            var dx = d.target.x - d.source.x,
-                dy = d.target.y - d.source.y,
-                dr = Math.sqrt(dx * dx + dy * dy);
-            return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
-        });
-
-        circle.attr("transform", function(d) {
-            return "translate(" + d.x + "," + d.y + ")";
-        });
-
-        text.attr("transform", function(d) {
-            return "translate(" + d.x + "," + d.y + ")";
-        });
-    }
-
-
-    // get node size from the name of the node
-    function getNodeSize(node) {
-        if (node.type == 'reaction' && node.visible) { //is a reaction node
-            return NODESIZE.reaction;
+            },
+            Cancel: function() {
+                $(this).dialog("close");
+            }
         }
-        else if (node.visible) { // is a species node
-            return NODESIZE.species;
-        }
-        else { // node should not be visible
-            return 0;
-        }
-    }
-
-    // return if name is a reactant or product aggregrate
-    function isReaction(name) {
-        if ($sbmlDoc.find("listOfReactions").find("#" + name).length > 0) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-
+    });
 
     // Open dialog box on click.
     function svgClick(d) {
-        var title;
         selectedNode = d;
         if (isReaction(d.name)) { // selected a reaction node
-            title = 'Reaction Node';
-            //$('#reactionEquation').children().detach();
-            //        $('#reactionEquation').append('<p>The equation for this reaction is:</p>');
-            //        var equation = $sbmlDoc.find("#" + d.name).find("math").clone()[0];
-            //        $('#reactionEquation').append(equation);
-            //$('#reactionEquation').append(printObject(d));
-
+            $("#dialog-form-reaction").dialog("open");
+            
+            $("input.reactionParam[name=id]").val(d.name);
+            $(d.kineticLaw).find("ci").each(function(index, item) {
+                var str = $.trim(item.textContent);
+                if (parameters[str]) {
+                    var htmlStr = "<label for=" + str + ">" + str + "</label>" + '<input type="text" class=reactionParam name=' + str + " />";
+                    $("#dialog-form-reaction").append(htmlStr);
+                    $("input.reactionParam[name=" + str + "]").val(parameters[str]);
+                }
+            });
         }
         else { // selected a species node
-            title = 'Species Node';
-
-            //$('#reactionEquation').children().detach();
-            //        $('#reactionEquation').attr('title', 'Species Node');
-            //        $('#reactionEquation').append('<p>The species node you selected is:</p>');
-            //        $('#reactionEquation').append('<p>' + d.name + '</p>');
-            //        $('#reactionEquation').append('<p></p>');
-            // $('#reactionEquation').append(printObject(d));
-
             $('#selectedId').val(d.name);
             $('#selectedCompartment').val(d.compartment);
             $('#selectedInitialAmount').val(d.initialAmount);
@@ -391,24 +435,6 @@ $(document).ready(function() {
             $("#dialog-form-species").dialog("open");
 
         }
-        //$('#reactionEquation ').dialog({title: title});
-    }
-
-    function getStoichiometry() {
-        for (var prop in nodes) {
-            if (nodes[prop].type == 'reaction') {
-                console.log(nodes[prop].name);
-            }
-        }
-    }
-
-    // Returns string of properties within an object
-    function printObject(object) {
-        var output = '';
-        for (var property in object) {
-            output += ' < p > ' + property + ': ' + object[property] + '; < /p>';
-        }
-        return output;
     }
 
     function printGraph() {
@@ -425,7 +451,7 @@ $(document).ready(function() {
 
 
         // defines parameters
-        var parameters = {};
+        parameters = {};
         for (var i = 0; i < $sbmlDoc.find('parameter').length; i++) { // from parameters
             parameters[$sbmlDoc.find('parameter')[i].getAttribute('id')] = $sbmlDoc.find('parameter')[i].getAttribute('value');
         }
@@ -435,7 +461,7 @@ $(document).ready(function() {
 
 
         // calculate stoichiometry matrix
-        var listOfSpecies = [];
+        listOfSpecies = [];
         for (var i = 0; i < $sbmlDoc.find('species').length; i++) {
             listOfSpecies[i] = $sbmlDoc.find('species')[i].getAttribute('id');
         };
@@ -457,7 +483,7 @@ $(document).ready(function() {
             }
         }
 
-
+        
         // finding infix
 
         var listOfReactionInfix = []
@@ -495,7 +521,6 @@ $(document).ready(function() {
             listOfReactionInfix[i] = infixString;
 
         }
-
 
         var f = function(t, x) {
             var odeString = '';
@@ -620,7 +645,7 @@ $(document).ready(function() {
             return line(d.values);
         }).style("stroke", function(d) {
             return color(d.name);
-        }).attr("id","simLine");
+        }).attr("id", "simLine");
 
         specie.append("text").datum(function(d) {
             return {
@@ -649,7 +674,7 @@ $(document).ready(function() {
 
 
         // defines parameters
-        var parameters = {};
+        parameters = {};
         for (var i = 0; i < $sbmlDoc.find('parameter').length; i++) { // from parameters
             parameters[$sbmlDoc.find('parameter')[i].getAttribute('id')] = $sbmlDoc.find('parameter')[i].getAttribute('value');
         }
@@ -659,7 +684,7 @@ $(document).ready(function() {
 
 
         // calculate stoichiometry matrix
-        var listOfSpecies = [];
+        listOfSpecies = [];
         for (var i = 0; i < $sbmlDoc.find('species').length; i++) {
             listOfSpecies[i] = $sbmlDoc.find('species')[i].getAttribute('id');
         };
@@ -796,15 +821,15 @@ $(document).ready(function() {
         }).y(function(d) {
             return y(d.amount);
         });
-        
+
         var svg = d3.select("div#simulationView").select("svg#simulation");
-        
-        
-        
+
+
+
         color.domain(d3.keys(data[0]).filter(function(key) {
             return key !== "time";
         }));
-        
+
 
         var species = color.domain().map(function(name) {
             return {
@@ -835,15 +860,15 @@ $(document).ready(function() {
         })]);
 
         console.log(data[data.length - 1]);
-        
+
         svg.select(".x.axis").call(xAxis);
 
         svg.select(".y.axis").call(yAxis);
-        
+
         svg.selectAll("path#simLine").data(species).attr("d", function(d) {
             return line(d.values);
         });
-        
+
         svg.selectAll("text#simLabel").data(species).datum(function(d) {
             return {
                 name: d.name,
