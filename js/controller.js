@@ -10,9 +10,6 @@ $(document).ready(function() {
     var selectedNode;
     var svg;
 
-    var autoLayoutButton;
-    var forceButton;
-
     var listOfSpecies, parameters;
 
     $.get('./00011-sbml-l2v4.xml', function(data) {
@@ -178,14 +175,6 @@ $(document).ready(function() {
                 return d.name;
             }
         });
-
-        // making global variables
-        window.nodes = nodes;
-        window.force = force;
-        window.circle = circle;
-        window.force.drag = force.drag;
-        window.node_drag = node_drag;
-        
         
         createButton({
             buttonType: "lockDrag",
@@ -226,7 +215,7 @@ $(document).ready(function() {
     var node_drag = d3.behavior.drag().on("dragstart", dragstart).on("drag", dragmove).on("dragend", dragend);
 
     function dragstart(d, i) {
-        force.stop() // stops the force auto positioning before you start dragging
+        force.stop(); // stops the force auto positioning before you start dragging
     }
 
     function dragmove(d, i) {
@@ -440,17 +429,6 @@ $(document).ready(function() {
     }
 
     function printGraph() {
-
-        //console.log('inside simulate button')
-        //$('p#helpText').hide('slow');
-
-
-
-        //$('svg#modelGraph').hide('slow');
-        //$(this).hide('slow');
-        //$('button').hide('slow');
-
-
 
         // defines parameters
         parameters = {};
