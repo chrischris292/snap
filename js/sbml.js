@@ -2,6 +2,10 @@
 
 function SbmlParser($sbmlDoc) {
     this.$sbmlDoc = $sbmlDoc;
+    this.parameters = this.getParameters();
+    this.listOfSpecies = this.getSpecies();
+    this.stoichiometry = this.getStoichiometry();
+    this.listOfReactionInfix = this.getListOfReactionInfix();
 }
 
 // finds parameters and compartments in model
@@ -27,7 +31,7 @@ SbmlParser.prototype.getSpecies = function() {
 
 // returns stoichiometry matrix
 SbmlParser.prototype.getStoichiometry = function() {
-    var listOfSpecies = this.getSpecies();
+    var listOfSpecies = this.listOfSpecies;
     for (var colRxn = []; colRxn.length < this.$sbmlDoc.find('reaction').length; colRxn.push(0));
     for (var stoichiometryMatrix = []; stoichiometryMatrix.length < listOfSpecies.length; stoichiometryMatrix.push(new Array(colRxn)));
 
@@ -48,9 +52,9 @@ SbmlParser.prototype.getStoichiometry = function() {
 }
 
 // returns list of infix strings for reactions
-SbmlParser.prototype.getListOfReactionInfix = function(input) {
-    var parameters = this.getParameters();
-    var listOfSpecies = this.getSpecies();
+SbmlParser.prototype.getListOfReactionInfix = function() {
+    var parameters = this.parameters;
+    var listOfSpecies = this.listOfSpecies;
     var listOfReactionInfix = [];
     for (var i = 0; i < this.$sbmlDoc.find('reaction').length; i++) {
         var a = this.$sbmlDoc.find('reaction')[i].getElementsByTagName('ci');
@@ -83,7 +87,7 @@ SbmlParser.prototype.getListOfReactionInfix = function(input) {
         }
         
         // optionally appends infix strings to nodes
-        input.nodes[this.$sbmlDoc.find('reaction')[i].getAttribute('id')].infixString = infixString; // saves infix string to node
+        //input.nodes[this.$sbmlDoc.find('reaction')[i].getAttribute('id')].infixString = infixString; // saves infix string to node
 
         listOfReactionInfix[i] = infixString;
     }
