@@ -1,11 +1,11 @@
-/*global $:false d3:false createButton:false */
+/*global $:false d3:false numeric:false createButton:false SbmlParser:false */
 
 $(document).ready(function() {
     "use strict";
     var NODESIZE = {
         reaction: 2,
         species: 8
-    }, sbmlDoc, $sbmlDoc, text, circle, path, simpleModel, glycolysisModel;
+    }, sbmlDoc, $sbmlDoc, mySbmlParser, text, circle, path, simpleModel, glycolysisModel;
 
     var selectedNode;
     var svg;
@@ -52,7 +52,8 @@ $(document).ready(function() {
 
         sbmlDoc = $.parseXML(str);
         $sbmlDoc = $(sbmlDoc);
-
+        mySbmlParser = new SbmlParser($sbmlDoc);
+        
 
         // generating nodes from listOfSpecies
         $sbmlDoc.find("species").each(function(n) {
@@ -397,18 +398,32 @@ $(document).ready(function() {
     });
 
     // Open dialog box on click.
+    
     function svgClick(d) {
         selectedNode = d;
+        var parameters = mySbmlParser.getParameters();
         if (isReaction(d.name)) { // selected a reaction node
             $("#dialog-form-reaction").dialog("open");
-
+            $("#dialog-form-reaction").children("form").children("fieldset").children().remove();
+            $("#dialog-form-reaction").children("form").children("fieldset").append('<label for="id">ID</label><input type="text" name="id" id="selectedReactionId" class="reactionParam"/>');
             $("input.reactionParam[name=id]").val(d.name);
             $(d.kineticLaw).find("ci").each(function(index, item) {
                 var str = $.trim(item.textContent);
                 if (parameters[str]) {
-                    var htmlStr = "<label for=" + str + ">" + str + "</label>" + '<input type="text" class=reactionParam name=' + str + " />";
-                    $("#dialog-form-reaction").append(htmlStr);
+                    var htmlStr = "<label for=" + str + ">" + str + "</label>" + '<input type="text" class=reactionParam name=' + str + " />" + '<div id=' + str + 'Slider></div>';
+                    $("#dialog-form-reaction").children("form").children("fieldset").append(htmlStr);
                     $("input.reactionParam[name=" + str + "]").val(parameters[str]);
+                    $("div#" + str + "Slider").slider({
+                        min: parameters[str] / 10,
+                        max: parameters[str] * 10,
+                        slide: function(event, ui) {
+                            $("input.reactionParam[name=" + str + "]").val(parameters[str]);
+                            updateGraph();
+                        }
+                    });
+                    $("div#" + str + "Slider").slider('option', 'step', parameters[str] / 10);
+                    $("div#" + str + "Slider").slider('option', 'value', parameters[str]);
+
                 }
             });
         }
@@ -430,77 +445,13 @@ $(document).ready(function() {
 
     function printGraph() {
 
-        // defines parameters
-        parameters = {};
-        for (var i = 0; i < $sbmlDoc.find('parameter').length; i++) { // from parameters
-            parameters[$sbmlDoc.find('parameter')[i].getAttribute('id')] = $sbmlDoc.find('parameter')[i].getAttribute('value');
-        }
-        for (var i = 0; i < $sbmlDoc.find('compartment').length; i++) { // from compartments
-            parameters[$sbmlDoc.find('compartment')[i].getAttribute('id')] = $sbmlDoc.find('compartment')[i].getAttribute('size');
-        }
+        var parameters = mySbmlParser.getParameters();
 
-
+        var listOfSpecies = mySbmlParser.getSpecies();
         // calculate stoichiometry matrix
-        listOfSpecies = [];
-        for (var i = 0; i < $sbmlDoc.find('species').length; i++) {
-            listOfSpecies[i] = $sbmlDoc.find('species')[i].getAttribute('id');
-        };
-
-        for (var colRxn = []; colRxn.length < $sbmlDoc.find('reaction').length; colRxn.push(0));
-        for (var stoichiometryMatrix = []; stoichiometryMatrix.length < listOfSpecies.length; stoichiometryMatrix.push(new Array(colRxn)));
-
-        for (var i = 0; i < $sbmlDoc.find('reaction').length; i++) {
-            var a = $sbmlDoc.find('reaction')[i];
-            var listOfProducts = $(a).find('listOfProducts').find('speciesReference');
-            for (var j = 0; j < listOfProducts.length; j++) {
-                var ind = listOfSpecies.indexOf(listOfProducts[j].getAttribute('species'));
-                stoichiometryMatrix[ind][i] = 1;
-            }
-            var listOfReactants = $(a).find('listOfReactants').find('speciesReference')
-            for (var j = 0; j < listOfReactants.length; j++) {
-                var ind = listOfSpecies.indexOf(listOfReactants[j].getAttribute('species'));
-                stoichiometryMatrix[ind][i] = -1;
-            }
-        }
-
-
-        // finding infix
-
-        var listOfReactionInfix = []
-        for (var i = 0; i < $sbmlDoc.find('reaction').length; i++) {
-            var a = $sbmlDoc.find('reaction')[i].getElementsByTagName('ci');
-
-            var key = a[0].textContent.replace(/\s+/g, '');
-            var token;
-            if (parameters[key] != undefined) {
-                token = parameters[key];
-            }
-            else if (listOfSpecies.indexOf(key) > -1) {
-                token = 'x[' + listOfSpecies.indexOf(key) + ']'
-            }
-            else {
-                token = key;
-            }
-
-            var infixString = token;
-            for (var j = 1; j < a.length; j++) {
-                key = a[j].textContent.replace(/\s+/g, '');
-                if (parameters[key] != undefined) {
-                    token = parameters[key];
-                }
-                else if (listOfSpecies.indexOf(key) > -1) {
-                    token = 'x[' + listOfSpecies.indexOf(key) + ']'
-                }
-                else {
-                    token = key;
-                }
-                infixString += '*' + token;
-            }
-            nodes[$sbmlDoc.find('reaction')[i].getAttribute('id')].infixString = infixString; // saves infix string to node
-
-            listOfReactionInfix[i] = infixString;
-
-        }
+        var stoichiometryMatrix = mySbmlParser.getStoichiometry();
+        // finding infix        
+        var listOfReactionInfix = mySbmlParser.getListOfReactionInfix({nodes: nodes});
 
         var f = function(t, x) {
             var odeString = '';

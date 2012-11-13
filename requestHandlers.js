@@ -1,27 +1,31 @@
 var querystring = require("querystring"),
     fs = require("fs"),
     formidable = require("formidable");
-    printSbml = require("./printSbml");
+//    printSbml = require("./printSbml");
 
 function start(response) {
   console.log("Request handler 'start' was called.");
 
-  var body = '<html>'+
-    '<head>'+
-    '<meta http-equiv="Content-Type" '+
-    'content="text/html; charset=UTF-8" />'+
-    '</head>'+
-    '<body>'+
-    '<form action="/upload" enctype="multipart/form-data" '+
-    'method="post">'+
-    '<input type="file" name="upload" multiple="multiple">'+
-    '<input type="submit" value="Upload file" />'+
-    '</form>'+
-    '</body>'+
-    '</html>';
+var index = fs.readFileSync('js/sbmlNetworkViewer.html');
+
+//  var body = '<html>'+
+//    '<head>'+
+//    '<meta http-equiv="Content-Type" '+
+//    'content="text/html; charset=UTF-8" />'+
+//    '</head>'+
+//    '<body>'+
+//    '<form action="/upload" enctype="multipart/form-data" '+
+//    'method="post">'+
+//    '<input type="file" name="upload" multiple="multiple">'+
+//    '<input type="submit" value="Upload file" />'+
+//    '</form>'+
+//    '</body>'+
+//    '</html>';
+
+
 
     response.writeHead(200, {"Content-Type": "text/html"});
-    response.write(body);
+    response.write(index);
     response.end();
 }
 
@@ -42,9 +46,9 @@ function upload(response, request) {
       }
     });
     response.writeHead(200, {"Content-Type": "text/html"});
-    response.write("received SBML model:<br/>");
-    //response.write("<img src='/show' />");
-    response.write(printSbml.printSbml("/tmp/test.png"));
+    //response.write("received SBML model:<br/>");
+    response.write("<img src='/show' />");
+    //response.write(printSbml.printSbml("/tmp/test.png"));
     response.end();
   });
 }
