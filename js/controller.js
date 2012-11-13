@@ -1,3 +1,5 @@
+/*global $:false d3:false createButton:false */
+
 $(document).ready(function() {
     "use strict";
     var NODESIZE = {
@@ -143,16 +145,6 @@ $(document).ready(function() {
             return getNodeSize(d);
         }).on("click", svgClick).call(force.drag); // Starts dragging //.call(force.drag);
 
-        $('div#modelView').append('<br/><button type="button" id=btnLockDrag>Lock Dragged Nodes</button>');
-        $('button#btnLockDrag').click(function() {
-            circle.call(node_drag);
-        });
-
-        $('div#modelView').append('<br/><button type="button" id=btnUnlockDrag>Unlock Dragged Nodes</button>');
-        $('button#btnUnlockDrag').click(function() {
-            circle.call(force.drag);
-        });
-
         // adding titles to the nodes
         circle.append("title").text(function(d) {
             if (d.type == 'species') {
@@ -187,37 +179,47 @@ $(document).ready(function() {
             }
         });
 
+        // making global variables
+        window.nodes = nodes;
+        window.force = force;
+        window.circle = circle;
+        window.force.drag = force.drag;
+        window.node_drag = node_drag;
+        
+        
+        createButton({
+            buttonType: "lockDrag",
+            domLocation: "div#modelView",
+            clickFcn: circle,
+            clickFcnParam: node_drag
+        });
+        createButton({
+            buttonType: "unlockDrag",
+            domLocation: "div#modelView",
+            clickFcn: circle,
+            clickFcnParam: force.drag
+        });
+
         // Button to autolayout
-        $('div#modelView').append('<br/><button type="button" id=btnAutoLayout>Auto-Layout</button>');
-        $('button#btnAutoLayout').click(function() {
-            for (var prop in nodes) {
-                nodes[prop].fixed = false;
-                force.resume();
-            }
-            console.log('inside auto-layout button');
+        createButton({
+            buttonType: "autoLayout",
+            domLocation: "div#modelView"
         });
+
         // Button to turn off force
-        $('div#modelView').append('<br/><button type="button" id=btnForce>Turn Off Auto-Layout</button>');
-        $('button#btnForce').click(function() {
-            for (var prop in nodes) {
-                nodes[prop].fixed = true;
-                force.resume();
-            }
-            console.log('inside force button');
+        createButton({
+            buttonType: "forceSwitch",
+            domLocation: "div#modelView"
         });
 
-
-        $('div#modelView').append('<br/><button type="button" id=btnSimulate>Simulate</button>')
+        // Button to run simulation
+        createButton({
+            buttonType: "simulate",
+            domLocation: "div#modelView",
+            clickFcn: printGraph,
+        });
 
         printGraph();
-
-        $('button#btnSimulate').click(function() {
-            printGraph();
-        });
-
-
-
-
 
     });
 
@@ -345,9 +347,9 @@ $(document).ready(function() {
             }
         }
     });
-    
+
     // Building reaction dialog form
-    
+
     $("#dialog-form-reaction").dialog({
         autoOpen: false,
         open: function(event, ui) {
@@ -410,7 +412,7 @@ $(document).ready(function() {
         selectedNode = d;
         if (isReaction(d.name)) { // selected a reaction node
             $("#dialog-form-reaction").dialog("open");
-            
+
             $("input.reactionParam[name=id]").val(d.name);
             $(d.kineticLaw).find("ci").each(function(index, item) {
                 var str = $.trim(item.textContent);
@@ -483,7 +485,7 @@ $(document).ready(function() {
             }
         }
 
-        
+
         // finding infix
 
         var listOfReactionInfix = []
