@@ -401,7 +401,7 @@ $(document).ready(function() {
     
     function svgClick(d) {
         selectedNode = d;
-        var parameters = sbmlModel.getParameters();
+        var parameters = sbmlModel.parameters;
         if (isReaction(d.name)) { // selected a reaction node
             $("#dialog-form-reaction").dialog("open");
             $("#dialog-form-reaction").children("form").children("fieldset").children().remove();
@@ -409,21 +409,21 @@ $(document).ready(function() {
             $("input.reactionParam[name=id]").val(d.name);
             $(d.kineticLaw).find("ci").each(function(index, item) {
                 var str = $.trim(item.textContent);
-                if (parameters[str]) {
+                if (sbmlModel.parameters[str]) {
                     var htmlStr = "<label for=" + str + ">" + str + "</label>" + '<input type="text" class=reactionParam name=' + str + " />" + '<div id=' + str + 'Slider></div>';
                     $("#dialog-form-reaction").children("form").children("fieldset").append(htmlStr);
                     $("input.reactionParam[name=" + str + "]").val(parameters[str]);
                     $("div#" + str + "Slider").slider({
-                        min: parameters[str] / 10,
-                        max: parameters[str] * 10,
+                        min: sbmlModel.parameters[str] / 10,
+                        max: sbmlModel.parameters[str] * 10,
                         slide: function(event, ui) {
-                            $("input.reactionParam[name=" + str + "]").val(parameters[str]);
+                            sbmlModel.updateParameter(str, $("div#" + str + "Slider").slider("option", "value"));
+                            $("input.reactionParam[name=" + str + "]").val(sbmlModel.parameters[str]);
                             updateGraph();
                         }
                     });
-                    $("div#" + str + "Slider").slider('option', 'step', parameters[str] / 10);
-                    $("div#" + str + "Slider").slider('option', 'value', parameters[str]);
-
+                    $("div#" + str + "Slider").slider('option', 'step', sbmlModel.parameters[str] / 10);
+                    $("div#" + str + "Slider").slider('option', 'value', sbmlModel.parameters[str]);
                 }
             });
         }
@@ -447,11 +447,11 @@ $(document).ready(function() {
 
         //var parameters = sbmlModel.getParameters();
 
-        var listOfSpecies = sbmlModel.getSpecies();
+        var listOfSpecies = sbmlModel.listOfSpecies;
         // calculate stoichiometry matrix
-        var stoichiometryMatrix = sbmlModel.getStoichiometry();
+        var stoichiometryMatrix = sbmlModel.stoichiometry;
         // finding infix        
-        var listOfReactionInfix = sbmlModel.getListOfReactionInfix({nodes: nodes});
+        var listOfReactionInfix = sbmlModel.listOfReactionInfix;
 
         var f = function(t, x) {
             var odeString = '';
@@ -593,13 +593,11 @@ $(document).ready(function() {
 
     function updateGraph() {
 
-        var listOfSpecies = sbmlModel.getSpecies();
+        var listOfSpecies = sbmlModel.listOfSpecies;
         // calculate stoichiometry matrix
-        var stoichiometryMatrix = sbmlModel.getStoichiometry();
+        var stoichiometryMatrix = sbmlModel.stoichiometry;
         // finding infix        
-        var listOfReactionInfix = sbmlModel.getListOfReactionInfix({
-            nodes: nodes
-        });
+        var listOfReactionInfix = sbmlModel.listOfReactionInfix;
     
 
         var f = function(t, x) {

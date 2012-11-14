@@ -8,6 +8,22 @@ function SbmlParser($sbmlDoc) {
     this.listOfReactionInfix = this.getListOfReactionInfix();
 }
 
+// updates parameters and propogates changes to other model properties
+SbmlParser.prototype.updateParameters = function(parameters) {
+    this.parameters = parameters;
+    this.listOfSpecies = this.getSpecies();
+    this.stoichiometry = this.getStoichiometry();
+    this.listOfReactionInfix = this.getListOfReactionInfix();
+};
+
+// updates single parameter and propogates changes to other model properties
+SbmlParser.prototype.updateParameter = function(param, value) {
+    this.parameters[param] = value;
+    this.listOfSpecies = this.getSpecies();
+    this.stoichiometry = this.getStoichiometry();
+    this.listOfReactionInfix = this.getListOfReactionInfix();
+};
+
 // finds parameters and compartments in model
 SbmlParser.prototype.getParameters = function() {
     var parameters = {};
