@@ -1,0 +1,11 @@
+{
+  "name": "libsbmljs",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": ""
+  },
+  "dependencies": {
+    "libclang": "0.0.4"
+  }
+}
