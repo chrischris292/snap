@@ -9,7 +9,7 @@ exports.index = function(req, res) {
     
     
 //    res.send("index.html")
-    var filename = './index.html';
+    var filename = __dirname + '/../public/index.html';
     fs.readFile(filename, 'utf8', function(err, text) {
         res.send(text);
         if (err) {

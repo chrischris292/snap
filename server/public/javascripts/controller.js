@@ -12,11 +12,11 @@ $(document).ready(function() {
 
     var listOfSpecies, parameters;
 
-    $.get('./00011-sbml-l2v4.xml', function(data) {
+    $.get('./models/00011-sbml-l2v4.xml', function(data) {
         simpleModel = (new XMLSerializer()).serializeToString(data);
     });
 
-    $.get('./Jana_WolfGlycolysis.xml', function(data) {
+    $.get('./models/Jana_WolfGlycolysis.xml', function(data) {
         glycolysisModel = (new XMLSerializer()).serializeToString(data);
     });
 
