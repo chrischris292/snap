@@ -208,7 +208,17 @@ $(document).ready(function() {
             domLocation: "div#modelView",
             clickFcn: printGraph,
         });
-
+        
+        // Button to export sbml
+        createButton({
+            buttonType: "exportSbml",
+            domLocation: "div#modelView",
+            clickFcn: function() {
+                window.alert((new XMLSerializer()).serializeToString($sbmlDoc[0]));
+            }
+        });
+        
+        
         printGraph();
 
     });
@@ -290,6 +300,7 @@ $(document).ready(function() {
                 slide: function(event, ui) {
                     selectedInitialAmount.val($('#initialAmountSlider').slider('option', 'value'));
                     selectedNode.initialAmount = selectedInitialAmount.val();
+                    sbmlModel.updateSpecies(selectedNode.name,"initialAmount", selectedInitialAmount.val());
                     updateGraph();
                 }
             });

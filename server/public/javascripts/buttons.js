@@ -55,7 +55,14 @@ function createButton(input) {
             input.clickFcn();
         });
         break;
-
+        
+    case "exportSbml":
+        $(input.domLocation).append('<br/><button type="button" id=btnExportSbml>Export SBML</button>')
+        $('button#btnExportSbml').click(function() {
+            input.clickFcn();
+        });
+        break;
+        
     default:
         console.log("Undefined buttonType")
         alert("Undefined buttonType used!")

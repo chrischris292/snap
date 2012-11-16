@@ -2,24 +2,41 @@
 
 function SbmlParser($sbmlDoc) {
     this.$sbmlDoc = $sbmlDoc;
-    this.parameters = this.getParameters();
-    this.listOfSpecies = this.getSpecies();
-    this.stoichiometry = this.getStoichiometry();
-    this.listOfReactionInfix = this.getListOfReactionInfix();
+    this.update();
 }
 
 // updates parameters and propogates changes to other model properties
+SbmlParser.prototype.updateParameter = function(id, value) {
+    
+    if ( this.$sbmlDoc.find('parameter#' + id).length === 1) {
+        this.$sbmlDoc.find('parameter#' + id)[0].setAttribute('value',value);
+    } else if (this.$sbmlDoc.find('compartment#' + id).length === 1) {
+        this.$sbmlDoc.find('compartment#' + id)[0].setAttribute('size',value);
+    }
+    this.update();
+};
+
+// updates parameters and propogates changes to other model properties
 SbmlParser.prototype.updateParameters = function(parameters) {
-    this.parameters = parameters;
-    this.listOfSpecies = this.getSpecies();
-    this.stoichiometry = this.getStoichiometry();
-    this.listOfReactionInfix = this.getListOfReactionInfix();
+    for (var i = 0; i < this.$sbmlDoc.find('parameter').length; i++) { // from parameters
+        this.$sbmlDoc.find('parameter')[i].setAttribute('value', parameters[this.$sbmlDoc.find('parameter')[i].getAttribute('id')] );
+    }
+    for (i = 0; i < this.$sbmlDoc.find('compartment').length; i++) { // from compartments
+        this.$sbmlDoc.find('compartment')[i].setAttribute('size', parameters[this.$sbmlDoc.find('compartment')[i].getAttribute('id')] );
+    }
+    this.update();
 };
 
 // updates single parameter and propogates changes to other model properties
-SbmlParser.prototype.updateParameter = function(param, value) {
-    this.parameters[param] = value;
-    this.listOfSpecies = this.getSpecies();
+SbmlParser.prototype.updateSpecies = function(id, attribute, value) {
+    this.$sbmlDoc.find('species#' + id)[0].setAttribute(attribute, value);
+    this.update();
+};
+
+// updates propogates changes to other model properties
+SbmlParser.prototype.update = function() {
+    this.parameters = this.getParameters();
+    this.listOfSpecies = this.getListOfSpecies();
     this.stoichiometry = this.getStoichiometry();
     this.listOfReactionInfix = this.getListOfReactionInfix();
 };
@@ -37,7 +54,7 @@ SbmlParser.prototype.getParameters = function() {
 };
 
 // returns list of species in model
-SbmlParser.prototype.getSpecies = function() {
+SbmlParser.prototype.getListOfSpecies = function() {
     var listOfSpecies = [];
     for (var i = 0; i < this.$sbmlDoc.find('species').length; i++) {
         listOfSpecies[i] = this.$sbmlDoc.find('species')[i].getAttribute('id');
