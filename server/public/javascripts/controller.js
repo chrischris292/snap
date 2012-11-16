@@ -10,8 +10,6 @@ $(document).ready(function() {
     var selectedNode;
     var svg;
 
-    var listOfSpecies, parameters;
-
     $.get('./models/00011-sbml-l2v4.xml', function(data) {
         simpleModel = (new XMLSerializer()).serializeToString(data);
     });
@@ -26,7 +24,21 @@ $(document).ready(function() {
 
     $("textarea").val(simpleModel);
 
-    //$("#helpText").hide();
+
+    var caseModel;
+    $("button#btnLoadGlycolysis").after("<button id = loadCaseNumber>Load Case Number</button>");
+    $("button#btnLoadGlycolysis").after("<br/>CaseNumber: <input id=casenum type=text><br>");
+    $("button#loadCaseNumber").click(function() {
+        var caseNumber = $("input#casenum").val();
+        while (caseNumber.toString().length < 5) {
+            caseNumber = "0" + caseNumber;
+        }
+
+        $.get('./models/cases/semantic/' + caseNumber + '/' + caseNumber + '-sbml-l2v4.xml', function(model) {
+            caseModel = (new XMLSerializer()).serializeToString(model);
+        });
+        $("textarea").val(caseModel);
+    });
 
     $("button#btnLoadSimple").click(function() {
         $("textarea").val(simpleModel);
@@ -53,7 +65,7 @@ $(document).ready(function() {
         sbmlDoc = $.parseXML(str);
         $sbmlDoc = $(sbmlDoc);
         sbmlModel = new SbmlParser($sbmlDoc);
-        
+
 
         // generating nodes from listOfSpecies
         $sbmlDoc.find("species").each(function(n) {
@@ -176,7 +188,7 @@ $(document).ready(function() {
                 return d.name;
             }
         });
-        
+
         createButton({
             buttonType: "lockDrag",
             domLocation: "div#modelView",
@@ -208,7 +220,7 @@ $(document).ready(function() {
             domLocation: "div#modelView",
             clickFcn: printGraph,
         });
-        
+
         // Button to export sbml
         createButton({
             buttonType: "exportSbml",
@@ -217,8 +229,8 @@ $(document).ready(function() {
                 window.alert((new XMLSerializer()).serializeToString($sbmlDoc[0]));
             }
         });
-        
-        
+
+
         printGraph();
 
     });
@@ -300,7 +312,7 @@ $(document).ready(function() {
                 slide: function(event, ui) {
                     selectedInitialAmount.val($('#initialAmountSlider').slider('option', 'value'));
                     selectedNode.initialAmount = selectedInitialAmount.val();
-                    sbmlModel.updateSpecies(selectedNode.name,"initialAmount", selectedInitialAmount.val());
+                    sbmlModel.updateSpecies(selectedNode.name, "initialAmount", selectedInitialAmount.val());
                     updateGraph();
                 }
             });
@@ -409,7 +421,7 @@ $(document).ready(function() {
     });
 
     // Open dialog box on click.
-    
+
     function svgClick(d) {
         selectedNode = d;
         var parameters = sbmlModel.parameters;
@@ -609,7 +621,7 @@ $(document).ready(function() {
         var stoichiometryMatrix = sbmlModel.stoichiometry;
         // finding infix        
         var listOfReactionInfix = sbmlModel.listOfReactionInfix;
-    
+
 
         var f = function(t, x) {
             var odeString = '';
