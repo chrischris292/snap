@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+ 
+ <title>sbml-node</title>
+ <link href="http://stanley-gu.github.com/sbmlNodes/atom.xml" rel="self"/>
+ <link href="http://stanley-gu.github.com/sbmlNodes"/>
+ <updated>2012-11-28T17:18:24-08:00</updated>
+ <id>http://stanley-gu.github.com/sbmlNodes</id>
+ <author>
+   <name>Stanley Gu</name>
+   <email>stanleygu@gmail.com</email>
+ </author>
+
+ 
+ 
+</feed>
