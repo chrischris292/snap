@@ -79,7 +79,7 @@ JB :
   comments :
     provider : disqus
     disqus :
-      short_name : jekyllbootstrap
+      short_name : node-sbml
     livefyre :
       site_id : 123
     intensedebate :
