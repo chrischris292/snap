@@ -6,3 +6,5 @@ http://stanley-gu.github.com/sbmlNodes/index.html
 http://stanley-gu.github.com/sbmlNodes/pages.html
 http://stanley-gu.github.com/sbmlNodes/sitemap.txt
 http://stanley-gu.github.com/sbmlNodes/tags.html
+
+http://stanley-gu.github.com/sbmlNodes/news/2012/11/29/first-post
