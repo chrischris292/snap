@@ -1,4 +1,4 @@
-/*global $:false d3:false numeric:false createButton:false SbmlParser:false Menu:false */
+/*global $:false d3:false numeric:false createButton:false SbmlParser:false Menu:false Dialog:false*/
 
 mainMenu();
 

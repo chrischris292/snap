@@ -19,6 +19,8 @@ Dialog.prototype.createLoadSbml = function() {
 
     var $inputModelText = $(document.createElement('textarea')).attr('rows', 10).attr('cols', 30).attr('id', 'inputModel');
     $inputModelText.appendTo($loadSbmlView);
+    // Adding line break
+    $(document.createElement('br')).appendTo($loadSbmlView);
     var $button = $(document.createElement('button')).attr('id', 'loadModel').text('Import Model').appendTo($loadSbmlView);
 
     $(document.createElement('p')).text('OR enter SBML Test Case Model Number Below:').appendTo($loadSbmlView);
@@ -38,7 +40,7 @@ Dialog.prototype.createLoadSbml = function() {
     });
     $caseInput.appendTo($loadSbmlView);
     $loadCaseNumberButton.appendTo($loadSbmlView);
-    $loadSbmlView.dialog();
+    $loadSbmlView.dialog({width: 'auto'});
     return {
         $inputModelText: $inputModelText,
         $button: $button
@@ -175,7 +177,10 @@ Dialog.prototype.createModelView = function($sbmlDoc) {
             return d.name;
         }
     });
-    modelView.dialog();
+    modelView.dialog({
+        width: 'auto',
+        title: 'Model View'
+        });
     
         // Use elliptical arc path segments to doubly-encode directionality.
     function tick() {
