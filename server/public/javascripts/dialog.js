@@ -1,11 +1,10 @@
-/*global $:false createButton:false SbmlParser:false Dialog:false */
+/*global $:false createButton:false SbmlParser:false Dialog:false d3:false state:false*/
 
 // builds dialog boxes
 
 function Dialog(domLocation) {
     this.location = $(domLocation);
 }
-
 
 Dialog.prototype.createLoadSbml = function() {
     var $loadSbmlView = $(document.createElement('div')).attr({
@@ -40,7 +39,9 @@ Dialog.prototype.createLoadSbml = function() {
     });
     $caseInput.appendTo($loadSbmlView);
     $loadCaseNumberButton.appendTo($loadSbmlView);
-    $loadSbmlView.dialog({width: 'auto'});
+    $loadSbmlView.dialog({
+        width: 'auto'
+    });
     return {
         $inputModelText: $inputModelText,
         $button: $button
@@ -49,11 +50,11 @@ Dialog.prototype.createLoadSbml = function() {
 
 Dialog.prototype.createModelView = function($sbmlDoc) {
     var sbmlModel = new SbmlParser($sbmlDoc);
-    
+
     var force;
     var links = [];
     var nodes = {};
-    
+
     // generating nodes from listOfSpecies
     $sbmlDoc.find("species").each(function(n) {
         nodes[this.getAttribute('id')] = {
@@ -122,8 +123,8 @@ Dialog.prototype.createModelView = function($sbmlDoc) {
         h = 400;
 
     force = d3.layout.force().nodes(d3.values(nodes)).links(links).size([w, h]).linkDistance(60).linkStrength(1).charge(-300).on("tick", tick).start();
-    
-    var modelView = $(document.createElement('div')).attr('id','modelView');
+
+    var modelView = $(document.createElement('div')).attr('id', 'modelView');
     modelView.appendTo('body');
     var svg = d3.select('div#modelView').append("svg:svg").attr("width", w).attr("height", h).attr("id", "modelGraph");
     // Making a border around SVG drawing area
@@ -180,9 +181,9 @@ Dialog.prototype.createModelView = function($sbmlDoc) {
     modelView.dialog({
         width: 'auto',
         title: 'Model View'
-        });
-    
-        // Use elliptical arc path segments to doubly-encode directionality.
+    });
+
+    // Use elliptical arc path segments to doubly-encode directionality.
     function tick() {
         path.attr("d", function(d) {
             var dx = d.target.x - d.source.x,
@@ -199,10 +200,10 @@ Dialog.prototype.createModelView = function($sbmlDoc) {
             return "translate(" + d.x + "," + d.y + ")";
         });
     }
-    
-       // Open dialog box on click.
+
+    // Open dialog box on click.
     function svgClick(d) {
-        selectedNode = d;
+        state.selectedNode = d;
         var parameters = sbmlModel.parameters;
         if (isReaction(d.name)) { // selected a reaction node
             $("#dialog-form-reaction").dialog("open");
@@ -230,26 +231,15 @@ Dialog.prototype.createModelView = function($sbmlDoc) {
             });
         }
         else { // selected a species node
-            $('#selectedId').val(d.name);
-            $('#selectedCompartment').val(d.compartment);
-            $('#selectedInitialAmount').val(d.initialAmount);
-            if (d.boundaryCondition) {
-                $('#selectedBoundaryCondition').attr('checked', 'checked');
-            }
-            else {
-                $('#selectedBoundaryCondition').removeAttr('checked');
-            }
-
-            $("#dialog-form-species").dialog("open");
-
+            (new Dialog("body")).createSpeciesForm(state.selectedNode);
         }
     }
-    
+
     // get node size from the name of the node
     function getNodeSize(node) {
         var NODESIZE = {
-        reaction: 2,
-        species: 8
+            reaction: 2,
+            species: 8
         };
         if (node.type == 'reaction' && node.visible) { //is a reaction node
             return NODESIZE.reaction;
@@ -271,4 +261,50 @@ Dialog.prototype.createModelView = function($sbmlDoc) {
             return false;
         }
     }
+};
+
+Dialog.prototype.createSpeciesForm = function(d) {
+    var $species = state.$sbmlDoc.find('species#' + d.name);
+
+    var $speciesForm = $(document.createElement('div')).attr('title', 'Species Form');
+
+    //ID
+    $speciesForm.$speciesIdCaption = $(document.createElement('p')).text('ID');
+    $speciesForm.append($speciesForm.$speciesIdCaption);
+    $speciesForm.$speciesIdInput = $(document.createElement('input')).val($species.attr('id'));
+    $speciesForm.append($speciesForm.$speciesIdInput);
+
+    //Amount
+    $speciesForm.$amountCaption = $(document.createElement('p')).text('Amount');
+    $speciesForm.append($speciesForm.$amountCaption);
+    $speciesForm.$amountInput = $(document.createElement('input')).val($species.attr('initialAmount'));
+    $speciesForm.append($speciesForm.$amountInput);
+    $speciesForm.$amountSlider = $(document.createElement('div'));
+    $speciesForm.append($speciesForm.$amountSlider);
+
+    $speciesForm.dialog({
+        //autoOpen: false,
+        open: function(event, ui) {
+            $speciesForm.$amountSlider.slider({
+                min: $species.attr('initialAmount') / 10,
+                max: $species.attr('initialAmount') * 10,
+
+                slide: function(event, ui) {
+                    $speciesForm.$amountInput.val($speciesForm.$amountSlider.slider('option', 'value'));
+                    //                    selectedNode.initialAmount = selectedInitialAmount.val();
+                    //                    sbmlModel.updateSpecies(selectedNode.name, "initialAmount", selectedInitialAmount.val());
+                    //                    updateGraph();
+                }
+            });
+            $speciesForm.$amountSlider.slider('option', 'step', $speciesForm.$amountInput.val() / 10);
+            $speciesForm.$amountSlider.slider('option', 'value', parseFloat($speciesForm.$amountInput.val()));
+        }
+    });
+};
+
+Dialog.prototype.createExportSbml = function() {
+    var $exportSbml = $(document.createElement('div')).attr('title','Exported SBML');
+    $exportSbml.append($(document.createElement('textarea')).val( (new XMLSerializer()).serializeToString(state.$sbmlDoc[0]) ).attr('rows',30).attr('cols',30));
+    state.exportedSbml = $(document.createElement('textarea')).val( (new XMLSerializer()).serializeToString(state.$sbmlDoc) );
+    $exportSbml.dialog({width: 'auto'});
 };

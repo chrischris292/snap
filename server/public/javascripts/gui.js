@@ -1,10 +1,11 @@
 /*global $:false d3:false numeric:false createButton:false SbmlParser:false Menu:false Dialog:false*/
 
-mainMenu();
+var state = {}; //container for state variables of the gui
 
-var $sbmlDoc; //container for sbml document
 var dialogMaker = new Dialog("body"); //dialog maker
+mainMenu();
 loadModelDialog(); // dialog to load sbml and opens viewModelDialog
+//dialogMaker.createSpeciesForm(); // creates a form, initially hidden, that shows select species node information
 
 function mainMenu() {
     var domLocation = "body";
@@ -26,7 +27,7 @@ function mainMenu() {
     $(myMenu.$menu, ".ui-menu").css('width', '200px');
     
     $("li#exportSbml").on("click", function(event, ui) {
-        alert("")
+        dialogMaker.createExportSbml();
     });
     $("li#runModel").on("click", function(event, ui) {
         alert("")
@@ -38,12 +39,10 @@ function loadModelDialog() {
     $("li#loadSbml").on("click", function(event, ui) {
         var output = dialogMaker.createLoadSbml();
         output.$button.click(function() {
-            $sbmlDoc = $($.parseXML(output.$inputModelText.val()));
-            viewModelDialog();
+            state.$sbmlDoc = $($.parseXML(output.$inputModelText.val())); //container for sbml document
+            dialogMaker.createModelView(state.$sbmlDoc);
         })
     });
 }
 
-function viewModelDialog() {
-    dialogMaker.createModelView($sbmlDoc);
-}
+
