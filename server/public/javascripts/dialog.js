@@ -1,4 +1,4 @@
-/*global $:false createButton:false SbmlParser:false Dialog:false d3:false state:false*/
+/*global $:false createButton:false SbmlParser:false Dialog:false d3:false state:false Graph*/
 
 // builds dialog boxes
 
@@ -261,6 +261,13 @@ Dialog.prototype.createModelView = function($sbmlDoc) {
             return false;
         }
     }
+    
+    // saving variables to state
+    state.nodes = nodes;
+    state.links = links;
+    state.force = force;
+    state.svg = svg;
+    
 };
 
 Dialog.prototype.createSpeciesForm = function(d) {
@@ -303,8 +310,20 @@ Dialog.prototype.createSpeciesForm = function(d) {
 };
 
 Dialog.prototype.createExportSbml = function() {
-    var $exportSbml = $(document.createElement('div')).attr('title','Exported SBML');
-    $exportSbml.append($(document.createElement('textarea')).val( (new XMLSerializer()).serializeToString(state.$sbmlDoc[0]) ).attr('rows',30).attr('cols',30));
-    state.exportedSbml = $(document.createElement('textarea')).val( (new XMLSerializer()).serializeToString(state.$sbmlDoc) );
-    $exportSbml.dialog({width: 'auto'});
+    var $exportSbml = $(document.createElement('div')).attr('title', 'Exported SBML');
+    $exportSbml.append($(document.createElement('textarea')).val((new XMLSerializer()).serializeToString(state.$sbmlDoc[0])).attr('rows', 30).attr('cols', 30));
+    state.exportedSbml = $(document.createElement('textarea')).val((new XMLSerializer()).serializeToString(state.$sbmlDoc));
+    $exportSbml.dialog({
+        width: 'auto'
+    });
+};
+
+Dialog.prototype.createSimulationOutput = function() {
+    var graph = new Graph();
+    var $plot = graph.simPlot(state.$sbmlDoc);
+    var $simOutput = $(document.createElement('div')).attr('title', 'Simulation Output');
+    $simOutput.append($plot);
+    $simOutput.dialog({
+        width: 'auto'
+    })
 };

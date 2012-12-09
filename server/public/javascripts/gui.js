@@ -30,7 +30,7 @@ function mainMenu() {
         dialogMaker.createExportSbml();
     });
     $("li#runModel").on("click", function(event, ui) {
-        alert("")
+        dialogMaker.createSimulationOutput();
     });
 }
 
