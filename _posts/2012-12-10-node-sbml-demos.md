@@ -8,4 +8,4 @@ tags: [update, news, demos]
 {% include JB/setup %}
 
 I have now added a page that contains live demos of the node-sbml project.
-Check it out [here](./demos).
+Check it out [here](../../../../../demos).
