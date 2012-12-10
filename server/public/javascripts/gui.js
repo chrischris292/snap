@@ -1,11 +1,15 @@
 /*global $:false d3:false numeric:false createButton:false SbmlParser:false Menu:false Dialog:false*/
 
-var state = {}; //container for state variables of the gui
+var state; //container for state variables of the gui
+var dialogMaker;
+init(); //initialize menu
 
-var dialogMaker = new Dialog("body"); //dialog maker
-mainMenu();
-loadModelDialog(); // dialog to load sbml and opens viewModelDialog
-//dialogMaker.createSpeciesForm(); // creates a form, initially hidden, that shows select species node information
+function init() {
+    state = {};
+    dialogMaker = new Dialog("body"); //dialog maker
+    mainMenu();
+    loadModelDialog(); // dialog to load sbml and opens viewModelDialog
+}
 
 function mainMenu() {
     var domLocation = "body";
@@ -35,6 +39,11 @@ function mainMenu() {
     $("li#runModel").on("click", function(event, ui) {
         dialogMaker.createSimulationOutput();
     });
+    $('li#clear').on('click', function(enven, ui){
+        var $old = $("body").children().remove();
+        $old = $();
+        init();
+    })
     
 }
 
