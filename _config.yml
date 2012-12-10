@@ -97,7 +97,7 @@ JB :
   analytics :
     provider : google 
     google : 
-        tracking_id : 'UA-36956904-1'
+        tracking_id : 'UA-36956904-2'
     getclicky :
       site_id : 
     mixpanel :
