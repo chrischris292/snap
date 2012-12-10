@@ -31,7 +31,7 @@ Dialog.prototype.createLoadSbml = function() {
         while (caseNumber.toString().length < 5) {
             caseNumber = "0" + caseNumber;
         }
-        $.get('../models/cases/semantic/' + caseNumber + '/' + caseNumber + '-sbml-l2v4.xml', function(model) {
+        $.get('./models/cases/semantic/' + caseNumber + '/' + caseNumber + '-sbml-l2v4.xml', function(model) {
             caseModel = (new XMLSerializer()).serializeToString(model);
             $inputModelText.val(caseModel);
 
