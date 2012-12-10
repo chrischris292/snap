@@ -206,29 +206,30 @@ Dialog.prototype.createModelView = function($sbmlDoc) {
         state.selectedNode = d;
         var parameters = sbmlModel.parameters;
         if (isReaction(d.name)) { // selected a reaction node
-            $("#dialog-form-reaction").dialog("open");
-            $("#dialog-form-reaction").children("form").children("fieldset").children().remove();
-            $("#dialog-form-reaction").children("form").children("fieldset").append('<label for="id">ID</label><input type="text" name="id" id="selectedReactionId" class="reactionParam"/>');
-            $("input.reactionParam[name=id]").val(d.name);
-            $(d.kineticLaw).find("ci").each(function(index, item) {
-                var str = $.trim(item.textContent);
-                if (sbmlModel.parameters[str]) {
-                    var htmlStr = "<label for=" + str + ">" + str + "</label>" + '<input type="text" class=reactionParam name=' + str + " />" + '<div id=' + str + 'Slider></div>';
-                    $("#dialog-form-reaction").children("form").children("fieldset").append(htmlStr);
-                    $("input.reactionParam[name=" + str + "]").val(parameters[str]);
-                    $("div#" + str + "Slider").slider({
-                        min: sbmlModel.parameters[str] / 10,
-                        max: sbmlModel.parameters[str] * 10,
-                        slide: function(event, ui) {
-                            sbmlModel.updateParameter(str, $("div#" + str + "Slider").slider("option", "value"));
-                            $("input.reactionParam[name=" + str + "]").val(sbmlModel.parameters[str]);
-                            updateGraph();
-                        }
-                    });
-                    $("div#" + str + "Slider").slider('option', 'step', sbmlModel.parameters[str] / 10);
-                    $("div#" + str + "Slider").slider('option', 'value', sbmlModel.parameters[str]);
-                }
-            });
+            (new Dialog('body')).createReactionForm(state.selectedNode);
+//            $("#dialog-form-reaction").dialog("open");
+//            $("#dialog-form-reaction").children("form").children("fieldset").children().remove();
+//            $("#dialog-form-reaction").children("form").children("fieldset").append('<label for="id">ID</label><input type="text" name="id" id="selectedReactionId" class="reactionParam"/>');
+//            $("input.reactionParam[name=id]").val(d.name);
+//            $(d.kineticLaw).find("ci").each(function(index, item) {
+//                var str = $.trim(item.textContent);
+//                if (sbmlModel.parameters[str]) {
+//                    var htmlStr = "<label for=" + str + ">" + str + "</label>" + '<input type="text" class=reactionParam name=' + str + " />" + '<div id=' + str + 'Slider></div>';
+//                    $("#dialog-form-reaction").children("form").children("fieldset").append(htmlStr);
+//                    $("input.reactionParam[name=" + str + "]").val(parameters[str]);
+//                    $("div#" + str + "Slider").slider({
+//                        min: sbmlModel.parameters[str] / 10,
+//                        max: sbmlModel.parameters[str] * 10,
+//                        slide: function(event, ui) {
+//                            sbmlModel.updateParameter(str, $("div#" + str + "Slider").slider("option", "value"));
+//                            $("input.reactionParam[name=" + str + "]").val(sbmlModel.parameters[str]);
+//                            updateGraph();
+//                        }
+//                    });
+//                    $("div#" + str + "Slider").slider('option', 'step', sbmlModel.parameters[str] / 10);
+//                    $("div#" + str + "Slider").slider('option', 'value', sbmlModel.parameters[str]);
+//                }
+//            });
         }
         else { // selected a species node
             (new Dialog("body")).createSpeciesForm(state.selectedNode);
@@ -261,13 +262,13 @@ Dialog.prototype.createModelView = function($sbmlDoc) {
             return false;
         }
     }
-    
+
     // saving variables to state
     state.nodes = nodes;
     state.links = links;
     state.force = force;
     state.svg = svg;
-    
+
 };
 
 Dialog.prototype.createSpeciesForm = function(d) {
@@ -302,7 +303,7 @@ Dialog.prototype.createSpeciesForm = function(d) {
                     // saving initial condition in model to state
                     model.updateSpecies($species.attr('id'), 'initialAmount', sliderVal);
                     state.$sbmlDoc = model.$sbmlDoc;
-                    (new Dialog()).updateSimulationOutput(state.$plot,state.$sbmlDoc);
+                    (new Dialog()).updateSimulationOutput(state.$plot, state.$sbmlDoc);
                     //                    selectedNode.initialAmount = selectedInitialAmount.val();
                     //                    sbmlModel.updateSpecies(selectedNode.name, "initialAmount", selectedInitialAmount.val());
                     //                    updateGraph();
@@ -311,6 +312,59 @@ Dialog.prototype.createSpeciesForm = function(d) {
             $speciesForm.$amountSlider.slider('option', 'step', $speciesForm.$amountInput.val() / 10);
             $speciesForm.$amountSlider.slider('option', 'value', parseFloat($speciesForm.$amountInput.val()));
         }
+    });
+};
+
+Dialog.prototype.createReactionForm = function(d) {
+    var model = new SbmlParser(state.$sbmlDoc);
+    var $reaction = state.$sbmlDoc.find('reaction#' + d.name);
+
+    var $reactionForm = $(document.createElement('div')).attr('title', 'Reaction Form');
+
+    //ID
+    $reactionForm.$speciesIdCaption = $(document.createElement('p')).text('ID');
+    $reactionForm.append($reactionForm.$reactionIdCaption);
+    $reactionForm.$reactionIdInput = $(document.createElement('input')).val($reaction.attr('id'));
+    $reactionForm.append($reactionForm.$reactionIdInput);
+
+    //Parameters
+    $reaction.find('ci').each(function(index, item) {
+        var name = $.trim(item.textContent);
+        $reactionForm.$paramName = [];
+        $reactionForm.$paramValue = [];
+        $reactionForm.$paramSlider = [];
+        if (model.parameters[name]) {
+            $reactionForm.append($(document.createElement('p')).text('Parameter'));
+            // add each parameter for the reaction in a jquery array
+            $paramName = $(document.createElement('input')).val(name).appendTo($reactionForm);
+            $paramValue = $(document.createElement('input')).val(model.parameters[name]).appendTo($reactionForm);
+            $paramSlider = $(document.createElement('div')).appendTo($reactionForm);
+
+            // storing elements into array within $reactionForm
+            $reactionForm.$paramName.push($paramName);
+            $reactionForm.$paramValue.push($paramValue);
+            $reactionForm.$paramSlider.push($paramSlider);
+
+            // setting up slider
+            $paramSlider.slider({
+                min: model.parameters[name] / 10,
+                max: model.parameters[name] * 10,
+                step: model.parameters[name] / 10,
+                value: model.parameters[name],
+                slide: function(event, ui) {
+                    var sliderVal = $paramSlider.slider('option', 'value');
+                    $paramValue.val(sliderVal);
+                    // saving initial condition in model to state
+                    model.updateParameter(name, sliderVal);
+                    state.$sbmlDoc = model.$sbmlDoc;
+                    (new Dialog()).updateSimulationOutput(state.$plot, state.$sbmlDoc);
+                }
+            });
+        }
+    });
+
+    $reactionForm.dialog({
+        width: 'auto'
     });
 };
 
@@ -334,6 +388,6 @@ Dialog.prototype.createSimulationOutput = function() {
     return state.$plot;
 };
 
-Dialog.prototype.updateSimulationOutput = function($plot,$sbmlDoc) {
-    state.graph.updateSimPlot($plot,$sbmlDoc);
+Dialog.prototype.updateSimulationOutput = function($plot, $sbmlDoc) {
+    state.graph.updateSimPlot($plot, $sbmlDoc);
 };

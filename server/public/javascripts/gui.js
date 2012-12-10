@@ -21,21 +21,25 @@ function mainMenu() {
         }]
     }, {
         "id": "runModel",
-        "text": "Run Model"
+        "text": "Simulate"
+    }, {
+        'id': 'clear',
+        'text': 'Close All'
     }];
     var myMenu = new Menu(domLocation, menuStruct);
     $(myMenu.$menu, ".ui-menu").css('width', '200px');
-    
+
     $("li#exportSbml").on("click", function(event, ui) {
         dialogMaker.createExportSbml();
     });
     $("li#runModel").on("click", function(event, ui) {
         dialogMaker.createSimulationOutput();
     });
+    
 }
 
 function loadModelDialog() {
-// add click functionality
+    // add click functionality
     $("li#loadSbml").on("click", function(event, ui) {
         var output = dialogMaker.createLoadSbml();
         output.$button.click(function() {
@@ -44,5 +48,3 @@ function loadModelDialog() {
         })
     });
 }
-
-
