@@ -292,12 +292,17 @@ Dialog.prototype.createSpeciesForm = function(d) {
     $speciesForm.dialog({
         //autoOpen: false,
         open: function(event, ui) {
+            var model = new SbmlParser(state.$sbmlDoc);
             $speciesForm.$amountSlider.slider({
                 min: $species.attr('initialAmount') / 10,
                 max: $species.attr('initialAmount') * 10,
-
                 slide: function(event, ui) {
-                    $speciesForm.$amountInput.val($speciesForm.$amountSlider.slider('option', 'value'));
+                    var sliderVal = $speciesForm.$amountSlider.slider('option', 'value');
+                    $speciesForm.$amountInput.val(sliderVal);
+                    // saving initial condition in model to state
+                    model.updateSpecies($species.attr('id'), 'initialAmount', sliderVal);
+                    state.$sbmlDoc = model.$sbmlDoc;
+                    (new Dialog()).updateSimulationOutput(state.$plot,state.$sbmlDoc);
                     //                    selectedNode.initialAmount = selectedInitialAmount.val();
                     //                    sbmlModel.updateSpecies(selectedNode.name, "initialAmount", selectedInitialAmount.val());
                     //                    updateGraph();
@@ -319,11 +324,16 @@ Dialog.prototype.createExportSbml = function() {
 };
 
 Dialog.prototype.createSimulationOutput = function() {
-    var graph = new Graph();
-    var $plot = graph.simPlot(state.$sbmlDoc);
+    state.graph = new Graph();
+    state.$plot = state.graph.simPlot(state.$sbmlDoc);
     var $simOutput = $(document.createElement('div')).attr('title', 'Simulation Output');
-    $simOutput.append($plot);
+    $simOutput.append(state.$plot);
     $simOutput.dialog({
         width: 'auto'
-    })
+    });
+    return state.$plot;
+};
+
+Dialog.prototype.updateSimulationOutput = function($plot,$sbmlDoc) {
+    state.graph.updateSimPlot($plot,$sbmlDoc);
 };

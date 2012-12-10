@@ -2,12 +2,13 @@
 
 // simulation.js: functions for simulating models using numeric.js
 
-function Sim() {
-}
+function Sim() {}
 
 Sim.prototype.simulate = function($sbmlDoc) {
     var sbmlModel = new SbmlParser($sbmlDoc);
     var listOfSpecies = sbmlModel.listOfSpecies;
+
+    var species = state.$sbmlDoc.find('species');
     // calculate stoichiometry matrix
     var stoichiometryMatrix = sbmlModel.stoichiometry;
     // finding infix        
@@ -15,36 +16,29 @@ Sim.prototype.simulate = function($sbmlDoc) {
 
     var f = function(t, x) {
         var odeString = '';
-
-        var numSpecies = listOfSpecies.length;
         var count = 0;
-        for (var prop in state.nodes) {
-            if (state.nodes[prop].type == 'species') {
-                count += 1;
-                var speciesInd = listOfSpecies.indexOf(prop);
-                for (var i = 0; i < listOfReactionInfix.length; i++) {
-                    var stoich = stoichiometryMatrix[speciesInd][i];
-                    odeString += stoich + ' * (' + listOfReactionInfix[i] + ')';
-                    if (i < listOfReactionInfix.length - 1) {
-                        odeString += ' + ';
-                    }
-                }
-                if (count < numSpecies) {
-                    odeString += ' , ';
+        for (var i = 0; i < species.length; i++) {
+            count += 1;
+            for (var j = 0; j < listOfReactionInfix.length; j++) {
+                var stoich = stoichiometryMatrix[i][j];
+                odeString += stoich + ' * (' + listOfReactionInfix[j] + ')';
+                if (j < listOfReactionInfix.length - 1) {
+                    odeString += ' + ';
                 }
             }
+            if (count < species.length) {
+                odeString += ' , ';
+            }
         }
-
         return eval(odeString);
 
     };
 
     var initialConditions = [];
     for (var i = 0; i < listOfSpecies.length; i++) {
-        initialConditions.push(parseFloat(state.nodes[listOfSpecies[i]].initialAmount));
+        initialConditions.push(parseFloat($(species[i]).attr('initialAmount')));
     }
 
-    //            var sol = numeric.dopri(0, 50, [.001, .002, .001], f, 1e-6, 2000);
     var sol = numeric.dopri(0, 50, initialConditions, f, 1e-6, 2000);
 
     var time = sol.x;
