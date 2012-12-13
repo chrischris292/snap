@@ -27,7 +27,7 @@ SbmlParser.prototype.updateParameters = function(parameters) {
     this.update();
 };
 
-// updates single parameter and propogates changes to other model properties
+// updates single species and propogates changes to other model properties
 SbmlParser.prototype.updateSpecies = function(id, attribute, value) {
     this.$sbmlDoc.find('species#' + id)[0].setAttribute(attribute, value);
     this.update();
