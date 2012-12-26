@@ -16,7 +16,17 @@ Dialog.prototype.createLoadSbml = function() {
     $helpText.appendTo($loadSbmlView);
 
 
-    var $inputModelText = $(document.createElement('textarea')).attr('rows', 10).attr('cols', 30).attr('id', 'inputModel');
+//    var $inputModelText = $(document.createElement('textarea')).attr('rows', 10).attr('cols', 30).attr('id', 'inputModel');
+    
+    var $inputModelText = $(document.createElement('div'));
+    $inputModelText.height('200px');
+    $inputModelText.width('400px');
+    var editor = ace.edit($inputModelText[0]);
+    editor.getSession().setMode("ace/mode/xml");
+    
+    
+    
+    
     $inputModelText.appendTo($loadSbmlView);
     // Adding line break
     $(document.createElement('br')).appendTo($loadSbmlView);
@@ -33,8 +43,8 @@ Dialog.prototype.createLoadSbml = function() {
         }
         $.get('../models/cases/semantic/' + caseNumber + '/' + caseNumber + '-sbml-l2v4.xml', function(model) {
             caseModel = (new XMLSerializer()).serializeToString(model);
-            $inputModelText.val(caseModel);
-
+            //$inputModelText.val(caseModel);
+            editor.setValue(caseModel);
         });
     });
     $caseInput.appendTo($loadSbmlView);
@@ -370,10 +380,21 @@ Dialog.prototype.createReactionForm = function(d) {
 
 Dialog.prototype.createExportSbml = function() {
     var $exportSbml = $(document.createElement('div')).attr('title', 'Exported SBML');
-    $exportSbml.append($(document.createElement('textarea')).val((new XMLSerializer()).serializeToString(state.$sbmlDoc[0])).attr('rows', 30).attr('cols', 30));
+    //$exportSbml.append($(document.createElement('textarea')).val((new XMLSerializer()).serializeToString(state.$sbmlDoc[0])).attr('rows', 30).attr('cols', 30));
+    
+    
+    $exportSbml.text((new XMLSerializer()).serializeToString(state.$sbmlDoc[0]));
+    
+    
+    var editor = ace.edit($exportSbml[0]);
+    editor.setTheme("ace/theme/monokai");
+    editor.getSession().setMode("ace/mode/xml");
+    
     state.exportedSbml = $(document.createElement('textarea')).val((new XMLSerializer()).serializeToString(state.$sbmlDoc));
     $exportSbml.dialog({
-        width: 'auto'
+        width: 'auto',
+        open: function( event, ui ) { editor.resize() },
+        resize: function( event, ui ) { editor.resize() }
     });
 };
 
