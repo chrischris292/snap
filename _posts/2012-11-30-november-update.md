@@ -7,37 +7,58 @@ tags: [update, progress, report]
 ---
 {% include JB/setup %}
 
+Introduction
+============
 
-Introduction 
-------------
+Mathematical models of biological networks (bio-models) are important
+biomedical research tools. The design, development, and curation of
+these models may involve collaborations between a large number of
+scientists within a research team or amongst the bio-modeling community
+at large. However, no current tool provides the means to instantly share
+and publish interactive models on the web.
 
-[`Bio.js`](http://stanley-gu.github.com/sbmlNodes/) is an SBML model viewer, editor, and simulator that is written in JavaScript and can run entirely within a web browser. 
+To meet this need, [`snap`](http://stanley-gu.github.com/sbmlNodes/)
+(SBML Network Ajax Publisher) is an SBML model viewer, editor, and
+simulator that is written in JavaScript and can run entirely within a
+web browser.
 
-### Why is `bio.js` useful? ###
-*  __A no-install and always-updated, modeling platform.__ The end user will never have to install any software
-*  __Quickly view and interact with published models.__ Mathematical models in scientific publications are often difficult to reproduce exactly, even if the underlying SBML is included with the publication. `Bio.js` will allow a publication to directly link to a live and interactive version of their model.
-*  __Always have models available on any computer.__ Models can be stored and edited online, with version control of the model development done through `git`, like Google Docs for bio-models.
-*  __Collaborate with other modelers.__ Multiple users can work on building the same model and sharing experimental data. 
+What is `snap` composed of?
+---------------------------
 
-Updates
--------
-*  [Version 0.1](http://stanley-gu.github.com/sbmlNodes/assets/demos/0.1/index.html) released
-*  Built on [`jQuery`](http://jquery.com/), [`D3.js`](http://d3js.org/), and [`numeric.js`](http://www.numericjs.com/).
-*  Loading SBML models
-    *  automatic visual layout of species and reactions using force directed algorithm 
-    *  able to switch on and off or manually drag layout
-*  Simulation within client browser
-    *  interactive and real time simulations with changing species initial concentration and 
-*  Served through [Node.js](http://nodejs.org/) server that will allow for:
-    *  server side computation and simulation
-    *  able to call C libraries, which is not possible only browser-side JavaScript
-    *  may be useful for interactive simulations,  able to scale well with many server calls
-    *  storing and versioning of models
-    *  maintenance of both client and server side code in JavaScript 
+-   **JavaScript libraries.** `snap` depends on open-source and actively
+    developed libraries to produce a rich graphical user interface to
+    load, manipulate, and simulate bio-models.
 
-In the works
-------------
-*  Creating a richer UI and menu system to allow for customizing visual layouts of the model and simulation output
-*  Allow more ways for the user to edit models (e.g. adding species and reaction nodes) and export the updated SBML
-*  Creating user accounts to store models online
-*  Implement [RoadRunner](http://code.google.com/p/roadrunnerlib/) to perform simulations on the server-side
+-   **`Node.js` server.** In order to use perform heavy server-side
+    computation and use non-JavaScript libraries, `snap` uses a
+    `node.js` backend. While a more traditional server technology could
+    have been used, such as `Apache`, `node.js` was selected because its
+    single-process, asynchronous-execution capabilities would allow for
+    rapid communications between server and client that is necessary for
+    interactive simulations. Furthermore, since `node.js` is implemented
+    entirely in JavaScript, both the front-end and back-end, program
+    logic can be reused on either end, and code maintenance and
+    development is all in a single language.
+
+-   **Built with `git`.** `Git` is used as a version control system in
+    developing `snap`. Furthermore, `git` will be used for versioning
+    and tracking model development.
+
+Why is `snap` useful?
+---------------------
+
+-   **A no-install and always-updated, modeling platform.** The end user
+    will never have to install any software
+
+-   **Quickly view and interact with published models.** Mathematical
+    models in scientific publications are often difficult to reproduce
+    exactly, even if the underlying SBML is included with the
+    publication. `snap` will allow a publication to directly link to a
+    live and interactive version of their model.
+
+-   **Always have models available on any computer.** Models can be
+    stored and edited online, with version control of the model
+    development done through `git`, like Google Docs for bio-models.
+
+-   **Collaborate with other modelers.** Multiple users can work on
+    building the same model and sharing experimental data.
