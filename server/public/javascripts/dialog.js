@@ -23,13 +23,15 @@ Dialog.prototype.createLoadSbml = function() {
     $inputModelText.width('400px');
     var editor = ace.edit($inputModelText[0]);
     editor.getSession().setMode("ace/mode/xml");
-    
+
     
     
     
     $inputModelText.appendTo($loadSbmlView);
-    // Adding line break
+    // Adding line breaks
+    for (var i = 0; i < 10; i++) {
     $(document.createElement('br')).appendTo($loadSbmlView);
+    };
     var $button = $(document.createElement('button')).attr('id', 'loadModel').text('Import Model').appendTo($loadSbmlView);
 
     $(document.createElement('p')).text('OR enter SBML Test Case Model Number Below:').appendTo($loadSbmlView);
@@ -43,7 +45,7 @@ Dialog.prototype.createLoadSbml = function() {
         }
         $.get('../models/cases/semantic/' + caseNumber + '/' + caseNumber + '-sbml-l2v4.xml', function(model) {
             caseModel = (new XMLSerializer()).serializeToString(model);
-            //$inputModelText.val(caseModel);
+            $inputModelText.val(caseModel);
             editor.setValue(caseModel);
         });
     });
@@ -379,7 +381,7 @@ Dialog.prototype.createReactionForm = function(d) {
 };
 
 Dialog.prototype.createExportSbml = function() {
-    var $exportSbml = $(document.createElement('div')).attr('title', 'Exported SBML');
+    var $exportSbml = $(document.createElement('div')).attr('title', 'Exported SBML').attr('height','400px').attr('width','600px');
     //$exportSbml.append($(document.createElement('textarea')).val((new XMLSerializer()).serializeToString(state.$sbmlDoc[0])).attr('rows', 30).attr('cols', 30));
     
     
@@ -387,12 +389,13 @@ Dialog.prototype.createExportSbml = function() {
     
     
     var editor = ace.edit($exportSbml[0]);
-    editor.setTheme("ace/theme/monokai");
+    //editor.setTheme("ace/theme/monokai");
     editor.getSession().setMode("ace/mode/xml");
     
     state.exportedSbml = $(document.createElement('textarea')).val((new XMLSerializer()).serializeToString(state.$sbmlDoc));
     $exportSbml.dialog({
-        width: 'auto',
+        width: '600px',
+        height: 'auto',
         open: function( event, ui ) { editor.resize() },
         resize: function( event, ui ) { editor.resize() }
     });
