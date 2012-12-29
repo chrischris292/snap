@@ -1,4 +1,4 @@
-/*global $:false createButton:false SbmlParser:false Dialog:false d3:false state:false Graph*/
+/*global $:false createButton:false SbmlParser:false Dialog:false d3:false state:false Graph ace*/
 
 // builds dialog boxes
 
@@ -29,9 +29,9 @@ Dialog.prototype.createLoadSbml = function() {
     
     $inputModelText.appendTo($loadSbmlView);
     // Adding line breaks
-    for (var i = 0; i < 10; i++) {
-    $(document.createElement('br')).appendTo($loadSbmlView);
-    };
+    for(var i = 0; i < 10; i++) {
+        $(document.createElement('br')).appendTo($loadSbmlView);
+    }
     var $button = $(document.createElement('button')).attr('id', 'loadModel').text('Import Model').appendTo($loadSbmlView);
 
     $(document.createElement('p')).text('OR enter SBML Test Case Model Number Below:').appendTo($loadSbmlView);
