@@ -415,3 +415,7 @@ Dialog.prototype.createSimulationOutput = function() {
 Dialog.prototype.updateSimulationOutput = function($plot, $sbmlDoc) {
     state.graph.updateSimPlot($plot, $sbmlDoc);
 };
+
+Dialog.prototype.createViewSimOptions = function() {
+    
+}

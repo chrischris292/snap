@@ -1,6 +1,6 @@
-/*global $:false d3:false numeric:false createButton:false SbmlParser:false Menu:false Dialog:false*/
+/*global $:false d3:false numeric:false createButton:false SbmlParser:false Menu:false Dialog:false State:false*/
 
-var state; //container for state variables of the gui
+var state = new State(); //container for state variables of the gui
 var dialogMaker;
 init(); //initialize menu
 

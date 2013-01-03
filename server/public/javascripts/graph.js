@@ -1,4 +1,4 @@
-/*global $:false SbmlParser:false d3:false state:false Sim*/
+/*global $:false SbmlParser:false d3:false Sim*/
 
 // graph.js defines the graph class
 
