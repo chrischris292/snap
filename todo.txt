@@ -1,0 +1,11 @@
+To Do List
+==========
+
+#.  add `state` class to keep track of session variables for `snap`
+#.  add simulation view graph options
+#.  add sbml2matlab conversion
+
+Long term goals
+---------------
+
+#.  add roadrunner simulator
