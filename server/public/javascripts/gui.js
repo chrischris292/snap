@@ -8,7 +8,7 @@ function init() {
     state = {};
     dialogMaker = new Dialog("body"); //dialog maker
     mainMenu();
-    loadModelDialog(); // dialog to load sbml and opens viewModelDialog
+    //loadModelDialog(); // dialog to load sbml and opens viewModelDialog
 }
 
 function mainMenu() {
@@ -27,6 +27,13 @@ function mainMenu() {
         "id": "runModel",
         "text": "Simulate"
     }, {
+        "id": "view",
+        "text": "View",
+        "children": [{
+            "id": "viewSim",
+            "text": "Simulation Options"
+        }]
+    }, {
         'id': 'clear',
         'text': 'Close All'
     }];
@@ -39,21 +46,29 @@ function mainMenu() {
     $("li#runModel").on("click", function(event, ui) {
         dialogMaker.createSimulationOutput();
     });
-    $('li#clear').on('click', function(enven, ui){
+    $('li#clear').on('click', function(event, ui) {
         var $old = $("body").children().remove();
         $old = $();
         init();
-    })
-    
-}
+    });
 
-function loadModelDialog() {
-    // add click functionality
     $("li#loadSbml").on("click", function(event, ui) {
         var output = dialogMaker.createLoadSbml();
         output.$button.click(function() {
             state.$sbmlDoc = $($.parseXML(output.$inputModelText.val())); //container for sbml document
             dialogMaker.createModelView(state.$sbmlDoc);
-        })
+        });
     });
+
+    $('li#viewSim').on('click', function(event, ui) {
+        if (state.boolHasSim === true) {
+            dialogMaker.createViewSimOptions();
+        }
+    });
+
+}
+
+function loadModelDialog() {
+    // add click functionality
+
 }
