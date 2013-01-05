@@ -1,4 +1,4 @@
-/*global $:false SbmlParser:false d3:false Sim*/
+/*global $:false SbmlParser:false d3:false Sim state*/
 
 // graph.js defines the graph class
 
@@ -9,6 +9,7 @@ Graph.prototype.simPlot = function($sbmlDoc) {
     // get data from simulation
     var sim = new Sim();
     var data = sim.simulate($sbmlDoc);
+    state.simData = data;
 
 
     var margin = {
@@ -102,6 +103,7 @@ Graph.prototype.updateSimPlot = function($plot, $sbmlDoc) {
     // get data from simulation
     var sim = new Sim();
     var data = sim.simulate($sbmlDoc);
+    state.simData = data;
 
     var margin = {
         top: 20,
