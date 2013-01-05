@@ -1,9 +1,7 @@
 /*global $:false d3:false numeric:false createButton:false SbmlParser:false Menu:false Dialog:false State:false*/
-
 var state = new State(); //container for state variables of the gui
 var dialogMaker;
 init(); //initialize menu
-
 function init() {
     state = {};
     dialogMaker = new Dialog("body"); //dialog maker
@@ -39,36 +37,31 @@ function mainMenu() {
     }];
     var myMenu = new Menu(domLocation, menuStruct);
     $(myMenu.$menu, ".ui-menu").css('width', '200px');
-
-    $("li#exportSbml").on("click", function(event, ui) {
+    $("li#exportSbml").on("click", function (event, ui) {
         dialogMaker.createExportSbml();
     });
-    $("li#runModel").on("click", function(event, ui) {
+    $("li#runModel").on("click", function (event, ui) {
         dialogMaker.createSimulationOutput();
     });
-    $('li#clear').on('click', function(event, ui) {
+    $('li#clear').on('click', function (event, ui) {
         var $old = $("body").children().remove();
         $old = $();
         init();
     });
-
-    $("li#loadSbml").on("click", function(event, ui) {
+    $("li#loadSbml").on("click", function (event, ui) {
         var output = dialogMaker.createLoadSbml();
-        output.$button.click(function() {
+        output.$button.click(function () {
             state.$sbmlDoc = $($.parseXML(output.$inputModelText.val())); //container for sbml document
             dialogMaker.createModelView(state.$sbmlDoc);
         });
     });
-
-    $('li#viewSim').on('click', function(event, ui) {
+    $('li#viewSim').on('click', function (event, ui) {
         if (state.boolHasSim === true) {
             dialogMaker.createViewSimOptions();
         }
     });
-
 }
 
 function loadModelDialog() {
     // add click functionality
-
 }
