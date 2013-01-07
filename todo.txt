@@ -4,6 +4,7 @@ To Do List
 #.  add simulation view graph options
 #.  add model view options
 #.  add sbml2matlab conversion
+#.  create different graph objects with different views
 
 Long term goals
 ---------------
