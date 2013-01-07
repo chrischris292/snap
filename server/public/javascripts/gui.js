@@ -3,7 +3,6 @@ var state = new State(); //container for state variables of the gui
 var dialogMaker;
 init(); //initialize menu
 function init() {
-    state = {};
     dialogMaker = new Dialog("body"); //dialog maker
     mainMenu();
     //loadModelDialog(); // dialog to load sbml and opens viewModelDialog
@@ -41,6 +40,7 @@ function mainMenu() {
         dialogMaker.createExportSbml();
     });
     $("li#runModel").on("click", function (event, ui) {
+        state.simData =
         dialogMaker.createSimulationOutput();
     });
     $('li#clear').on('click', function (event, ui) {

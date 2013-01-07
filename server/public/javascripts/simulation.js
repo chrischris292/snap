@@ -2,7 +2,10 @@
 
 // simulation.js: functions for simulating models using numeric.js
 
-function Sim() {}
+function Sim($sbmlDoc) {
+    this.sbmlModel = new SbmlParser($sbmlDoc);
+    this.data = this.simulate($sbmlDoc);
+}
 
 Sim.prototype.simulate = function($sbmlDoc) {
     var sbmlModel = new SbmlParser($sbmlDoc);
@@ -11,7 +14,7 @@ Sim.prototype.simulate = function($sbmlDoc) {
     var species = state.$sbmlDoc.find('species');
     // calculate stoichiometry matrix
     var stoichiometryMatrix = sbmlModel.stoichiometry;
-    // finding infix        
+    // finding infix
     var listOfReactionInfix = sbmlModel.listOfReactionInfix;
 
     var f = function(t, x) {

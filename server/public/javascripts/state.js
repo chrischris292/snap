@@ -12,9 +12,10 @@ function State() {
     this.force = null; // d3 force directed graph
     this.svg = null; // svg element for building force directed graph
 
-    this.graph = null; // Graph object for simulations
+    this.graphs = []; // array of Graphs object for simulations
     this.$plot = null; // jquery object containing simulation plot element
     this.simData = null; // simulation data for session
+    this.species = null; // simulation data for each species
 
     this.$exportSbml = null; // jquery object containing exported sbml
 }

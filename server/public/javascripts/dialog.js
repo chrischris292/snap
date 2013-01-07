@@ -346,10 +346,20 @@ Dialog.prototype.createExportSbml = function () {
     });
 };
 Dialog.prototype.createSimulationOutput = function () {
-    state.graph = new Graph();
-    state.$plot = state.graph.simPlot(state.$sbmlDoc);
+    //state.graph = new Graph();
+    //state.$plot = state.graph.simPlot(state.$sbmlDoc);
+
+    var margin = {
+        top: 20,
+        right: 80,
+        bottom: 30,
+        left: 50
+    }
+
+    var graph = new Graph(margin, 960, 500);
     var $simOutput = $(document.createElement('div')).attr('title', 'Simulation Output');
-    $simOutput.append(state.$plot);
+    //$simOutput.append(state.$plot);
+    $simOutput.append(graph.$plot)
     $simOutput.dialog({
         width: 'auto'
     });
@@ -357,7 +367,12 @@ Dialog.prototype.createSimulationOutput = function () {
     return state.$plot;
 };
 Dialog.prototype.updateSimulationOutput = function ($plot, $sbmlDoc) {
-    state.graph.updateSimPlot($plot, $sbmlDoc);
+    //state.graph.updateSimPlot($plot, $sbmlDoc);
+    state.graphs.forEach( function (element, index, array) {
+        element.updateSim(state.$sbmlDoc);
+        element.updateCurves();
+//        element.updateSimPlot($plot, $sbmlDoc);
+    });
 };
 Dialog.prototype.createViewSimOptions = function () {
     // dialog box for graph options
@@ -369,7 +384,26 @@ Dialog.prototype.createViewSimOptions = function () {
     for (var prop in state.simData[0]) {
         yAxisElementsArray.push(prop);
         var $checkbox = $(document.createElement('input')).attr('type', 'checkbox').attr('name', prop).appendTo($yaxisElementsContainer);
-        $checkbox.after($(document.createElement('label')).html(prop));
+        $checkbox.after('<br>').after($(document.createElement('span')).css('display', 'inline-block').html(prop));
+        // check the box if the item is a species
+        if (state.visibleSpecies.indexOf(prop) > -1) {
+            $checkbox.attr('checked', true);
+        }
+        // adding click function to toggle visible species
+        $checkbox.click(function (box) {
+            box = $(box.toElement);
+            if (box.attr('checked')) {
+                // if it was already checked, then remove checked and remove visibility
+                                state.visibleSpecies.push(box.attr('name'));
+
+            } else {
+                // if it was not checked, add check and add visbility
+
+                var ind = state.visibleSpecies.indexOf(box.attr('name'));
+                state.visibleSpecies.splice(ind,1);
+            }
+            (new Dialog()).updateSimulationOutput(state.$plot, state.$sbmlDoc);
+        });
     }
     // adding y axis elements checkboxes
     $yaxisElementsContainer.appendTo($dialog);
