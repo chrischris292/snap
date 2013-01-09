@@ -19,6 +19,9 @@ function mainMenu() {
         }, {
             "id": "exportSbml",
             "text": "Export SBML"
+        }, {
+            "id": "exportMatlab",
+            "text": "Export MATLAB"
         }]
     }, {
         "id": "runModel",
@@ -38,6 +41,9 @@ function mainMenu() {
     $(myMenu.$menu, ".ui-menu").css('width', '200px');
     $("li#exportSbml").on("click", function (event, ui) {
         dialogMaker.createExportSbml();
+    });
+    $("li#exportMatlab").on("click", function (event, ui) {
+        dialogMaker.createExportMatlab();
     });
     $("li#runModel").on("click", function (event, ui) {
         state.simData =

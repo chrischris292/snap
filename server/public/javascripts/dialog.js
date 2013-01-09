@@ -335,6 +335,42 @@ Dialog.prototype.createExportSbml = function () {
         }
     });
 };
+Dialog.prototype.createExportMatlab = function () {
+    var $exportMatlab = $(document.createElement('div')).attr('title', 'Translated MATLAB').attr('height', '400px').attr('width', '600px');
+    //$exportSbml.append($(document.createElement('textarea')).val((new XMLSerializer()).serializeToString(state.$sbmlDoc[0])).attr('rows', 30).attr('cols', 30));
+    //$exportMatlab.text((new XMLSerializer()).serializeToString(state.$sbmlDoc[0]));
+
+
+    var xmlDocument = state.$sbmlDoc[0];
+    var xmlRequest = $.ajax({
+        url: "sbml2matlab",
+        processData: true,
+        data: {
+            sbml: (new XMLSerializer()).serializeToString(xmlDocument)
+        },
+        dataType: "text",
+        type: "POST",
+        success: function (data, textStatus, jqXHR) {
+            //state.$exportedMatlab = $(document.createElement('textarea')).val(data);
+            $exportMatlab.text(data)
+            state.$exportMatlab = $exportMatlab;
+            state.exportMatlabEditor = ace.edit($exportMatlab[0]);
+            //editor.setTheme("ace/theme/monokai");
+            state.exportMatlabEditor.getSession().setMode("ace/mode/octave");
+            $exportMatlab.dialog({
+                width: '600px',
+                height: 'auto',
+                open: function (event, ui) {
+                    state.exportMatlabEditor.resize();
+                },
+                resize: function (event, ui) {
+                    state.exportMatlabEditor.resize();
+                }
+            });
+
+        }
+    });
+};
 Dialog.prototype.createSimulationOutput = function () {
     //state.graph = new Graph();
     //state.$plot = state.graph.simPlot(state.$sbmlDoc);
