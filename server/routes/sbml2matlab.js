@@ -24,7 +24,7 @@ exports.translate = function (req, res) {
         querystring = require('querystring'),
         url = require('url'),
         sbml; // request processing
-    var command = "cd server/sbml2matlab/install/ && ./sbml2matlab -input tmp.sbml";
+    var command = "cd snap/server/sbml2matlab/install/ && ./sbml2matlab -input tmp.sbml";
     var options = {
         //cwd: 'server/sbml2matlab/install/',
         timeout: 10
