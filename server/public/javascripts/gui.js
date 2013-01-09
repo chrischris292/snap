@@ -53,6 +53,7 @@ function mainMenu() {
         output.$button.click(function () {
             state.$sbmlDoc = $($.parseXML(output.$inputModelText.val())); //container for sbml document
             dialogMaker.createModelView(state.$sbmlDoc);
+            dialogMaker.createSimulationOutput();
         });
     });
     $('li#viewSim').on('click', function (event, ui) {

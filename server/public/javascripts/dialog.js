@@ -2,6 +2,7 @@
 // builds dialog boxes
 function Dialog(domLocation) {
     this.location = $(domLocation);
+    this.$dialog = null;
 }
 Dialog.prototype.createLoadSbml = function () {
     var $loadSbmlView = $(document.createElement('div')).attr({
@@ -119,7 +120,9 @@ Dialog.prototype.createModelView = function ($sbmlDoc) {
     // Making a border around SVG drawing area
     svg.append("svg:rect").attr("width", w).attr("height", h).attr("style", "fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)");
     // Per-type markers, as they don't inherit styles.
-    svg.append("svg:defs").selectAll("marker").data(["toProducts", "licensing", "resolved"]).enter().append("svg:marker").attr("id", String).attr("viewBox", "0 -5 10 10").attr("refX", 15).attr("refY", - 1.5).attr("markerWidth", 6).attr("markerHeight", 6).attr("orient", "auto").append("svg:path").attr("d", "M0,-5L10,0L0,5");
+//    svg.append("svg:defs").selectAll("marker").data(["toProducts", "licensing", "resolved"]).enter().append("svg:marker").attr("id", String).attr("viewBox", "0 -5 10 10").attr("refX", 15).attr("refY", - 1.5).attr("markerWidth", 6).attr("markerHeight", 6).attr("orient", "auto").append("svg:path").attr("d", "M0,-5L10,0L0,5");
+    svg.append("svg:defs").selectAll("marker").data(["toProducts", "licensing", "resolved"]).enter().append("svg:marker").attr("id", String).attr("viewBox", "0 -5 10 10").attr("refX", 20).attr("refY", - 2).attr("markerWidth", 6).attr("markerHeight", 6).attr("orient", "auto").append("svg:path").attr("d", "M0,-5L10,0L0,5");
+
     var path = svg.append("svg:g").selectAll("path").data(force.links()).enter().append("svg:path").attr("class", function (d) {
         return "link " + d.type;
     }).attr("marker-end", function (d) {
@@ -128,6 +131,16 @@ Dialog.prototype.createModelView = function ($sbmlDoc) {
     var circle = svg.append("svg:g").selectAll("circle").data(force.nodes()).enter().append("svg:circle").attr("r", function (d) {
         return getNodeSize(d);
     }).on("click", svgClick).call(force.drag); // Starts dragging //.call(force.drag);
+    // shows simulation plot for species on mouse enter
+    var openSimPreview = function (d) {
+        state.simPreview = (new Dialog('body'));
+        state.simPreview.createSimPreview(d.name, event);
+    };
+    // destroys simulation plot for species on mouse leave
+    var closeSimPreview = function () {
+        state.simPreview.$dialog.remove();
+    };
+    circle.on('mouseover', openSimPreview).on('mouseout', closeSimPreview);
     // adding titles to the nodes
     circle.append("title").text(function (d) {
         if (d.type == 'species') {
@@ -182,29 +195,6 @@ Dialog.prototype.createModelView = function ($sbmlDoc) {
         var parameters = sbmlModel.parameters;
         if (isReaction(d.name)) { // selected a reaction node
             (new Dialog('body')).createReactionForm(state.selectedNode);
-            //            $("#dialog-form-reaction").dialog("open");
-            //            $("#dialog-form-reaction").children("form").children("fieldset").children().remove();
-            //            $("#dialog-form-reaction").children("form").children("fieldset").append('<label for="id">ID</label><input type="text" name="id" id="selectedReactionId" class="reactionParam"/>');
-            //            $("input.reactionParam[name=id]").val(d.name);
-            //            $(d.kineticLaw).find("ci").each(function(index, item) {
-            //                var str = $.trim(item.textContent);
-            //                if (sbmlModel.parameters[str]) {
-            //                    var htmlStr = "<label for=" + str + ">" + str + "</label>" + '<input type="text" class=reactionParam name=' + str + " />" + '<div id=' + str + 'Slider></div>';
-            //                    $("#dialog-form-reaction").children("form").children("fieldset").append(htmlStr);
-            //                    $("input.reactionParam[name=" + str + "]").val(parameters[str]);
-            //                    $("div#" + str + "Slider").slider({
-            //                        min: sbmlModel.parameters[str] / 10,
-            //                        max: sbmlModel.parameters[str] * 10,
-            //                        slide: function(event, ui) {
-            //                            sbmlModel.updateParameter(str, $("div#" + str + "Slider").slider("option", "value"));
-            //                            $("input.reactionParam[name=" + str + "]").val(sbmlModel.parameters[str]);
-            //                            updateGraph();
-            //                        }
-            //                    });
-            //                    $("div#" + str + "Slider").slider('option', 'step', sbmlModel.parameters[str] / 10);
-            //                    $("div#" + str + "Slider").slider('option', 'value', sbmlModel.parameters[str]);
-            //                }
-            //            });
         }
         else { // selected a species node
             (new Dialog("body")).createSpeciesForm(state.selectedNode);
@@ -213,8 +203,8 @@ Dialog.prototype.createModelView = function ($sbmlDoc) {
     // get node size from the name of the node
     function getNodeSize(node) {
         var NODESIZE = {
-            reaction: 2,
-            species: 8
+            reaction: 5,
+            species: 10
         };
         if (node.type == 'reaction' && node.visible) { //is a reaction node
             return NODESIZE.reaction;
@@ -348,14 +338,12 @@ Dialog.prototype.createExportSbml = function () {
 Dialog.prototype.createSimulationOutput = function () {
     //state.graph = new Graph();
     //state.$plot = state.graph.simPlot(state.$sbmlDoc);
-
     var margin = {
         top: 20,
         right: 80,
         bottom: 30,
         left: 50
     }
-
     var graph = new Graph(margin, 960, 500);
     var $simOutput = $(document.createElement('div')).attr('title', 'Simulation Output');
     //$simOutput.append(state.$plot);
@@ -368,10 +356,10 @@ Dialog.prototype.createSimulationOutput = function () {
 };
 Dialog.prototype.updateSimulationOutput = function ($plot, $sbmlDoc) {
     //state.graph.updateSimPlot($plot, $sbmlDoc);
-    state.graphs.forEach( function (element, index, array) {
+    state.graphs.forEach(function (element, index, array) {
         element.updateSim(state.$sbmlDoc);
         element.updateCurves();
-//        element.updateSimPlot($plot, $sbmlDoc);
+        //        element.updateSimPlot($plot, $sbmlDoc);
     });
 };
 Dialog.prototype.createViewSimOptions = function () {
@@ -381,12 +369,13 @@ Dialog.prototype.createViewSimOptions = function () {
     var $yaxisElementsContainer = $(document.createElement('form'));
     // y axis elements array
     var yAxisElementsArray = [];
-    for (var prop in state.simData[0]) {
-        yAxisElementsArray.push(prop);
-        var $checkbox = $(document.createElement('input')).attr('type', 'checkbox').attr('name', prop).appendTo($yaxisElementsContainer);
-        $checkbox.after('<br>').after($(document.createElement('span')).css('display', 'inline-block').html(prop));
+    //    for (var prop in state.graphs[0].visibleSpecies) {
+    state.graphs[0].species.forEach(function (element, index, array) {
+        yAxisElementsArray.push(element.name);
+        var $checkbox = $(document.createElement('input')).attr('type', 'checkbox').attr('name', element.name).appendTo($yaxisElementsContainer);
+        $checkbox.after('<br>').after($(document.createElement('span')).css('display', 'inline-block').html(element.name));
         // check the box if the item is a species
-        if (state.visibleSpecies.indexOf(prop) > -1) {
+        if (state.graphs[0].visibleSpecies.indexOf(element.name) > -1) {
             $checkbox.attr('checked', true);
         }
         // adding click function to toggle visible species
@@ -394,18 +383,39 @@ Dialog.prototype.createViewSimOptions = function () {
             box = $(box.toElement);
             if (box.attr('checked')) {
                 // if it was already checked, then remove checked and remove visibility
-                                state.visibleSpecies.push(box.attr('name'));
-
-            } else {
+                state.graphs[0].visibleSpecies.push(box.attr('name'));
+            }
+            else {
                 // if it was not checked, add check and add visbility
-
-                var ind = state.visibleSpecies.indexOf(box.attr('name'));
-                state.visibleSpecies.splice(ind,1);
+                var ind = state.graphs[0].visibleSpecies.indexOf(box.attr('name'));
+                state.graphs[0].visibleSpecies.splice(ind, 1);
             }
             (new Dialog()).updateSimulationOutput(state.$plot, state.$sbmlDoc);
         });
-    }
+    });
     // adding y axis elements checkboxes
     $yaxisElementsContainer.appendTo($dialog);
     $dialog.dialog();
+};
+Dialog.prototype.createSimPreview = function (specie, event) {
+    this.$dialog = $(document.createElement('div')).appendTo(this.location);
+    var margin = {
+        top: 20,
+        right: 20,
+        bottom: 20,
+        left: 20
+    };
+    var graph = new Graph(margin, 200, 200);
+    graph.setVisibleSpecies(specie);
+    graph.updateCurves();
+    this.$dialog.append(graph.$plot);
+    this.$dialog.dialog({
+        width: 'auto',
+        title: specie,
+        position: {
+            my: 'left',
+            at: 'right',
+            of: event
+        }
+    });
 };
