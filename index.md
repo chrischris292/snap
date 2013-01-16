@@ -1,7 +1,7 @@
 ---
 layout: page
-title: node-sbml 
-tagline: SBML Models in the Browser!
+title: `snap` 
+tagline: Bio-models in the Browser!
 ---
 {% include JB/setup %}
 
