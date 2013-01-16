@@ -1,6 +1,6 @@
 ---
 layout: page
-title: `snap` 
+title: snap 
 tagline: Bio-models in the Browser!
 ---
 {% include JB/setup %}
