@@ -4,7 +4,7 @@ function Dialog(domLocation) {
     this.location = $(domLocation);
     this.$dialog = null;
 }
-Dialog.prototype.createLoadSbml = function () {
+Dialog.prototype.createLoadSbml = function() {
     var $loadSbmlView = $(document.createElement('div')).attr({
         'id': 'loadSbml',
         'title': 'Load SBML'
@@ -25,13 +25,13 @@ Dialog.prototype.createLoadSbml = function () {
     var $button = $(document.createElement('button')).attr('id', 'loadModel').text('Import Model').appendTo($loadSbmlView);
     $(document.createElement('p')).text('OR enter SBML Test Case Model Number Below:').appendTo($loadSbmlView);
     var $caseInput = $(document.createElement('input')).attr('id', 'casenum');
-    var $loadCaseNumberButton = $(document.createElement("button")).attr('id', 'loadCaseNumber').text('Load Case Number').click(function () {
+    var $loadCaseNumberButton = $(document.createElement("button")).attr('id', 'loadCaseNumber').text('Load Case Number').click(function() {
         var caseNumber = $caseInput.val();
         var caseModel;
         while (caseNumber.toString().length < 5) {
             caseNumber = "0" + caseNumber;
         }
-        $.get('../models/cases/semantic/' + caseNumber + '/' + caseNumber + '-sbml-l2v4.xml', function (model) {
+        $.get('../models/cases/semantic/' + caseNumber + '/' + caseNumber + '-sbml-l2v4.xml', function(model) {
             caseModel = (new XMLSerializer()).serializeToString(model);
             $inputModelText.val(caseModel);
             editor.setValue(caseModel);
@@ -47,13 +47,13 @@ Dialog.prototype.createLoadSbml = function () {
         $button: $button
     };
 };
-Dialog.prototype.createModelView = function ($sbmlDoc) {
+Dialog.prototype.createModelView = function($sbmlDoc) {
     var sbmlModel = new SbmlParser($sbmlDoc);
     var force;
     var links = [];
     var nodes = {};
     // generating nodes from listOfSpecies
-    $sbmlDoc.find("species").each(function (n) {
+    $sbmlDoc.find("species").each(function(n) {
         nodes[this.getAttribute('id')] = {
             name: this.getAttribute('id'),
             compartment: this.getAttribute('compartment'),
@@ -65,7 +65,7 @@ Dialog.prototype.createModelView = function ($sbmlDoc) {
         };
     });
     // creating nodes from reactions
-    $sbmlDoc.find("reaction").each(function (n) {
+    $sbmlDoc.find("reaction").each(function(n) {
         var reactionName = this.getAttribute('id');
         nodes[reactionName] = {
             name: reactionName,
@@ -120,29 +120,41 @@ Dialog.prototype.createModelView = function ($sbmlDoc) {
     // Making a border around SVG drawing area
     svg.append("svg:rect").attr("width", w).attr("height", h).attr("style", "fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)");
     // Per-type markers, as they don't inherit styles.
-//    svg.append("svg:defs").selectAll("marker").data(["toProducts", "licensing", "resolved"]).enter().append("svg:marker").attr("id", String).attr("viewBox", "0 -5 10 10").attr("refX", 15).attr("refY", - 1.5).attr("markerWidth", 6).attr("markerHeight", 6).attr("orient", "auto").append("svg:path").attr("d", "M0,-5L10,0L0,5");
+    //    svg.append("svg:defs").selectAll("marker").data(["toProducts", "licensing", "resolved"]).enter().append("svg:marker").attr("id", String).attr("viewBox", "0 -5 10 10").attr("refX", 15).attr("refY", - 1.5).attr("markerWidth", 6).attr("markerHeight", 6).attr("orient", "auto").append("svg:path").attr("d", "M0,-5L10,0L0,5");
     svg.append("svg:defs").selectAll("marker").data(["toProducts", "licensing", "resolved"]).enter().append("svg:marker").attr("id", String).attr("viewBox", "0 -5 10 10").attr("refX", 20).attr("refY", - 2).attr("markerWidth", 6).attr("markerHeight", 6).attr("orient", "auto").append("svg:path").attr("d", "M0,-5L10,0L0,5");
 
-    var path = svg.append("svg:g").selectAll("path").data(force.links()).enter().append("svg:path").attr("class", function (d) {
+    var path = svg.append("svg:g").selectAll("path").data(force.links()).enter().append("svg:path").attr("class", function(d) {
         return "link " + d.type;
-    }).attr("marker-end", function (d) {
+    }).attr("marker-end", function(d) {
         return "url(#" + d.type + ")";
     });
-    var circle = svg.append("svg:g").selectAll("circle").data(force.nodes()).enter().append("svg:circle").attr("r", function (d) {
+    var circle = svg.append("svg:g").selectAll("circle").data(force.nodes()).enter().append("svg:circle").attr("r", function(d) {
         return getNodeSize(d);
     }).on("click", svgClick).call(force.drag); // Starts dragging //.call(force.drag);
     // shows simulation plot for species on mouse enter
-    var openSimPreview = function (d) {
-        state.simPreview = (new Dialog('body'));
-        state.simPreview.createSimPreview(d.name, event);
+    var openPreview = function(d) {
+        if (isReaction(d.name)) { // selected a reaction node
+            state.mathPreview = (new Dialog('body'));
+            state.mathPreview.createMathPreview(d.name, event);
+            MathJax.Hub.Queue(["Typeset", MathJax.Hub, state.mathPreview.$dialog[0]]);
+        }
+        else { // a species node
+            state.simPreview = (new Dialog('body'));
+            state.simPreview.createSimPreview(d.name, event);
+        }
     };
     // destroys simulation plot for species on mouse leave
-    var closeSimPreview = function () {
-        state.simPreview.$dialog.remove();
+    var closePreview = function(d) {
+        if (isReaction(d.name)) { // selected a reaction node
+            state.mathPreview.$dialog.remove();
+        }
+        else { // a species node
+            state.simPreview.$dialog.remove();
+        }
     };
-    circle.on('mouseover', openSimPreview).on('mouseout', closeSimPreview);
+    circle.on('mouseover', openPreview).on('mouseout', closePreview);
     // adding titles to the nodes
-    circle.append("title").text(function (d) {
+    circle.append("title").text(function(d) {
         if (d.type == 'species') {
             var t = 'Initial Concentration: ';
             t += $sbmlDoc.find("listOfSpecies").find('#' + d.name).attr("initialAmount");
@@ -154,7 +166,7 @@ Dialog.prototype.createModelView = function ($sbmlDoc) {
     });
     text = svg.append("svg:g").selectAll("g").data(force.nodes()).enter().append("svg:g");
     // A copy of the text with a thick white stroke for legibility.
-    text.append("svg:text").attr("x", 8).attr("y", ".31em").attr("class", "shadow").text(function (d) {
+    text.append("svg:text").attr("x", 8).attr("y", ".31em").attr("class", "shadow").text(function(d) {
         if (d.type == 'reaction') {
             return "";
         }
@@ -162,7 +174,7 @@ Dialog.prototype.createModelView = function ($sbmlDoc) {
             return d.name;
         }
     });
-    text.append("svg:text").attr("x", 8).attr("y", ".31em").text(function (d) {
+    text.append("svg:text").attr("x", 8).attr("y", ".31em").text(function(d) {
         if (d.type == 'reaction') {
             return "";
         }
@@ -176,16 +188,16 @@ Dialog.prototype.createModelView = function ($sbmlDoc) {
     });
     // Use elliptical arc path segments to doubly-encode directionality.
     function tick() {
-        path.attr("d", function (d) {
+        path.attr("d", function(d) {
             var dx = d.target.x - d.source.x,
                 dy = d.target.y - d.source.y,
                 dr = Math.sqrt(dx * dx + dy * dy);
             return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
         });
-        circle.attr("transform", function (d) {
+        circle.attr("transform", function(d) {
             return "translate(" + d.x + "," + d.y + ")";
         });
-        text.attr("transform", function (d) {
+        text.attr("transform", function(d) {
             return "translate(" + d.x + "," + d.y + ")";
         });
     }
@@ -231,7 +243,7 @@ Dialog.prototype.createModelView = function ($sbmlDoc) {
     state.force = force;
     state.svg = svg;
 };
-Dialog.prototype.createSpeciesForm = function (d) {
+Dialog.prototype.createSpeciesForm = function(d) {
     var $species = state.$sbmlDoc.find('species#' + d.name);
     var $speciesForm = $(document.createElement('div')).attr('title', 'Species Form');
     //ID
@@ -248,12 +260,12 @@ Dialog.prototype.createSpeciesForm = function (d) {
     $speciesForm.append($speciesForm.$amountSlider);
     $speciesForm.dialog({
         //autoOpen: false,
-        open: function (event, ui) {
+        open: function(event, ui) {
             var model = new SbmlParser(state.$sbmlDoc);
             $speciesForm.$amountSlider.slider({
                 min: $species.attr('initialAmount') / 10,
                 max: $species.attr('initialAmount') * 10,
-                slide: function (event, ui) {
+                slide: function(event, ui) {
                     var sliderVal = $speciesForm.$amountSlider.slider('option', 'value');
                     $speciesForm.$amountInput.val(sliderVal);
                     // saving initial condition in model to state
@@ -270,7 +282,7 @@ Dialog.prototype.createSpeciesForm = function (d) {
         }
     });
 };
-Dialog.prototype.createReactionForm = function (d) {
+Dialog.prototype.createReactionForm = function(d) {
     var model = new SbmlParser(state.$sbmlDoc);
     var $reaction = state.$sbmlDoc.find('reaction#' + d.name);
     var $reactionForm = $(document.createElement('div')).attr('title', 'Reaction Form');
@@ -280,7 +292,7 @@ Dialog.prototype.createReactionForm = function (d) {
     $reactionForm.$reactionIdInput = $(document.createElement('input')).val($reaction.attr('id'));
     $reactionForm.append($reactionForm.$reactionIdInput);
     //Parameters
-    $reaction.find('ci').each(function (index, item) {
+    $reaction.find('ci').each(function(index, item) {
         var name = $.trim(item.textContent);
         $reactionForm.$paramName = [];
         $reactionForm.$paramValue = [];
@@ -301,7 +313,7 @@ Dialog.prototype.createReactionForm = function (d) {
                 max: model.parameters[name] * 10,
                 step: model.parameters[name] / 10,
                 value: model.parameters[name],
-                slide: function (event, ui) {
+                slide: function(event, ui) {
                     var sliderVal = $paramSlider.slider('option', 'value');
                     $paramValue.val(sliderVal);
                     // saving initial condition in model to state
@@ -316,7 +328,7 @@ Dialog.prototype.createReactionForm = function (d) {
         width: 'auto'
     });
 };
-Dialog.prototype.createExportSbml = function () {
+Dialog.prototype.createExportSbml = function() {
     var $exportSbml = $(document.createElement('div')).attr('title', 'Exported SBML').attr('height', '400px').attr('width', '600px');
     //$exportSbml.append($(document.createElement('textarea')).val((new XMLSerializer()).serializeToString(state.$sbmlDoc[0])).attr('rows', 30).attr('cols', 30));
     $exportSbml.text((new XMLSerializer()).serializeToString(state.$sbmlDoc[0]));
@@ -327,15 +339,15 @@ Dialog.prototype.createExportSbml = function () {
     $exportSbml.dialog({
         width: '600px',
         height: 'auto',
-        open: function (event, ui) {
+        open: function(event, ui) {
             editor.resize();
         },
-        resize: function (event, ui) {
+        resize: function(event, ui) {
             editor.resize();
         }
     });
 };
-Dialog.prototype.createExportMatlab = function () {
+Dialog.prototype.createExportMatlab = function() {
     var $exportMatlab = $(document.createElement('div')).attr('title', 'Translated MATLAB').attr('height', '400px').attr('width', '600px');
     //$exportSbml.append($(document.createElement('textarea')).val((new XMLSerializer()).serializeToString(state.$sbmlDoc[0])).attr('rows', 30).attr('cols', 30));
     //$exportMatlab.text((new XMLSerializer()).serializeToString(state.$sbmlDoc[0]));
@@ -350,7 +362,7 @@ Dialog.prototype.createExportMatlab = function () {
         },
         dataType: "text",
         type: "POST",
-        success: function (data, textStatus, jqXHR) {
+        success: function(data, textStatus, jqXHR) {
             //state.$exportedMatlab = $(document.createElement('textarea')).val(data);
             $exportMatlab.text(data)
             state.$exportMatlab = $exportMatlab;
@@ -360,10 +372,10 @@ Dialog.prototype.createExportMatlab = function () {
             $exportMatlab.dialog({
                 width: '600px',
                 height: 'auto',
-                open: function (event, ui) {
+                open: function(event, ui) {
                     state.exportMatlabEditor.resize();
                 },
-                resize: function (event, ui) {
+                resize: function(event, ui) {
                     state.exportMatlabEditor.resize();
                 }
             });
@@ -371,7 +383,7 @@ Dialog.prototype.createExportMatlab = function () {
         }
     });
 };
-Dialog.prototype.createSimulationOutput = function () {
+Dialog.prototype.createSimulationOutput = function() {
     //state.graph = new Graph();
     //state.$plot = state.graph.simPlot(state.$sbmlDoc);
     var margin = {
@@ -390,15 +402,15 @@ Dialog.prototype.createSimulationOutput = function () {
     state.boolHasSim = true;
     return state.$plot;
 };
-Dialog.prototype.updateSimulationOutput = function ($plot, $sbmlDoc) {
+Dialog.prototype.updateSimulationOutput = function($plot, $sbmlDoc) {
     //state.graph.updateSimPlot($plot, $sbmlDoc);
-    state.graphs.forEach(function (element, index, array) {
+    state.graphs.forEach(function(element, index, array) {
         element.updateSim(state.$sbmlDoc);
         element.updateCurves();
         //        element.updateSimPlot($plot, $sbmlDoc);
     });
 };
-Dialog.prototype.createViewSimOptions = function () {
+Dialog.prototype.createViewSimOptions = function() {
     // dialog box for graph options
     var $dialog = $(document.createElement('div')).appendTo(this.location);
     // y axis elements container
@@ -406,7 +418,7 @@ Dialog.prototype.createViewSimOptions = function () {
     // y axis elements array
     var yAxisElementsArray = [];
     //    for (var prop in state.graphs[0].visibleSpecies) {
-    state.graphs[0].species.forEach(function (element, index, array) {
+    state.graphs[0].species.forEach(function(element, index, array) {
         yAxisElementsArray.push(element.name);
         var $checkbox = $(document.createElement('input')).attr('type', 'checkbox').attr('name', element.name).appendTo($yaxisElementsContainer);
         $checkbox.after('<br>').after($(document.createElement('span')).css('display', 'inline-block').html(element.name));
@@ -415,7 +427,7 @@ Dialog.prototype.createViewSimOptions = function () {
             $checkbox.attr('checked', true);
         }
         // adding click function to toggle visible species
-        $checkbox.click(function (box) {
+        $checkbox.click(function(box) {
             box = $(box.toElement);
             if (box.attr('checked')) {
                 // if it was already checked, then remove checked and remove visibility
@@ -433,7 +445,7 @@ Dialog.prototype.createViewSimOptions = function () {
     $yaxisElementsContainer.appendTo($dialog);
     $dialog.dialog();
 };
-Dialog.prototype.createSimPreview = function (specie, event) {
+Dialog.prototype.createSimPreview = function(specie, event) {
     this.$dialog = $(document.createElement('div')).appendTo(this.location);
     var margin = {
         top: 20,
@@ -448,6 +460,55 @@ Dialog.prototype.createSimPreview = function (specie, event) {
     this.$dialog.dialog({
         width: 'auto',
         title: specie,
+        position: {
+            my: 'left',
+            at: 'right',
+            of: event
+        }
+    });
+};
+Dialog.prototype.createMathPreview = function(reaction, event) {
+    this.$dialog = $(document.createElement('div')).appendTo(this.location);
+    //    var margin = {
+    //        top: 20,
+    //        right: 20,
+    //        bottom: 20,
+    //        left: 20
+    //    };
+    //    var graph = new Graph(margin, 200, 200);
+    //    graph.setVisibleSpecies(specie);
+    //    graph.updateCurves();
+    //    this.$dialog.append(graph.$plot);
+
+    function loadXMLDoc(dname) {
+        var xhttp;
+        if (window.XMLHttpRequest) {
+            xhttp = new XMLHttpRequest();
+        }
+        else {
+            xhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xhttp.open("GET", dname, false);
+        xhttp.send("");
+        return xhttp.responseXML;
+    }
+
+    var xsl = loadXMLDoc("../stylesheets/ctop.xsl");
+
+    var mathml = $(state.nodes[reaction].kineticLaw).children();
+    // code for Mozilla, Firefox, Opera, etc.
+    if (document.implementation && document.implementation.createDocument) {
+        var xsltProcessor = new XSLTProcessor();
+        xsltProcessor.importStylesheet(xsl);
+        var presentationMathml = xsltProcessor.transformToFragment(mathml[0], document);
+        var container = $(document.createElement('div'));
+        container.append(presentationMathml).attr('id', 'mathmlPreview');
+        this.$dialog.append(container);
+    }
+
+    this.$dialog.dialog({
+        width: 'auto',
+        title: 'Kinetic Law',
         position: {
             my: 'left',
             at: 'right',
