@@ -45,7 +45,7 @@ exports.translate = function (req, res) {
     child = exec(command, function (error, stdout, stderr) {
 
         //child = exec('pwd', function (error, stdout, stderr) {
-        res.send(stdout);
+        res.send(stdout + stderr);
         console.log('stdout: ' + stdout);
         console.log('stderr: ' + stderr);
         if (error !== null) {

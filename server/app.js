@@ -4,7 +4,7 @@
 var express = require('express'),
     routes = require('./routes'),
     user = require('./routes/user'),
-    sbml2matlab = require('./routes/sbml2matlab')
+    sbml2matlab = require('./routes/sbml2matlab'),
     http = require('http'),
     path = require('path');
 var app = express();
