@@ -1,17 +1,20 @@
 .well.sidebar-nav
 	ul.nav.nav-list
 		li.nav-header Model
-		li.active
-			a#loadSbml(href='#') Load SBML
-		li
-			a(href='#') Import Test Case
+		.btn-grp(data-toggle="buttons-checkbox")
+			li
+				a.btn.btn-primary.btn-block#loadSbml(href='#') Load SBML
+			li
+				a.btn.btn-primary.btn-block#importTestCase(href='#') Import Test Case
 		li.nav-header Simulation
-		li
-			a(href='#') Run
-		li
-			a(href='#') View Options
+		.btn-grp(data-toggle="buttons-radio")
+			li
+				a.btn.btn-primary.btn-block#run(href='#') Run
+			li
+				a.btn.btn-primary.btn-block#view(href='#') View Options
 		li.nav-header Export
-		li
-			a(href='#') As SBML
-		li
-			a(href='#') As MATLAB
+		.btn-grp(data-toggle="buttons-radio")
+			li
+				a.btn.btn-primary.btn-block#exportSbml(href='#') As SBML
+			li
+				a.btn.btn-primary.btn-block#exportMatlab(href='#') As MATLAB

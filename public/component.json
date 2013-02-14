@@ -8,6 +8,8 @@
     "underscore": "~1.4.3",
     "d3": "~3.0.6",
     "jquery-ui": "~1.10.0",
-    "rickshaw": "~1.2.0"
+    "rickshaw": "~1.2.0",
+    "": "https://github.com/ajaxorg/ace-builds/.git",
+    "ace-builds": "git://github.com/ajaxorg/ace-builds.git#~1.0.0"
   }
 }

@@ -16,13 +16,22 @@ head
 			.sidebar-nav {
 			padding: 9px 0;
 			}
+			.ace_editor {
+			position: relative;
+			}
 		link(href='components/bootstrap/css/bootstrap-responsive.css', rel='stylesheet')
-
-		link(rel='apple-touch-icon-precomposed', sizes='144x144', href='components/bootstrap/ico/apple-touch-icon-144-precomposed.png')
-		link(rel='apple-touch-icon-precomposed', sizes='114x114', href='components/bootstrap/ico/apple-touch-icon-114-precomposed.png')
-		link(rel='apple-touch-icon-precomposed', sizes='72x72', href='components/bootstrap/ico/apple-touch-icon-72-precomposed.png')
-		link(rel='apple-touch-icon-precomposed', href='components/bootstrap/ico/apple-touch-icon-57-precomposed.png')
-		link(rel='shortcut icon', href='components/bootstrap/ico/favicon.png')
+	
+		//link(rel='apple-touch-icon-precomposed', sizes='144x144', href='components/bootstrap/ico/apple-touch-icon-144-precomposed.png')
+		//link(rel='apple-touch-icon-precomposed', sizes='114x114', href='components/bootstrap/ico/apple-touch-icon-114-precomposed.png')
+		//link(rel='apple-touch-icon-precomposed', sizes='72x72', href='components/bootstrap/ico/apple-touch-icon-72-precomposed.png')
+		//link(rel='apple-touch-icon-precomposed', href='components/bootstrap/ico/apple-touch-icon-57-precomposed.png')
+		//link(rel='shortcut icon', href='components/bootstrap/ico/favicon.png')
+		script(src='components/jquery/jquery.js')
+		script(src='components/jquery-ui/ui/jquery-ui.custom.js')
+		script(src='components/bootstrap/js/bootstrap.js')
+		script(src='components/d3/d3.js')
+		script(src='components/underscore/underscore.js')
+		script(src='components/backbone/backbone.js')
 	body
 		.navbar.navbar-inverse.navbar-fixed-top
 			.navbar-inner
@@ -30,11 +39,10 @@ head
 					a.btn.btn-navbar(data-toggle='collapse', data-target='.nav-collapse')
 						span.icon-bar
 						span.icon-bar
-						span.icon-bar
 					a.brand(href='#') sysb.io
 					.nav-collapse.collapse
 						p.navbar-text.pull-right
-							a.navbar-link(href='https://www.washington.edu/') University of Washington
+							a.navbar-link(href='http://sys-bio.org/') Sys-Bio @ University of Washington
 						ul.nav
 							li.active
 								a(data-target='#home', data-toggle='tab') Home
@@ -46,6 +54,10 @@ head
 								a(data-target='#biomodels', data-toggle='tab') BioModels
 							li
 								a(data-target='#about', data-toggle='tab') About
+							li
+								.span
+									.btn.btn-warning Currently Under Construction!
+									
 		.container-fluid
 			.tab-content
 				.tab-pane#home.fade.active.in
@@ -53,8 +65,8 @@ head
 						.span1
 						.span10
 							include includes/hero
-							.row-fluid
-								include includes/bottom	
+							//.row-fluid
+							//include includes/bottom	
 						.span1
 				.tab-pane#snap.fade
 					include includes/snap
@@ -65,10 +77,5 @@ head
 				.tab-pane#about.fade
 					include includes/about
 						
-		script(src='components/jquery/jquery.js')
-		script(src='components/jquery-ui/ui/jquery-ui.custom.js')
-		script(src='components/bootstrap/js/bootstrap.js')
-		script(src='components/d3/d3.js')
-		script(src='components/underscore/underscore.js')
-		script(src='components/backbone/backbone.js')
+
 		
