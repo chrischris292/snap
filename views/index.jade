@@ -2,7 +2,7 @@
 html(lang='en')
 head
 		meta(charset='utf-8')
-		title Bootstrap, from Twitter
+		title sysb.io
 		meta(name='viewport', content='width=device-width, initial-scale=1.0')
 		meta(name='description', content='')
 		meta(name='author', content='')
@@ -36,10 +36,11 @@ head
 		.navbar.navbar-inverse.navbar-fixed-top
 			.navbar-inner
 				.container-fluid
-					a.btn.btn-navbar(data-toggle='collapse', data-target='.nav-collapse')
+					button.btn.btn-navbar(type='button', data-toggle='collapse', data-target='.nav-collapse')
 						span.icon-bar
 						span.icon-bar
-					a.brand(href='#') sysb.io
+						span.icon-bar
+					a.brand(href='.') sysb.io
 					.nav-collapse.collapse
 						p.navbar-text.pull-right
 							a.navbar-link(href='http://sys-bio.org/') Sys-Bio @ University of Washington
@@ -76,6 +77,3 @@ head
 					include includes/biomodels
 				.tab-pane#about.fade
 					include includes/about
-						
-
-		

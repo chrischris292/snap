@@ -30,11 +30,17 @@ $(function() {
 	t.fadeToggle();
 	$('.btn#importTestCase').click(function(){
 		t.fadeToggle();
-		if (w.hasClass('span8')){
-			w.switchClass('span8','span6');
+		if (w.hasClass('span7')){
+			w.switchClass('span7','span6');
 		} else {
-			w.switchClass('span6', 'span8');
+			w.switchClass('span6', 'span7');
 		}
 	});
+	
+	var c = $('#chartWindow');
+	c.fadeToggle();
+	$('.btn#run').click(function(){
+		c.fadeToggle();
+	})
 	
 });
