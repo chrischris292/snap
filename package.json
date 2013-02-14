@@ -7,9 +7,9 @@
   },
   "dependencies": {
     "express": "3.0.3",
-    "jade": "*",
-    "jquery": "*",
-    "libclang": "*",
-    "d3": "*"
+    "jade": "*"
+  },
+  "devDependencies": {
+      "bower": "*"
   }
 }
