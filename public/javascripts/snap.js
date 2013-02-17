@@ -17,8 +17,8 @@ $(function() {
 	w.fadeToggle();
 	window.editor = ace.edit(w[0]);
 	var e = window.editor;
-//	e.setTheme('ace/themes/solarized_light');
-//	e.getSession().setMode('ace/modes/xml');
+	e.setTheme('ace/themes/solarized_light');
+	e.getSession().setMode('ace/modes/xml');
 	$('.btn#loadSbml').click(function() {
 		w.fadeToggle();
 		e.resize();
