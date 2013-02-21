@@ -1,18 +1,61 @@
 /*global Backbone ace*/
 
+var app = app || {};
+
 $(function() {
-	//	var panel = Backbone.Model.extend({
-	//		initialize: function() {
-	//			this.el = $(document.createElement('div'));
-	//			this.el.addClass('span'+this.width);
-	//			ace.edit(this.el);
-	//			$('.row-fluid#snap').append(this.el);
-	//		}
-	//	});
-	//	
-	//	var loadSbml = new panel({
-	//		width: 9
-	//	});
+	
+
+	// Menu
+	app.MenuItem = Backbone.Model.extend({
+
+	});
+	
+	
+	app.MenuList = Backbone.Collection.extend({
+		model: app.MenuItem
+	});
+	
+	app.menu = new app.MenuList([
+		{id: 'loadSbml', pane:'loadSbmlWindow'},
+		{id: 'importTestCase', pane: 'modal'},
+		{id: 'run', pane: 'graph'},
+		{id: 'view', pane: 'view'}
+	]);
+	
+	
+	app.PaneView = Backbone.View.extend({
+		initialize: function(){
+			this.el = $(document.createElement('div'))[0];
+			this.$el.addClass('span'+this.model.get('width'));
+			this.$el.addClass('test');
+			$('.row-fluid#snap').append(this.$el);
+			
+			this.listenTo(this.model, 'change:visible', this.render);
+		},
+		render: function(){
+			if (this.model.get('visible') === true) {
+				this.$el.fadeIn();
+			} else {
+				this.$el.fadeOut();
+			}
+		}
+	});
+	
+	app.Pane = Backbone.Model.extend({
+		defaults: {
+			visible: false
+		}	
+	});
+	
+	
+	app.loadSbml = new app.Pane({
+		name: 'Load SBML',
+		width: 9
+	});
+	
+	app.loadSbmlView = new app.PaneView({model: app.loadSbml});
+	
+	/*
 	var w = $('#loadSbmlWindow');
 	w.fadeToggle();
 	window.editor = ace.edit(w[0]);
@@ -42,5 +85,6 @@ $(function() {
 	$('.btn#run').click(function(){
 		c.fadeToggle();
 	})
+	*/
 	
 });
