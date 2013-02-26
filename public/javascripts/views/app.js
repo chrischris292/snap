@@ -4,10 +4,9 @@ define([
 	'underscore',
 	'backbone',
 	'collections/todos',
-	'views/todos',
-	'text!templates/stats.html',
-	'common'
-], function ($, _, Backbone, Todos, TodoView, statsTemplate, Common) {
+	'views/snap'
+/*jslint nomen*/
+], function ($, _, Backbone) {
 	'use strict';
 
 	var AppView = Backbone.View.extend({
