@@ -12,27 +12,17 @@ require.config({
 		backbone: {
 			deps: ['underscore', 'jquery'],
 			exports: 'Backbone'
-		},
-		backboneLocalstorage: {
-			deps: ['backbone'],
-			exports: 'Store'
 		}
 	},
 	paths: {
-		jquery: '../../../assets/jquery.min',
-		underscore: '../../../assets/lodash.min',
-		backbone: 'lib/backbone/backbone',
-		backboneLocalstorage: 'lib/backbone/backbone.localStorage',
-		text: 'lib/require/text'
+		jquery: '../components/jquery/jquery.js',
+		underscore: '../components/underscore/underscore.js',
+		backbone: '../components/backbone/backbone.js'
 	}
 });
 
-require(['backbone', 'views/app', 'routers/router'], function (Backbone, AppView, Workspace) {
+require(['views/app'], function (AppView) {
 	/*jslint nonew:false*/
-	// Initialize routing and start Backbone.history()
-	new Workspace();
-	Backbone.history.start();
-
 	// Initialize the application view
 	new AppView();
 });
