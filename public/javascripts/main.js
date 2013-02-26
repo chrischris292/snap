@@ -27,8 +27,8 @@ require.config({
 	}
 });
 
-require(['backbone', 'views/app', 'routers/router'], function(Backbone, AppView, Workspace) {
-	/*jshint nonew:false*/
+require(['backbone', 'views/app', 'routers/router'], function (Backbone, AppView, Workspace) {
+	/*jslint nonew:false*/
 	// Initialize routing and start Backbone.history()
 	new Workspace();
 	Backbone.history.start();
@@ -36,11 +36,3 @@ require(['backbone', 'views/app', 'routers/router'], function(Backbone, AppView,
 	// Initialize the application view
 	new AppView();
 });
-
-})
-}
-}
-}
-}
-}
-})
