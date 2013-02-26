@@ -5,18 +5,14 @@ define([
 	'backbone',
 	'collections/todos',
 	'views/snap'
-/*jslint nomen*/
-], function ($, _, Backbone) {
+], function ($, Backbone) {
 	'use strict';
 
 	var AppView = Backbone.View.extend({
 
 		// Instead of generating a new element, bind to the existing skeleton of
 		// the App already present in the HTML.
-		el: '#todoapp',
-
-		// Compile our stats template
-		template: _.template(statsTemplate),
+		el: '#application',
 
 		// Delegated events for creating new items, and clearing completed ones.
 		events: {
@@ -29,6 +25,8 @@ define([
 		// collection, when items are added or changed. Kick things off by
 		// loading any preexisting todos that might be saved in *localStorage*.
 		initialize: function () {
+
+
 			this.allCheckbox = this.$('#toggle-all')[0];
 			this.$input = this.$('#new-todo');
 			this.$footer = this.$('#footer');

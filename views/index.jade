@@ -34,7 +34,7 @@ head
 		//script(src='components/d3/d3.js')
 		//script(src='components/underscore/underscore.js')
 		//script(src='components/backbone/backbone.js')
-	body
+	body#application
 		.navbar.navbar-inverse.navbar-fixed-top
 			.navbar-inner
 				.container-fluid
@@ -63,7 +63,7 @@ head
 									
 		.container-fluid
 			.tab-content
-				.tab-pane#home.fade.active.in
+				.tab-pane#home.fade
 					.row-fluid
 						.span1
 						.span10
@@ -71,7 +71,7 @@ head
 							//.row-fluid
 							//include includes/bottom	
 						.span1
-				.tab-pane#snap.fade
+				.tab-pane#snap.fade.active.in
 					include includes/snap
 				.tab-pane#sbml2matlab.fade
 					include includes/sbml2matlab	
