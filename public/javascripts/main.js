@@ -15,9 +15,9 @@ require.config({
 		}
 	},
 	paths: {
-		jquery: '../components/jquery/jquery.js',
-		underscore: '../components/underscore/underscore.js',
-		backbone: '../components/backbone/backbone.js'
+		jquery: '../components/jquery/jquery',
+		underscore: '../components/underscore/underscore',
+		backbone: '../components/backbone/backbone'
 	}
 });
 
