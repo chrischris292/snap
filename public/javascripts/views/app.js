@@ -25,8 +25,8 @@ define([
 		// collection, when items are added or changed. Kick things off by
 		// loading any preexisting todos that might be saved in *localStorage*.
 		initialize: function () {
-
-
+			new SnapView();
+			/*
 			this.allCheckbox = this.$('#toggle-all')[0];
 			this.$input = this.$('#new-todo');
 			this.$footer = this.$('#footer');
@@ -39,6 +39,7 @@ define([
 			this.listenTo(Todos, 'all', this.render);
 
 			Todos.fetch();
+			*/
 		},
 
 		// Re-rendering the App just means refreshing the statistics -- the rest
