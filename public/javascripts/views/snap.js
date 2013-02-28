@@ -8,11 +8,12 @@ define([
 	'use strict';
 
 	var SnapView = Backbone.View.extend({
-		el: '#snap',
 
 		initialize: function () {
-			this.$elLoadSbml = this.$el.children('#loadSbml');
-			this.$elLoadTestCase = this.$el.children('#loadTestCase');
+			this.el = '#snap';
+			this.$el = $(this.el);
+			this.$elLoadSbml = this.$el.children().find('div#loadSbml');
+			this.$elLoadTestCase = this.$el.children().find('div#loadTestCase');
 			this.panels = new Panels();
 		}
 	});
