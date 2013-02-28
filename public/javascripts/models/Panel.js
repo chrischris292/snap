@@ -5,8 +5,11 @@ define([
 ], function (_, Backbone) {
 	'use strict';
 
-	var Panel = Backbone.model.extend({
-		defaults: {visible: false}
+	var Panel = Backbone.Model.extend({
+		defaults: {
+			visible: false,
+			span: 'span8'
+		}
 	});
 
 	return Panel;
