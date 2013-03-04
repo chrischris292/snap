@@ -16,7 +16,7 @@ define([
 			this.$elLoadSbml = this.$el.children().find('div#loadSbml');
 			this.$elLoadTestCase = this.$el.children().find('div#loadTestCase');
 			this.panels = new Panels();
-			this.loadSbmlView = new LoadSbmlView();
+			this.loadSbmlView = new AceView();
 			this.$el.append(this.loadSbmlView.el);
 		}
 

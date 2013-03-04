@@ -7,14 +7,18 @@ define([
 	function($, _, Backbone) {
 		'use strict';
 
-		var LoadSbmlView = Backbone.View.extend({
+		var AceView = Backbone.View.extend({
 			height: 800,
 			width: 400,
+			theme: 'github',
+			mode: 'xml',
 			initialize: function () {
 				$(this.el).height(this.height);
 				$(this.el).width(this.width);
-				ace.edit(this.el);
+				this.editor = ace.edit(this.el);
+				this.editor.setTheme("ace/theme/" + this.theme);
+				this.editor.getSession().setMode("ace/mode/" + this.mode);
 			}
 		});
-		return LoadSbmlView;
+		return AceView;
 	});
