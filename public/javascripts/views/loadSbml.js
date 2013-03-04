@@ -3,9 +3,7 @@ define(['jquery', 'underscore', 'backbone', 'ace/ace'], function($, _, Backbone,
 	'use strict';
 
 	var LoadSbmlView = Backbone.View.extend({
-		tagName: 'div',
-
-		initialize: function() {
+		initialize: function () {
 			ace.edit(this.el);
 		}
 	});
