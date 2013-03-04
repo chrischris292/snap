@@ -17,7 +17,8 @@ require.config({
 	paths: {
 		jquery: '../components/jquery/jquery',
 		underscore: '../components/underscore/underscore',
-		backbone: '../components/backbone/backbone'
+		backbone: '../components/backbone/backbone',
+		ace: '../components/ace/lib/ace'
 	}
 });
 

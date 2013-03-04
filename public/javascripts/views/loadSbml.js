@@ -1,6 +1,5 @@
-/*global define require*/
-var ace = require(['../components/ace/lib/ace'])
-define(['jquery', 'underscore', 'backbone', 'require'], function($, _, Backbone, require) {
+/*global define*/
+define(['jquery', 'underscore', 'backbone', 'ace/ace'], function($, _, Backbone, ace) {
 	'use strict';
 
 	var LoadSbmlView = Backbone.View.extend({
