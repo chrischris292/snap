@@ -3,8 +3,9 @@ define([
 	'jquery',
 	'underscore',
 	'backbone',
-	'collections/Panels'
-], function ($, _, Backbone, Panels) {
+	'collections/Panels',
+	'views/loadSbml'
+], function ($, _, Backbone, Panels, LoadSbmlView) {
 	'use strict';
 
 	var SnapView = Backbone.View.extend({
@@ -15,7 +16,9 @@ define([
 			this.$elLoadSbml = this.$el.children().find('div#loadSbml');
 			this.$elLoadTestCase = this.$el.children().find('div#loadTestCase');
 			this.panels = new Panels();
+			this.loadSbmlView = new LoadSbmlView();
 		}
+
 	});
 
 	return SnapView;
