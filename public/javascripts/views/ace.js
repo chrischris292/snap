@@ -18,6 +18,7 @@ define([
 				this.editor = ace.edit(this.el);
 				this.editor.setTheme("ace/theme/" + this.theme);
 				this.editor.getSession().setMode("ace/mode/" + this.mode);
+				this.editor.resize();
 			}
 		});
 		return AceView;
