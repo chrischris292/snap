@@ -29,8 +29,6 @@ define([
 			this.loadSbmlPanelView = new PanelView({
 				model: this.loadSbmlPanel
 			});
-			//this.$el.append(this.loadSbmlView.el);
-			//this.panels = new Panels([this.loadSbmlPanel]);
 		},
 
 		render: function () {
