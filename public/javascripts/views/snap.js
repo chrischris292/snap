@@ -15,8 +15,9 @@ define([
 		initialize: function () {
 			this.el = '#snap';
 			this.$el = $(this.el);
+
+			// Model
 			this.$elLoadSbml = this.$el.children().find('div#loadSbml');
-			this.$elLoadTestCase = this.$el.children().find('div#loadTestCase');
 			this.loadSbmlView = new AceView({
 				el: this.$elLoadSbml[0],
 				model: new AceModel({
@@ -31,9 +32,17 @@ define([
 			this.loadSbmlPanelView = new PanelView({
 				model: this.loadSbmlPanel
 			});
+
+			this.$elImportModel = this.$el.children().find('div#importModel');
+
+			// Simulation
+
+
+			// Export
 		},
 		events: {
-			'click #loadSbml.btn' : 'toggleLoadSbml'
+			'click #loadSbml.btn' : 'toggleLoadSbml',
+			'click #importModel.btn' : 'toggleImportModel'
 		},
 		toggleVisible: function (p) {
 			if (p.get('visible')) {
@@ -44,6 +53,9 @@ define([
 		},
 		toggleLoadSbml: function () {
 			this.toggleVisible(this.loadSbmlPanel);
+		},
+		toggleImportModel: function () {
+			this.toggleVisible(this.importModelPanel);
 		},
 		render: function () {
 		}
