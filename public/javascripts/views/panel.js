@@ -22,6 +22,9 @@ define([
 
 			this.model.get('view').$el.removeClass(this.model.previous('span'));
 			this.model.get('view').$el.addClass(this.model.get('span'));
+
+			this.model.get('view').render();
+			//this.model.set('height', this.model.get('view').$el.height());
 		}
 	});
 

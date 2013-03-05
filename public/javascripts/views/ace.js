@@ -16,7 +16,8 @@ define([
 
 			render: function () {
 				$(this.el).height(this.model.get('height'));
-				$(this.el).width(this.model.get('width'));
+				//$(this.el).width(this.model.get('width'));
+				//$(this.el).width(this.model.view.$el.width());
 				this.editor.resize();
 			}
 		});
