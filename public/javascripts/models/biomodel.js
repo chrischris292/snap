@@ -9,7 +9,7 @@ define([
 		defaults: {
 			this.sbml = 'was not fetched',
 			this.id = 'was not assigned'
-		}
+		},
 	});
 
 	return BioModel;
