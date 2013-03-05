@@ -4,9 +4,10 @@ define([
 	'underscore',
 	'backbone',
 	'models/Panel',
+	'models/ace',
 	'views/ace',
 	'views/panel'
-], function ($, _, Backbone, Panel, PanelView, AceView) {
+], function ($, _, Backbone, Panel, AceView, AceModel, PanelView) {
 	'use strict';
 
 	var SnapView = Backbone.View.extend({
@@ -17,17 +18,22 @@ define([
 			this.$elLoadSbml = this.$el.children().find('div#loadSbml');
 			this.$elLoadTestCase = this.$el.children().find('div#loadTestCase');
 			this.loadSbmlView = new AceView({
-				el: this.$elLoadSbml[0]
+				el: this.$elLoadSbml[0],
+				model: new AceModel({mode: 'monokai'})
 			});
 			this.loadSbmlPanel = new Panel({
-				view: this.loadSbmlView
+				view: this.loadSbmlView,
+				visible: true,
+				span: 'span7'
+			});
+			this.loadSbmlPanelView = new PanelView({
+				model: this.loadSbmlPanel
 			});
 			//this.$el.append(this.loadSbmlView.el);
 			//this.panels = new Panels([this.loadSbmlPanel]);
-		}
+		},
 
 		render: function () {
-			this.
 		}
 	});
 

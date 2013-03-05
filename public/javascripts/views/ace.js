@@ -8,16 +8,16 @@ define([
 		'use strict';
 
 		var AceView = Backbone.View.extend({
-			height: 800,
-			width: 400,
-			theme: 'github',
-			mode: 'xml',
 			initialize: function () {
-				$(this.el).height(this.height);
-				$(this.el).width(this.width);
 				this.editor = ace.edit(this.el);
-				this.editor.setTheme("ace/theme/" + this.theme);
-				this.editor.getSession().setMode("ace/mode/" + this.mode);
+				this.editor.setTheme("ace/theme/" + this.model.get('theme'));
+				this.editor.getSession().setMode("ace/mode/" + this.model.get('mode'));
+				this.render();
+			},
+
+			render: function () {
+				$(this.el).height(this.model.get('height'));
+				$(this.el).width(this.model.get('width'));
 				this.editor.resize();
 			}
 		});
