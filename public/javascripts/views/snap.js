@@ -3,7 +3,7 @@ define([
 	'jquery',
 	'underscore',
 	'backbone',
-	'models/Panel',
+	'models/panel',
 	'models/ace',
 	'views/ace',
 	'views/panel'
