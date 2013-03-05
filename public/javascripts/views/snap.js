@@ -7,7 +7,7 @@ define([
 	'models/ace',
 	'views/ace',
 	'views/panel'
-], function ($, _, Backbone, Panel, AceView, AceModel, PanelView) {
+], function ($, _, Backbone, Panel, AceModel, AceView, PanelView) {
 	'use strict';
 
 	var SnapView = Backbone.View.extend({
@@ -19,7 +19,7 @@ define([
 			this.$elLoadTestCase = this.$el.children().find('div#loadTestCase');
 			this.loadSbmlView = new AceView({
 				el: this.$elLoadSbml[0],
-				model: new AceModel({mode: 'monokai'})
+				model: new AceModel({theme: 'solarized_dark'})
 			});
 			this.loadSbmlPanel = new Panel({
 				view: this.loadSbmlView,
@@ -36,6 +36,5 @@ define([
 		render: function () {
 		}
 	});
-
 	return SnapView;
 });

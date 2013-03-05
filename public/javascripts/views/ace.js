@@ -3,8 +3,7 @@ define([
 	'jquery',
 	'underscore',
 	'backbone'
-],
-	function($, _, Backbone) {
+], function($, _, Backbone) {
 		'use strict';
 
 		var AceView = Backbone.View.extend({
@@ -22,4 +21,4 @@ define([
 			}
 		});
 		return AceView;
-	});
+});

@@ -1,8 +1,9 @@
 /*global define*/
 define([
+	'jquery',
 	'underscore',
 	'backbone'
-], function (_, Backbone) {
+], function ($, _, Backbone) {
 	'use strict';
 
 	var AceModel = Backbone.Model.extend({
