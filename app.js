@@ -5,6 +5,7 @@ var express = require('express'),
 	routes = require('./routes'),
 	user = require('./routes/user'),
 	sbml2matlab = require('./routes/sbml2matlab'),
+	biomodels = require('./routes/biomodels'),
 	http = require('http'),
 	path = require('path');
 var app = express();
@@ -27,6 +28,7 @@ app.configure('development', function() {
 });
 app.get('/', routes.index);
 app.get('/users', user.list);
+app.get('/biomodels', biomodels.getModel)
 app.post('/sbml2matlab', sbml2matlab.translate);
 http.createServer(app).listen(app.get('port'), function() {
 	console.log("Express server listening on port " + app.get('port'));
