@@ -6,3 +6,4 @@
 *.DS_Store
 public/components
 libsbmlsim
+*.log
