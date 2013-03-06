@@ -12,7 +12,17 @@ define([
 		},
 
 		initialize: function () {
-
+			var modelId = this.id,
+				modelSbml = this.sbml;
+			this.fetch({
+				data: {
+					id: modelId
+				},
+				success: function (data, textStatus, jqXHR) {
+					modelSbml = data;
+					console.log('loaded ' + modelSbml);
+				}
+			});
 		}
 	});
 
