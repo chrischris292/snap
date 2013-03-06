@@ -10,6 +10,10 @@ define([
 			sbml: 'was not fetched',
 			id: 'was not assigned'
 		},
+
+		initialize: function () {
+
+		}
 	});
 
 	return BioModel;
