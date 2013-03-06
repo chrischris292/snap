@@ -1,5 +1,6 @@
 /*global exports require*/
 exports.getModel = function (req, res) {
+	res.header("Access-Control-Allow-Origin", "*");
 	// Dependencies
 	var biomodels = require('biomodels').BioModelsWSClient;
 	// Get SBML From ID
