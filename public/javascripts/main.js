@@ -18,7 +18,8 @@ require.config({
 		jquery: '../components/jquery/jquery',
 		underscore: '../components/underscore/underscore',
 		backbone: '../components/backbone/backbone',
-		ace: '../components/ace/lib/ace'
+		ace: '../components/ace/lib/ace',
+		text: '../components/requirejs-text/text'
 	}
 });
 
