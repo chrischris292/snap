@@ -6,8 +6,11 @@ define([
 	'models/panel',
 	'models/ace',
 	'views/ace',
-	'views/panel'
-], function ($, _, Backbone, Panel, AceModel, AceView, PanelView) {
+	'views/panel',
+	'views/biomodels',
+	'models/biomodel',
+	'text!templates/biomodels.html'
+], function ($, _, Backbone, Panel, AceModel, AceView, PanelView, BiomodelsView, Biomodel, ImportModelHtml) {
 	'use strict';
 
 	var SnapView = Backbone.View.extend({
@@ -35,10 +38,14 @@ define([
 
 			this.$elImportModel = this.$el.children().find('div#importModel');
 
+			//this.BiomodelsView = new BiomodelsView(new Biomodel({id: 'BIOMD0000000001'}));
+
 			// Simulation
 
 
 			// Export
+
+			this.render();
 		},
 		events: {
 			'click #loadSbml.btn' : 'toggleLoadSbml',
@@ -58,6 +65,8 @@ define([
 			this.toggleVisible(this.importModelPanel);
 		},
 		render: function () {
+			var template = _.template(ImportModelHtml);
+			this.$el.append(template());
 		}
 	});
 	return SnapView;

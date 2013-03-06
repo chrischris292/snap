@@ -7,8 +7,8 @@ define([
 
 	var BioModel = Backbone.Model.extend({
 		defaults: {
-			this.sbml = 'was not fetched',
-			this.id = 'was not assigned'
+			sbml: 'was not fetched',
+			id: 'was not assigned'
 		},
 	});
 
