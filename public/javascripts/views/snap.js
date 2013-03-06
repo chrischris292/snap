@@ -30,14 +30,25 @@ define([
 			this.loadSbmlPanel = new Panel({
 				view: this.loadSbmlView,
 				visible: true,
-				span: 'span12'
+				span: 'span9'
 			});
 			this.loadSbmlPanelView = new PanelView({
 				model: this.loadSbmlPanel
 			});
 
 			this.$elImportModel = this.$el.children().find('div#importModel');
-
+			var template = _.template(ImportModelHtml);
+			this.$elImportModel.append(template());
+			var $elImportModel = this.$elImportModel;
+			this.importModelPanel = new Panel({
+				view: new Backbone.View({
+					el: $elImportModel[0]
+				}),
+				span: 'span2'
+			});
+			this.importModelPanelView = new PanelView({
+				model: this.importModelPanel
+			});
 			//this.BiomodelsView = new BiomodelsView(new Biomodel({id: 'BIOMD0000000001'}));
 
 			// Simulation
@@ -65,8 +76,6 @@ define([
 			this.toggleVisible(this.importModelPanel);
 		},
 		render: function () {
-			var template = _.template(ImportModelHtml);
-			this.$el.append(template());
 		}
 	});
 	return SnapView;
