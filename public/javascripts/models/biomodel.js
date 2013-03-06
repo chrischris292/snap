@@ -18,6 +18,11 @@ define([
 				data: {
 					id: modelId
 				},
+				type: 'GET',
+				error: function (jqXHR, textStatus, errorThrown) {
+					console.log('error in GET: ' + textStatus + errorThrown);
+				},
+				url: 'biomodels',
 				success: function (data, textStatus, jqXHR) {
 					modelSbml = data;
 					console.log('loaded ' + modelSbml);

@@ -9,8 +9,9 @@ define([
 	'views/panel',
 	'views/biomodels',
 	'models/biomodel',
-	'text!templates/biomodels.html'
-], function ($, _, Backbone, Panel, AceModel, AceView, PanelView, BiomodelsView, Biomodel, ImportModelHtml) {
+	'text!templates/biomodels.html',
+	'collections/biomodels'
+], function ($, _, Backbone, Panel, AceModel, AceView, PanelView, BiomodelsView, Biomodel, ImportModelHtml, BiomodelsCollection) {
 	'use strict';
 
 	var SnapView = Backbone.View.extend({
@@ -49,6 +50,9 @@ define([
 			this.importModelPanelView = new PanelView({
 				model: this.importModelPanel
 			});
+
+			this.BiomodelsCollection = new BiomodelsCollection();
+			this.BiomodelsCollection.add({id: 'BIOMD0000000001'});
 			//this.BiomodelsView = new BiomodelsView(new Biomodel({id: 'BIOMD0000000001'}));
 
 			// Simulation

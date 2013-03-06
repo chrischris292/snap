@@ -7,10 +7,12 @@ define([
 	'use strict';
 
 	var BiomodelsCollection = Backbone.Collection.extend({
-		url: '/biomodels',
+		url: 'biomodels',
 
 		model: Biomodel
 
 	});
+
+	return BiomodelsCollection;
 });
 
