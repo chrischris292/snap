@@ -7,6 +7,7 @@ var express = require('express'),
 	sbml2matlab = require('./routes/sbml2matlab'),
 	biomodels = require('./routes/biomodels'),
 	chebi = require('./routes/chebi'),
+	simulator = require('./routes/simulator'),
 	http = require('http'),
 	path = require('path');
 var app = express();
@@ -32,6 +33,7 @@ app.get('/users', user.list);
 app.all('/biomodels', biomodels.getModel);
 app.all('/chebi', chebi.getModelIds);
 app.post('/sbml2matlab', sbml2matlab.translate);
-http.createServer(app).listen(app.get('port'), function() {
+app.post('/simulator', simulator.libsbmlsim);
+http.createServer(app).listen(app.get('port'), function () {
 	console.log("Express server listening on port " + app.get('port'));
 });
