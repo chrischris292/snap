@@ -5,7 +5,13 @@ exports.getModelIds = function (req, res) {
 	// Get SBML From ID
 	console.log('requested chebi: ' + req.query.chebi)
 	biomodels.getModelsIdByChEBI(req.query.chebi, function (err, results) {
+		console.log(results);
+		res.contentType('json')
+		res.send({
+			data: JSON.stringify({
+				chebi: results
+			})
+		});
 		res.send(200);
-		res.send(results);
 	});
 };

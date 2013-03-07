@@ -9,7 +9,7 @@ define([
 	var BiomodelsCollection = Backbone.Collection.extend({
 		url: 'biomodels',
 
-		model: Biomodel
+	model: Biomodel
 
 	});
 

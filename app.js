@@ -6,6 +6,7 @@ var express = require('express'),
 	user = require('./routes/user'),
 	sbml2matlab = require('./routes/sbml2matlab'),
 	biomodels = require('./routes/biomodels'),
+	chebi = require('./routes/chebi'),
 	http = require('http'),
 	path = require('path');
 var app = express();

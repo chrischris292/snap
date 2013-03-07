@@ -5,7 +5,7 @@ define([
 ], function (_, Backbone) {
 	'use strict';
 
-	var BioModel = Backbone.Model.extend({
+	var Biomodel = Backbone.Model.extend({
 		defaults: {
 			sbml: 'was not fetched',
 			id: 'was not assigned'
@@ -33,6 +33,6 @@ define([
 		}
 	});
 
-	return BioModel;
+	return Biomodel;
 });
 

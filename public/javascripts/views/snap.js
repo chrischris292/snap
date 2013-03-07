@@ -51,8 +51,11 @@ define([
 				model: this.importModelPanel
 			});
 
-			this.BiomodelsCollection = new BiomodelsCollection();
-			this.BiomodelsCollection.add({id: 'BIOMD0000000001'});
+			// BioModels
+			//this.listenTo(BiomodelsCollection, 'add', this.addModel);
+			this.biomodels = new BiomodelsCollection();
+			this.listenTo(this.biomodels, 'sync', this.addModelView);
+			//this.biomodels.fetch();
 
 			// Simulation
 
@@ -79,15 +82,52 @@ define([
 		toggleImportModel: function () {
 			this.toggleVisible(this.importModelPanel);
 		},
+		// gets new biomodel attributes
+		newAttributes: function (id, view) {
+			return {
+				id: id,
+				editorView: view
+			};
+		},
+		// generates a list of all biomodels that match search criteria and
+		// then adds all the models to the collection
 		getBiomodels: function () {
 			// searching by model ID
 			var mId = this.$elImportModel.children().find('input#modelId')[0].value;
+
+			//this.biomodels.create(this.newAttributes(mId, this.loadSbmlView));
+			//this.biomodels.add(new Biomodel({id: mId, editorView: this.loadSbmlView}));
+
 			this.biomodel = new Biomodel({id: mId, editorView: this.loadSbmlView});
 			this.biomodelView = new BiomodelsView({model: this.biomodel});
 			this.listenTo(this.biomodel, 'change:sbml', this.addBiomodelView);
 			// searching by ChEBI ID
 			var chebi = this.$elImportModel.children().find('input#chebi')[0].value;
-
+			$.ajax({
+				data: {
+					chebi: chebi
+				},
+				type: 'GET',
+				//error: function (jqXHR, textStatus, errorThrown) {
+				//	console.log('Model failed to be fetched from server: ' + textStatus + errorThrown);
+				//},
+				dataType: 'json',
+				url: 'chebi',
+				success: function (data, textStatus, jqXHR) {
+					console.log(JSON.parse(data));
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					console.log(textStatus);
+				}
+			});
+		},
+		// adds a single biomodel to the collection and creates the view
+		addModel: function (biomodel) {
+			var view = new BiomodelsView({model: biomodel});
+		},
+		addModelView: function (biomodel) {
+			var view = new BiomodelsView({model: biomodel});
+			this.$elImportModel.append(view.$el);
 		},
 		addBiomodelView: function () {
 			this.$elImportModel.append(this.biomodelView.$el);
