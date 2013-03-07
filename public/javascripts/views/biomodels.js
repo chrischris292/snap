@@ -12,7 +12,7 @@ define([
 			this.render();
 		},
 
-		template: _.template('<a href="biomodels"><%= modelId %></a>'),
+		template: _.template('<button class="btn" id="<%= modelId %>"><%= modelId %></button>'),
 
 		render: function () {
 			this.$el.html(this.template({
@@ -26,7 +26,8 @@ define([
 		},
 
 		loadModel: function () {
-
+			console.log('clicked model!');
+			this.model.get('editorView').editor.setValue(this.model.get('sbml'));
 		}
 	});
 

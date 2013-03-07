@@ -53,7 +53,6 @@ define([
 
 			this.BiomodelsCollection = new BiomodelsCollection();
 			this.BiomodelsCollection.add({id: 'BIOMD0000000001'});
-			//this.BiomodelsView = new BiomodelsView(new Biomodel({id: 'BIOMD0000000001'}));
 
 			// Simulation
 
@@ -65,7 +64,7 @@ define([
 		events: {
 			'click #loadSbml.btn' : 'toggleLoadSbml',
 			'click #importModel.btn' : 'toggleImportModel',
-			'click #searchBiomodels.btn' : 'getBiomodelsById'
+			'click #searchBiomodels.btn' : 'getBiomodels'
 		},
 		toggleVisible: function (p) {
 			if (p.get('visible')) {
@@ -80,11 +79,15 @@ define([
 		toggleImportModel: function () {
 			this.toggleVisible(this.importModelPanel);
 		},
-		getBiomodelsById: function () {
+		getBiomodels: function () {
+			// searching by model ID
 			var mId = this.$elImportModel.children().find('input#modelId')[0].value;
-			this.biomodel = new Biomodel({id: mId});
+			this.biomodel = new Biomodel({id: mId, editorView: this.loadSbmlView});
 			this.biomodelView = new BiomodelsView({model: this.biomodel});
 			this.listenTo(this.biomodel, 'change:sbml', this.addBiomodelView);
+			// searching by ChEBI ID
+			var chebi = this.$elImportModel.children().find('input#chebi')[0].value;
+
 		},
 		addBiomodelView: function () {
 			this.$elImportModel.append(this.biomodelView.$el);
