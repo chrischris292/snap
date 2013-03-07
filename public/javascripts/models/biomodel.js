@@ -14,17 +14,21 @@ define([
 		initialize: function () {
 			var modelId = this.id,
 				modelSbml = this.sbml;
+
+			console.log();
 			this.fetch({
 				data: {
 					id: modelId
 				},
 				type: 'GET',
-				error: function (jqXHR, textStatus, errorThrown) {
-					console.log('error in GET: ' + textStatus + errorThrown);
-				},
+				//error: function (jqXHR, textStatus, errorThrown) {
+				//	console.log('Model failed to be fetched from server: ' + textStatus + errorThrown);
+				//},
+				processData: true,
+				dataType: 'text',
 				url: 'biomodels',
 				success: function (data, textStatus, jqXHR) {
-					modelSbml = data;
+					modelSbml = textStatus;
 					console.log('loaded ' + modelSbml);
 				}
 			});
