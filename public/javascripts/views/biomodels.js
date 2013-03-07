@@ -18,6 +18,7 @@ define([
 			this.$el.html(this.template({
 				modelId: this.model.get('id')
 			}));
+			return this;
 		},
 
 		events: {

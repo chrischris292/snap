@@ -12,13 +12,11 @@ define([
 		},
 
 		initialize: function () {
-			var modelId = this.id,
-				modelSbml = this.sbml;
+			var model = this;
 
-			console.log();
 			this.fetch({
 				data: {
-					id: modelId
+					id: model.id
 				},
 				type: 'GET',
 				//error: function (jqXHR, textStatus, errorThrown) {
@@ -28,8 +26,8 @@ define([
 				dataType: 'text',
 				url: 'biomodels',
 				success: function (data, textStatus, jqXHR) {
-					modelSbml = textStatus;
-					console.log('loaded ' + modelSbml);
+					model.set('sbml', textStatus);
+					console.log('loaded model!');
 				}
 			});
 		}

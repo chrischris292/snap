@@ -64,7 +64,8 @@ define([
 		},
 		events: {
 			'click #loadSbml.btn' : 'toggleLoadSbml',
-			'click #importModel.btn' : 'toggleImportModel'
+			'click #importModel.btn' : 'toggleImportModel',
+			'click #searchBiomodels.btn' : 'getBiomodelsById'
 		},
 		toggleVisible: function (p) {
 			if (p.get('visible')) {
@@ -78,6 +79,15 @@ define([
 		},
 		toggleImportModel: function () {
 			this.toggleVisible(this.importModelPanel);
+		},
+		getBiomodelsById: function () {
+			var mId = this.$elImportModel.children().find('input#modelId')[0].value;
+			this.biomodel = new Biomodel({id: mId});
+			this.biomodelView = new BiomodelsView({model: this.biomodel});
+			this.listenTo(this.biomodel, 'change:sbml', this.addBiomodelView);
+		},
+		addBiomodelView: function () {
+			this.$elImportModel.append(this.biomodelView.$el);
 		},
 		render: function () {
 		}
