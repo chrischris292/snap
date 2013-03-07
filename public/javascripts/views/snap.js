@@ -103,23 +103,23 @@ define([
 			this.listenTo(this.biomodel, 'change:sbml', this.addBiomodelView);
 			// searching by ChEBI ID
 			var chebi = this.$elImportModel.children().find('input#chebi')[0].value;
-			$.ajax({
-				data: {
-					chebi: chebi
-				},
-				type: 'GET',
-				//error: function (jqXHR, textStatus, errorThrown) {
-				//	console.log('Model failed to be fetched from server: ' + textStatus + errorThrown);
-				//},
-				dataType: 'json',
-				url: 'chebi',
-				success: function (data, textStatus, jqXHR) {
-					console.log(JSON.parse(data));
-				},
-				error: function (jqXHR, textStatus, errorThrown) {
-					console.log(textStatus);
-				}
-			});
+			//$.ajax({
+			//	data: {
+			//		chebi: chebi
+			//	},
+			//	type: 'GET',
+			//	//error: function (jqXHR, textStatus, errorThrown) {
+			//	//	console.log('Model failed to be fetched from server: ' + textStatus + errorThrown);
+			//	//},
+			//	dataType: 'json',
+			//	url: 'chebi',
+			//	success: function (data, textStatus, jqXHR) {
+			//		console.log(JSON.parse(data));
+			//	},
+			//	error: function (jqXHR, textStatus, errorThrown) {
+			//		console.log(textStatus);
+			//	}
+			//});
 		},
 		// adds a single biomodel to the collection and creates the view
 		addModel: function (biomodel) {

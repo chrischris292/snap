@@ -8,7 +8,10 @@ exports.getModel = function (req, res) {
 	biomodels.getModelSBMLById(req.query.id, function (err, results) {
 		console.log(err + results);
 		//res.status(200).send(err + results);
-		res.send(200);
+		res.set({
+			'Content-Type': 'text/plain',
+			'Content-Length': results.length
+		});
 		res.send(results);
 	});
 };
