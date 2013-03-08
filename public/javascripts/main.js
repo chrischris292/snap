@@ -12,6 +12,10 @@ require.config({
 		backbone: {
 			deps: ['underscore', 'jquery'],
 			exports: 'Backbone'
+		},
+		rickshaw: {
+			deps: ['d3'],
+			exports: 'Rickshaw'
 		}
 	},
 	paths: {
@@ -19,7 +23,9 @@ require.config({
 		underscore: '../components/underscore/underscore',
 		backbone: '../components/backbone/backbone',
 		ace: '../components/ace/lib/ace',
-		text: '../components/requirejs-text/text'
+		text: '../components/requirejs-text/text',
+		d3: '../components/d3/d3',
+		rickshaw: '../components/rickshaw/rickshaw'
 	}
 });
 
