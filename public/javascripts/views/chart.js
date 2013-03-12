@@ -2,24 +2,32 @@
 define([
 	'jquery',
 	'underscore',
-	'backbone'
-], function($, _, Backbone) {
-		'use strict';
+	'backbone',
+	'd3',
+	'rickshaw'
+], function($, _, Backbone, d3, Rickshaw) {
+	'use strict';
+	var ChartView = Backbone.View.extend({
+		initialize: function () {
+			this.graph = new Rickshaw.Graph({
+				element: this.el,
+				series: [{
+					color: 'steelblue',
+					data: [
+						{ x: 0, y: 40 },
+						{ x: 1, y: 49 },
+						{ x: 2, y: 38 },
+						{ x: 3, y: 30 },
+						{ x: 4, y: 32 } ]
+				}]
+			});
 
-		var ChartView = Backbone.View.extend({
-			initialize: function () {
-				this.editor = ace.edit(this.el);
-				this.editor.setTheme("ace/theme/" + this.model.get('theme'));
-				this.editor.getSession().setMode("ace/mode/" + this.model.get('mode'));
-				this.render();
-			},
+			this.render();
+		},
 
-			render: function () {
-				$(this.el).height(this.model.get('height'));
-				//$(this.el).width(this.model.get('width'));
-				//$(this.el).width(this.model.view.$el.width());
-				this.editor.resize();
-			}
-		});
-		return ChartView;
+		render: function () {
+			this.graph.render();
+		}
+	});
+	return ChartView;
 });

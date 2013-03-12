@@ -11,9 +11,8 @@ define([
 	'models/biomodel',
 	'text!templates/biomodels.html',
 	'collections/biomodels',
-	'rickshaw',
-	'd3'
-], function ($, _, Backbone, Panel, AceModel, AceView, PanelView, BiomodelsView, Biomodel, ImportModelHtml, BiomodelsCollection, Rickshaw, d3) {
+	'views/chart'
+], function ($, _, Backbone, Panel, AceModel, AceView, PanelView, BiomodelsView, Biomodel, ImportModelHtml, BiomodelsCollection, ChartView) {
 	'use strict';
 
 	var SnapView = Backbone.View.extend({
@@ -61,29 +60,22 @@ define([
 
 			// Simulation
 			this.$elChart = this.$el.children().find('div#chart');
-
-			var graph = new Rickshaw.Graph({
-				element: this.$elChart[0],
-				width: 300,
-				height: 200,
-				series: [{
-					color: 'steelblue',
-					data: [
-						{ x: 0, y: 40 },
-						{ x: 1, y: 49 },
-						{ x: 2, y: 38 },
-						{ x: 3, y: 30 },
-						{ x: 4, y: 32 } ]
-				}]
+			this.chartView = new ChartView({el: this.$elChart[0]});
+			this.chartPanel = new Panel({
+				view: this.chartView,
+				span: 'span9'
+			});
+			this.chartPanelView = new PanelView({
+				model: this.chartPanel
 			});
 
-			graph.render();
 			this.render();
 		},
 		events: {
 			'click #loadSbml.btn' : 'toggleLoadSbml',
 			'click #importModel.btn' : 'toggleImportModel',
-			'click #searchBiomodels.btn' : 'getBiomodels'
+			'click #searchBiomodels.btn' : 'getBiomodels',
+			'click #run.btn' : 'toggleChart'
 		},
 		toggleVisible: function (p) {
 			if (p.get('visible')) {
@@ -97,6 +89,9 @@ define([
 		},
 		toggleImportModel: function () {
 			this.toggleVisible(this.importModelPanel);
+		},
+		toggleChart: function () {
+			this.toggleVisible(this.chartPanel);
 		},
 		// gets new biomodel attributes
 		newAttributes: function (id, view) {
