@@ -1,15 +1,17 @@
-*global require*/
+/*global require*/
 exports.libsbmlsim = function (req, res) {
 	'use strict';
 
-	var sim = require('libsbmlsimjs'),
+	var sim = require('libsbmlsimjs').libsbmlsim,
 		fs = require('fs');
 
-	fs.writeFile('tmp/temp.sbml', req.body.sbml, function(err) {
+	fs.writeFile('tmp/temp.sbml', req.body.sbml, function (err) {
 		if (err) {
 			console.log(err);
 		} else {
 			console.log('SBML file saved in temporary location!');
+
+			fs.unlink('tmp/temp.sbml'); // delete temporary file
 		}
 	});
 

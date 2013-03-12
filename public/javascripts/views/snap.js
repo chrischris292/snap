@@ -75,7 +75,7 @@ define([
 			'click #loadSbml.btn' : 'toggleLoadSbml',
 			'click #importModel.btn' : 'toggleImportModel',
 			'click #searchBiomodels.btn' : 'getBiomodels',
-			'click #run.btn' : 'toggleChart'
+			'click #run.btn' : 'runSimulation'
 		},
 		toggleVisible: function (p) {
 			if (p.get('visible')) {
@@ -92,6 +92,26 @@ define([
 		},
 		toggleChart: function () {
 			this.toggleVisible(this.chartPanel);
+		},
+		runSimulation: function () {
+			this.toggleChart();
+			var sbml = this.loadSbmlView.editor.getValue();
+			console.log(sbml);
+			$.ajax({
+				data: {
+					sbml: sbml
+				},
+				type: 'POST',
+				//error: function (jqXHR, textStatus, errorThrown) {
+				//	console.log('Model failed to be fetched from server: ' + textStatus + errorThrown);
+				//},
+				processData: true,
+				dataType: 'text',
+				url: 'simulator',
+				success: function (data, textStatus, jqXHR) {
+					console.log('simulated model!');
+				}
+			});
 		},
 		// gets new biomodel attributes
 		newAttributes: function (id, view) {
