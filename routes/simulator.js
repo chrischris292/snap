@@ -1,25 +1,19 @@
-///*
-// * GET sbml2matlab translation
-// */
-//var spawn = require('child_process').spawn,
-//	  //sbml2matlab = spawn('pwd', ['-lh', '/usr']);
-//	  sbml2matlab = spawn('pwd'),
-//	  translation = 'no translation available';
-//exports.translate = function (req, res) {
-//	  sbml2matlab.stdout.on('data', function (data) {
-//		  translation = 'stdout: ' + data;
-//	  });
-//	  sbml2matlab.stderr.on('data', function (data) {
-//		  translation = 'stderr: ' + data;
-//	  });
-//	  sbml2matlab.on('exit', function (code) {
-//		  translation = 'child process exited with code ' + code;
-//	  });
-//	  res.send(translation);
-//};
-/*global require*/
+*global require*/
 exports.libsbmlsim = function (req, res) {
 	'use strict';
+
+	var sim = require('libsbmlsimjs'),
+		fs = require('fs');
+
+	fs.writeFile('tmp/temp.sbml', req.body.sbml, function(err) {
+		if (err) {
+			console.log(err);
+		} else {
+			console.log('SBML file saved in temporary location!');
+		}
+	});
+
+	/*
 	var exec = require('child_process').exec,
 		fs = require('fs'),
 		child,
@@ -52,4 +46,5 @@ exports.libsbmlsim = function (req, res) {
 			console.log('exec error: ' + error);
 		}
 	});
+   */
 };
