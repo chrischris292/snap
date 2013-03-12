@@ -24,14 +24,14 @@ exports.translate = function (req, res) {
         querystring = require('querystring'),
         url = require('url'),
         sbml; // request processing
-    var command = "cd snap/server/sbml2matlab/install/ && ./sbml2matlab -input tmp.sbml";
+    var command = "cd sbml2matlab/build && ./sbml2matlab -input tmp.sbml";
     var options = {
         //cwd: 'server/sbml2matlab/install/',
         timeout: 10
     };
     console.log(command);
 
-    fs.writeFile("./server/sbml2matlab/install/tmp.sbml", req.body.sbml, function (err) {
+    fs.writeFile("./server/sbml2matlab/build/tmp.sbml", req.body.sbml, function (err) {
         if (err) {
             console.log(err);
         }
