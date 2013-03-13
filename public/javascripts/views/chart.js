@@ -1,4 +1,4 @@
-/*global define*/
+/*global define document*/
 define([
 	'jquery',
 	'underscore',
@@ -9,8 +9,15 @@ define([
 	'use strict';
 	var ChartView = Backbone.View.extend({
 		initialize: function () {
+			this.chartElement = document.createElement('div');
+			this.chartElement.setAttribute('id', 'chart_container');
+			$(this.el).append(this.chartElement);
+			this.yElement = document.createElement('div');
+			this.yElement.setAttribute('id', 'y_axis');
+			$(this.el).append(this.yElement);
+
 			this.graph = new Rickshaw.Graph({
-				element: this.el,
+				element: this.chartElement,
 				series: [{
 					color: 'steelblue',
 					data: [
@@ -20,6 +27,16 @@ define([
 						{ x: 3, y: 30 },
 						{ x: 4, y: 32 } ]
 				}]
+			});
+
+			//$('#y_axis').css('position', 'absolute').css('top', 0).css('bottom', 0).css('width', '40px');
+			//$(this.el).css('position', 'relative')
+			//this.x_axis = new Rickshaw.Graph.Axis.Time({ graph: this.graph });
+			this.y_axis = new Rickshaw.Graph.Axis.Y({
+				graph: this.graph,
+				orientation: 'left',
+				tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
+				element: this.yElement
 			});
 
 			this.render();
