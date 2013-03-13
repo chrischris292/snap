@@ -1,5 +1,82 @@
-extends layout
+!!! 5
+html(lang='en')
+head
+		meta(charset='utf-8')
+		title sysb.io
+		meta(name='viewport', content='width=device-width, initial-scale=1.0')
+		meta(name='description', content='')
+		meta(name='author', content='')
 
-block content
-  h1= title
-  p Welcome to #{title}
+		link(href='components/bootstrap/css/bootstrap.css', rel='stylesheet')
+		style(type='text/css')
+			body {
+			padding-top: 60px;
+			padding-bottom: 40px;
+			}
+			.sidebar-nav {
+			padding: 9px 0;
+			}
+			.ace_editor {
+			position: relative;
+			}
+		link(href='components/bootstrap/css/bootstrap-responsive.css', rel='stylesheet')
+	
+		//link(rel='apple-touch-icon-precomposed', sizes='144x144', href='components/bootstrap/ico/apple-touch-icon-144-precomposed.png')
+		//link(rel='apple-touch-icon-precomposed', sizes='114x114', href='components/bootstrap/ico/apple-touch-icon-114-precomposed.png')
+		//link(rel='apple-touch-icon-precomposed', sizes='72x72', href='components/bootstrap/ico/apple-touch-icon-72-precomposed.png')
+		//link(rel='apple-touch-icon-precomposed', href='components/bootstrap/ico/apple-touch-icon-57-precomposed.png')
+		//link(rel='shortcut icon', href='components/bootstrap/ico/favicon.png')
+		
+		script(data-main='javascripts/main.js', src='components/require/require.js')
+		script(src='components/jquery/jquery.js')
+		//script(src='components/jquery-ui/ui/jquery-ui.custom.js')
+		script(src='components/bootstrap/js/bootstrap.js')
+		script(src='components/ace-builds/src-min-noconflict/ace.js')
+		//script(src='components/d3/d3.js')
+		//script(src='components/underscore/underscore.js')
+		//script(src='components/backbone/backbone.js')
+	body#application
+		.navbar.navbar-inverse.navbar-fixed-top
+			.navbar-inner
+				.container-fluid
+					button.btn.btn-navbar(type='button', data-toggle='collapse', data-target='.nav-collapse')
+						span.icon-bar
+						span.icon-bar
+						span.icon-bar
+					a.brand(href='.') sysb.io
+					.nav-collapse.collapse
+						p.navbar-text.pull-right
+							a.navbar-link(href='http://sys-bio.org/') Sys-Bio @ University of Washington
+						ul.nav
+							li.active
+								a(data-target='#home', data-toggle='tab') Home
+							li
+								a(data-target='#snap', data-toggle='tab') snap
+							li
+								a(data-target='#sbml2matlab', data-toggle='tab') sbml2matlab
+							li
+								a(data-target='#biomodels', data-toggle='tab') BioModels
+							li
+								a(data-target='#about', data-toggle='tab') About
+							li
+								.span
+									.btn.btn-warning Currently Under Construction!
+									
+		.container-fluid
+			.tab-content
+				.tab-pane#home.fade
+					.row-fluid
+						.span1
+						.span10
+							include includes/hero
+							//.row-fluid
+							//include includes/bottom	
+						.span1
+				.tab-pane#snap.fade.active.in
+					include includes/snap
+				.tab-pane#sbml2matlab.fade
+					include includes/sbml2matlab	
+				.tab-pane#biomodels.fade
+					include includes/biomodels
+				.tab-pane#about.fade
+					include includes/about

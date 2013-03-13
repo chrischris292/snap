@@ -1,0 +1,17 @@
+{
+  "name": "public",
+  "version": "0.0.0",
+  "dependencies": {
+    "bootstrap": "http://twitter.github.com/bootstrap/assets/bootstrap.zip",
+    "jquery": "~1.9.0",
+    "backbone": "~0.9.10",
+    "underscore": "~1.4.3",
+    "d3": "~3.0.6",
+    "jquery-ui": "~1.10.0",
+    "rickshaw": "~1.2.0",
+    "ace-builds": "git://github.com/ajaxorg/ace-builds.git#~1.0.0",
+    "require": "~2.1.4",
+    "ace": "~0.2.0",
+    "requirejs-text": "~2.0.5"
+  }
+}
