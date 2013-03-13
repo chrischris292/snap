@@ -1,4 +1,4 @@
 snap
 ====
 
-SBML Reaction Network Visualizer
+SBML Network AJAX Project
