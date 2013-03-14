@@ -17,9 +17,10 @@ exports.libsbmlsim = function (req, res) {
 			//sim.print_result(result);
 			//sim.print_result(result);
 			//var command = 'cd tmp && simulateSBML -t 100 -s 100 -m 1 temp.sbml',
+			debugger;
 			var command = 'simulateSBML -t 100 -s 100 -m 1 temp.sbml',
 				options = {
-					cwd: '/home/stanleyg/snap/tmp'
+					cwd: 'tmp'
 				};
 			exec(command, options, function (error, stdout, stderr) {
 				if (error) {
