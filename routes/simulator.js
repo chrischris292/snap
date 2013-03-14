@@ -35,7 +35,7 @@ exports.libsbmlsim = function (req, res) {
 						data.push(row);
 					}).on('end', function () {
 						console.log(data);
-						res.json(data);
+						res.send(data);
 					});
 				}
 			});
