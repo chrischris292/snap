@@ -7,3 +7,4 @@
 public/components
 libsbmlsim
 *.log
+tmp
