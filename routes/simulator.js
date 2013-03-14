@@ -17,7 +17,6 @@ exports.libsbmlsim = function (req, res) {
 			//sim.print_result(result);
 			//sim.print_result(result);
 			//var command = 'cd tmp && simulateSBML -t 100 -s 100 -m 1 temp.sbml',
-			debugger;
 			var command = 'simulateSBML -t 100 -s 100 -m 1 temp.sbml',
 				options = {
 					cwd: 'tmp'
@@ -36,7 +35,7 @@ exports.libsbmlsim = function (req, res) {
 						data.push(row);
 					}).on('end', function () {
 						console.log(data);
-						res.send(data);
+						res.json(data);
 					});
 				}
 			});
