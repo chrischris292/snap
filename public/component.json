@@ -10,8 +10,8 @@
     "jquery-ui": "~1.10.0",
     "rickshaw": "~1.2.0",
     "ace-builds": "git://github.com/ajaxorg/ace-builds.git#~1.0.0",
-    "require": "~2.1.4",
     "ace": "~0.2.0",
-    "requirejs-text": "~2.0.5"
+    "requirejs-text": "~2.0.5",
+    "requirejs": "~2.1.5"
   }
 }
