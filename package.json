@@ -12,7 +12,8 @@
     "underscore": "~1.4.4",
     "mongoose": "~3.5.6",
     "biomodels": "0.0.3",
-    "libsbmlsimjs": "0.0.2"
+    "libsbmlsimjs": "0.0.2",
+    "ya-csv": "~0.9.2"
   },
   "devDependencies": {
     "bower": "*"
