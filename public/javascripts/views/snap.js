@@ -9,10 +9,11 @@ define([
 	'views/panel',
 	'views/biomodels',
 	'models/biomodel',
+	'models/simulation',
 	'text!templates/biomodels.html',
 	'collections/biomodels',
 	'views/chart'
-], function ($, _, Backbone, Panel, AceModel, AceView, PanelView, BiomodelsView, Biomodel, ImportModelHtml, BiomodelsCollection, ChartView) {
+], function ($, _, Backbone, Panel, AceModel, AceView, PanelView, BiomodelsView, Biomodel, SimResultsModel, ImportModelHtml, BiomodelsCollection, ChartView) {
 	'use strict';
 
 	var SnapView = Backbone.View.extend({
@@ -60,15 +61,15 @@ define([
 
 			// Simulation
 			this.$elChart = this.$el.children().find('div#chart');
-			this.chartView = new ChartView({el: this.$elChart[0]});
-			this.chartPanel = new Panel({
-				view: this.chartView,
-				span: 'span9'
-			});
-			this.chartPanelView = new PanelView({
-				model: this.chartPanel
-			});
-
+			this.series = [{
+				color: 'steelblue',
+				data: [
+					{ x: 0, y: 40 },
+					{ x: 1, y: 49 },
+					{ x: 2, y: 38 },
+					{ x: 3, y: 30 },
+					{ x: 4, y: 32 } ]
+			}];
 			this.render();
 		},
 		events: {
@@ -94,7 +95,7 @@ define([
 			this.toggleVisible(this.chartPanel);
 		},
 		runSimulation: function () {
-			this.toggleChart();
+			//this.toggleChart();
 			var sbml = this.loadSbmlView.editor.getValue();
 			console.log(sbml);
 			$.ajax({
@@ -109,20 +110,29 @@ define([
 				url: 'simulator',
 				success: function (data, textStatus, jqXHR) {
 					console.log('simulated model!');
+					var model = new SimResultsModel({simulator: 'libSbmlSim', rawData: data})
+					var chartView = new ChartView({el: this.$elChart[0], model: model});
+					var chartPanel = new Panel({
+						view: chartView,
+						span: 'span9'
+					});
+					var chartPanelView = new PanelView({
+						model: chartPanel
+					});
 				}
 			});
 		},
-		// gets new biomodel attributes
+					   // gets new biomodel attributes
 		newAttributes: function (id, view) {
 			return {
 				id: id,
 				editorView: view
 			};
 		},
-		// generates a list of all biomodels that match search criteria and
-		// then adds all the models to the collection
+					   // generates a list of all biomodels that match search criteria and
+					   // then adds all the models to the collection
 		getBiomodels: function () {
-			// searching by model ID
+						  // searching by model ID
 			var mId = this.$elImportModel.children().find('input#modelId')[0].value;
 
 			//this.biomodels.create(this.newAttributes(mId, this.loadSbmlView));

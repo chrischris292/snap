@@ -17,15 +17,8 @@ define([
 			$(this.el).append(this.chartElement);
 			this.graph = new Rickshaw.Graph({
 				element: this.chartElement,
-				series: [{
-					color: 'steelblue',
-					data: [
-						{ x: 0, y: 40 },
-						{ x: 1, y: 49 },
-						{ x: 2, y: 38 },
-						{ x: 3, y: 30 },
-						{ x: 4, y: 32 } ]
-				}],
+				series: this.model.get('data'),
+				renderer: 'line',
 				width: 100,
 				height: 100
 		});
@@ -33,12 +26,12 @@ define([
 			//$('#y_axis').css('position', 'relative').css('top', 0).css('bottom', 0).css('width', '40px');
 			//$(this.el).css('position', 'relative')
 			//this.x_axis = new Rickshaw.Graph.Axis.Time({ graph: this.graph });
-			this.y_axis = new Rickshaw.Graph.Axis.Y({
+			/*this.y_axis = new Rickshaw.Graph.Axis.Y({
 				graph: this.graph,
 				orientation: 'left',
 				tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
 				element: this.yElement
-			});
+			});*/
 
 			this.render();
 		},
