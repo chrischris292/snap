@@ -15,6 +15,9 @@ define([
 			this.chartElement = document.createElement('div');
 			this.chartElement.setAttribute('id', 'chart_container');
 			$(this.el).append(this.chartElement);
+			this.legendElement = document.createElement('div');
+			this.legendElement.setAttribute('id', 'legend');
+			$(this.el).append(this.legendElement);
 			this.graph = new Rickshaw.Graph({
 				element: this.chartElement,
 				series: this.model.get('data'),
@@ -24,7 +27,12 @@ define([
 			this.graph.render();
 			var hoverDetail = new Rickshaw.Graph.HoverDetail({
 				graph: this.graph
-			})
+			});
+
+			var legend = new Rickshaw.Graph.Legend({
+				graph: this.graph,
+				element: this.legendElement
+			});
 			//$('#y_axis').css('position', 'relative').css('top', 0).css('bottom', 0).css('width', '40px');
 			//$(this.el).css('position', 'relative')
 			//this.x_axis = new Rickshaw.Graph.Axis.Time({ graph: this.graph });
