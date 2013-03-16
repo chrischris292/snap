@@ -7,7 +7,7 @@
     "backbone": "~0.9.10",
     "underscore": "~1.4.3",
     "d3": "~3.0.6",
-    "jquery-ui": "~1.10.0",
+    "jquery-ui": "~1.10.2",
     "rickshaw": "~1.2.0",
     "ace-builds": "git://github.com/ajaxorg/ace-builds.git#~1.0.0",
     "ace": "~0.2.0",
