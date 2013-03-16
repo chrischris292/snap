@@ -19,8 +19,12 @@ define([
 				element: this.chartElement,
 				series: this.model.get('data'),
 				renderer: 'line'
-		});
+			});
 
+			this.graph.render();
+			var hoverDetail = new Rickshaw.Graph.HoverDetail({
+				graph: this.graph
+			})
 			//$('#y_axis').css('position', 'relative').css('top', 0).css('bottom', 0).css('width', '40px');
 			//$(this.el).css('position', 'relative')
 			//this.x_axis = new Rickshaw.Graph.Axis.Time({ graph: this.graph });
