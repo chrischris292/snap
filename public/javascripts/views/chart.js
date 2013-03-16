@@ -1,6 +1,6 @@
 /*global define document*/
 define([
-	'jquery',
+	'jquery-ui',
 	'underscore',
 	'backbone',
 	'd3',
@@ -32,6 +32,11 @@ define([
 			var legend = new Rickshaw.Graph.Legend({
 				graph: this.graph,
 				element: this.legendElement
+			});
+
+			var shelving = new Rickshaw.Graph.Behavior.Series.Toggle({
+				graph: this.graph,
+				legend: legend
 			});
 			//$('#y_axis').css('position', 'relative').css('top', 0).css('bottom', 0).css('width', '40px');
 			//$(this.el).css('position', 'relative')

@@ -1,8 +1,9 @@
 /*global define*/
 define([
 	'underscore',
-	'backbone'
-], function(_, Backbone) {
+	'backbone',
+	'rickshaw'
+], function(_, Backbone, Rickshaw) {
 	'use strict';
 
 	var SimResultsModel = Backbone.Model.extend({
@@ -25,7 +26,7 @@ define([
 					species = {};
 					species.name = headers[n + 1];
 					species.data = [];
-					species.color = 'steelblue';
+					species.color = palette.color();
 					for (i = 1; i < this.get('rawData').length; i += 1) {
 						species.data.push({x: parseInt(this.get('rawData')[i][0], 10), y: parseInt(this.get('rawData')[i][n + 1], 10)});
 					}
