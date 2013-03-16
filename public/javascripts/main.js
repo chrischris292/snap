@@ -16,10 +16,15 @@ require.config({
 		rickshaw: {
 			deps: ['d3'],
 			exports: 'Rickshaw'
+		},
+		'jquery-ui': {
+			deps: ['jquery'],
+			exports: '$'
 		}
 	},
 	paths: {
 		jquery: '../components/jquery/jquery',
+		'jquery-ui': '../components/jquery-ui/ui/jquery-ui.custom',
 		underscore: '../components/underscore/underscore',
 		backbone: '../components/backbone/backbone',
 		ace: '../components/ace/lib/ace',
