@@ -18,9 +18,7 @@ define([
 			this.graph = new Rickshaw.Graph({
 				element: this.chartElement,
 				series: this.model.get('data'),
-				renderer: 'line',
-				width: 100,
-				height: 100
+				renderer: 'line'
 		});
 
 			//$('#y_axis').css('position', 'relative').css('top', 0).css('bottom', 0).css('width', '40px');

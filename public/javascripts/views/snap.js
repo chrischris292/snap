@@ -96,7 +96,8 @@ define([
 		},
 		runSimulation: function () {
 			//this.toggleChart();
-			var sbml = this.loadSbmlView.editor.getValue();
+			var sbml = this.loadSbmlView.editor.getValue(),
+				chartEl = this.$elChart[0];
 			console.log(sbml);
 			$.ajax({
 				data: {
@@ -111,10 +112,11 @@ define([
 				success: function (data, textStatus, jqXHR) {
 					console.log('simulated model!');
 					var model = new SimResultsModel({simulator: 'libSbmlSim', rawData: data})
-					var chartView = new ChartView({el: this.$elChart[0], model: model});
+					var chartView = new ChartView({el: chartEl, model: model});
 					var chartPanel = new Panel({
 						view: chartView,
-						span: 'span9'
+						span: 'span9',
+						visible: true
 					});
 					var chartPanelView = new PanelView({
 						model: chartPanel

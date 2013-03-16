@@ -15,18 +15,21 @@ define([
 			this.parseData();
 		},
 		parseData: function () {
-			if (this.simulator === 'libSbmlSim') {
-				var n, i, species;
-				this.headers = this.rawData[0];
-				this.numSpecies = this.rawData[0].length - 1;
-				this.data = [];
-				for (n = 0; n < this.numSpecies; n += 1) {
+			if (this.get('simulator') === 'libSbmlSim') {
+				var n, i, species, headers, numSpecies, palette;
+				palette = new Rickshaw.Color.Palette({ scheme: 'classic9' });
+				headers = this.get('rawData')[0];
+				numSpecies = this.get('rawData')[0].length - 1;
+				this.set('data', []);
+				for (n = 0; n < numSpecies; n += 1) {
 					species = {};
-					species.name = this.headers[n + 1];
+					species.name = headers[n + 1];
 					species.data = [];
-					for (i = 1; i < this.rawData.length; i += 1) {
-						species.data.push({x: this.rawData[i][0], y: this.rawData[i][n + 1]});
+					species.color = 'steelblue';
+					for (i = 1; i < this.get('rawData').length; i += 1) {
+						species.data.push({x: parseInt(this.get('rawData')[i][0], 10), y: parseInt(this.get('rawData')[i][n + 1], 10)});
 					}
+					this.get('data').push(species);
 				}
 			}
 		}
