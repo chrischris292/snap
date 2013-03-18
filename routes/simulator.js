@@ -57,6 +57,28 @@ exports.rr = function (req, res) {
 			console.log(err);
 		} else {
 			console.log('SBML saved for RR!');
+			command = 'rr -m tmp.sbml -o out.csv';
+			options = {
+				cwd: 'tmp/rr'
+			};
+			exec(command, options, function (error, stdout, stderr) {
+				if (error) {
+					console.log('Error in executing child process: ' + error);
+				} else if (stderr) {
+					console.log('Error in simulation: ' + stderr);
+				} else {
+					console.log('Simulation Successful: ' + stdout);
+					var data = [],
+						reader;
+					console.log('Reading simulated data');
+					reader = csv.createCsvFileReader('tmp/rr/out.csv').on('data', function (row) {
+						data.push(row);
+					}).on('end', function () {
+						console.log(data);
+						res.send(data);
+					});
+				}
+			});
 		}
-	})
+	});
 };
