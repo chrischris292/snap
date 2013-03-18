@@ -57,7 +57,7 @@ exports.rr = function (req, res) {
 			console.log(err);
 		} else {
 			console.log('SBML saved for RR!');
-			command = 'rr -m tmp.sbml -o out.csv';
+			command = 'rr -m tmp.sbml -f';
 			options = {
 				cwd: 'tmp/rr'
 			};
@@ -71,7 +71,7 @@ exports.rr = function (req, res) {
 					var data = [],
 						reader;
 					console.log('Reading simulated data');
-					reader = csv.createCsvFileReader('tmp/rr/out.csv').on('data', function (row) {
+					reader = csv.createCsvFileReader('tmp/rr/rr_tmp.csv').on('data', function (row) {
 						data.push(row);
 					}).on('end', function () {
 						console.log(data);
