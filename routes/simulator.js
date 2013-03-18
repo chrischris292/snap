@@ -2,11 +2,9 @@
 exports.libsbmlsim = function (req, res) {
 	'use strict';
 
-	var sim = require('libsbmlsimjs').libsbmlsim,
-		fs = require('fs'),
+		var fs = require('fs'),
 		exec = require('child_process').exec,
-		csv = require('ya-csv'),
-		simData;
+		csv = require('ya-csv')
 
 	fs.writeFile('tmp/temp.sbml', req.body.sbml, function (err) {
 		if (err) {
@@ -57,7 +55,7 @@ exports.rr = function (req, res) {
 			console.log(err);
 		} else {
 			console.log('SBML saved for RR!');
-			command = 'rr -m tmp.sbml -f';
+			command = 'rr -m tmp.sbml -f -e 100 -z 1000';
 			options = {
 				cwd: 'tmp/rr'
 			};
