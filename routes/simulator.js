@@ -39,3 +39,24 @@ exports.libsbmlsim = function (req, res) {
 		}
 	});
 };
+
+exports.rr = function (req, res) {
+	'use strict';
+
+	var fs = require('fs'),
+		exec = require('child_process').exec,
+		csv = require('ya-csv'),
+		command,
+		options;
+
+	command = 'mkdir -p tmp/rr';
+	exec(command);
+
+	fs.writeFile('tmp/rr/tmp.sbml', req.body.sbml, function (err) {
+		if (err) {
+			console.log(err);
+		} else {
+			console.log('SBML saved for RR!');
+		}
+	})
+};
