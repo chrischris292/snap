@@ -101,7 +101,12 @@ define([
 			console.log(sbml);
 			$.ajax({
 				data: {
-					sbml: sbml
+					sbml: sbml,
+					sim: {
+						simulator: 'libsbmlsim',
+						time: '1000',
+						steps: '2000'
+					}
 				},
 				type: 'POST',
 				//error: function (jqXHR, textStatus, errorThrown) {
