@@ -1,14 +1,8 @@
 /*global define document*/
-define([
-	'jquery-ui',
-	'underscore',
-	'backbone',
-	'd3',
-	'rickshaw'
-], function($, _, Backbone, d3, Rickshaw) {
+define(['jquery-ui', 'underscore', 'backbone', 'd3', 'rickshaw'], function($, _, Backbone, d3, Rickshaw) {
 	'use strict';
 	var ChartView = Backbone.View.extend({
-		initialize: function () {
+		initialize: function() {
 			this.graph = new Rickshaw.Graph({
 				element: this.$el.find('#chart')[0],
 				series: this.model.get('data'),
@@ -17,6 +11,10 @@ define([
 
 			this.graph.render();
 			var hoverDetail = new Rickshaw.Graph.HoverDetail({
+				graph: this.graph
+			});
+
+			var x_axis = new Rickshaw.Graph.Axis.Time({
 				graph: this.graph
 			});
 
@@ -42,7 +40,7 @@ define([
 			this.render();
 		},
 
-		render: function () {
+		render: function() {
 			this.graph.render();
 		}
 	});
