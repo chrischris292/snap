@@ -8,3 +8,4 @@ public/components
 libsbmlsim
 *.log
 tmp
+Log.txt
