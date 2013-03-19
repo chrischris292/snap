@@ -1,4 +1,4 @@
-/*global require*/
+/*global require console exports*/
 exports.sim = function (req, res) {
 	'use strict';
 
@@ -17,7 +17,6 @@ exports.sim = function (req, res) {
 			console.log(err);
 		} else {
 			console.log('SBML file saved in temporary location!');
-			var command = 'simulateSBML -t 100 -s 100 -m 1 temp.sbml';
 			options = {
 				cwd: 'tmp'
 			};
@@ -47,7 +46,6 @@ exports.sim = function (req, res) {
 					});
 				}
 			});
-		//	fs.unlink('tmp/temp.sbml'); // delete temporary file
 		}
 	});
 };
