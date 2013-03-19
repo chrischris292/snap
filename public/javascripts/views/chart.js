@@ -9,17 +9,8 @@ define([
 	'use strict';
 	var ChartView = Backbone.View.extend({
 		initialize: function () {
-			this.yElement = document.createElement('div');
-			this.yElement.setAttribute('id', 'y_axis');
-			$(this.el).append(this.yElement);
-			this.chartElement = document.createElement('div');
-			this.chartElement.setAttribute('id', 'chart_container');
-			$(this.el).append(this.chartElement);
-			this.legendElement = document.createElement('div');
-			this.legendElement.setAttribute('id', 'legend');
-			$(this.el).append(this.legendElement);
 			this.graph = new Rickshaw.Graph({
-				element: this.chartElement,
+				element: this.$el.find('#chart')[0],
 				series: this.model.get('data'),
 				renderer: 'line'
 			});
@@ -31,7 +22,7 @@ define([
 
 			var legend = new Rickshaw.Graph.Legend({
 				graph: this.graph,
-				element: this.legendElement
+				element: this.$el.find('#legend')[0]
 			});
 
 			var shelving = new Rickshaw.Graph.Behavior.Series.Toggle({

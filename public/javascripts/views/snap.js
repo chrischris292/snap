@@ -60,10 +60,20 @@ define([
 			//this.biomodels.fetch();
 
 			// Simulation
-			this.$elSim = this.$el.children.find('div#sim');
+			this.$elSim = this.$el.find('div#sim');
 
 			// Chart
-			this.$elChart = this.$el.children().find('div#chart');
+			this.$elChart = this.$el.children().find('div#chart_container');
+			var initModel = new SimResultsModel({simulator: 'libSbmlSim', rawData: [['x', 'y'], [0, 0]]});
+			var chartView = new ChartView({el: this.$elChart[0], model: initModel});
+			var chartPanel = new Panel({
+				view: chartView,
+				span: 'span9',
+				visible: true
+			});
+			var chartPanelView = new PanelView({
+				model: chartPanel
+			});
 			this.render();
 		},
 		events: {
@@ -89,7 +99,6 @@ define([
 			this.toggleVisible(this.chartPanel);
 		},
 		runSimulation: function () {
-			//this.toggleChart();
 			var sbml = this.loadSbmlView.editor.getValue(),
 				chartEl = this.$elChart[0];
 			console.log(sbml);
