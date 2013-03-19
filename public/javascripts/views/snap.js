@@ -80,7 +80,8 @@ define([
 			'click #loadSbml.btn' : 'toggleLoadSbml',
 			'click #importModel.btn' : 'toggleImportModel',
 			'click #searchBiomodels.btn' : 'getBiomodels',
-			'click #run.btn' : 'runSimulation'
+			'click #run.btn' : 'runSimulation',
+			'click #submitSim.btn' : 'runSimulation'
 		},
 		toggleVisible: function (p) {
 			if (p.get('visible')) {
@@ -106,9 +107,9 @@ define([
 				data: {
 					sbml: sbml,
 					sim: {
-						simulator: 'libsbmlsim',
-						time: '1000',
-						steps: '2000'
+						simulator: this.$elSim.find('label.radio [name="simulatorRadio"]:checked').val(),
+						time: this.$elSim.find('input#simTime').val(),
+						steps: this.$elSim.find('input#simSteps').val()
 					}
 				},
 				type: 'POST',
