@@ -64,16 +64,6 @@ define([
 
 			// Chart
 			this.$elChart = this.$el.children().find('div#chart_container');
-			var initModel = new SimResultsModel({simulator: 'libSbmlSim', rawData: [['x', 'y'], [0, 0]]});
-			var chartView = new ChartView({el: this.$elChart[0], model: initModel});
-			var chartPanel = new Panel({
-				view: chartView,
-				span: 'span9',
-				visible: true
-			});
-			var chartPanelView = new PanelView({
-				model: chartPanel
-			});
 			this.render();
 		},
 		events: {
@@ -101,7 +91,7 @@ define([
 		},
 		runSimulation: function () {
 			var sbml = this.loadSbmlView.editor.getValue(),
-				chartEl = this.$elChart[0];
+				that = this;
 			console.log(sbml);
 			$.ajax({
 				data: {
@@ -121,15 +111,19 @@ define([
 				success: function (data, textStatus, jqXHR) {
 					console.log('simulated model!');
 					var model = new SimResultsModel({simulator: 'libSbmlSim', rawData: data})
-					var chartView = new ChartView({el: chartEl, model: model});
-					var chartPanel = new Panel({
-						view: chartView,
+					that.$elChart.find('div').empty();
+					that.chartView = new ChartView({el: that.$elChart[0], model: model});
+					that.chartPanel = new Panel({
+						view: that.chartView,
 						span: 'span9',
 						visible: true
 					});
-					var chartPanelView = new PanelView({
-						model: chartPanel
+					that.chartPanelView = new PanelView({
+						model: that.chartPanel
 					});
+					//that.chartView.model = model;
+					//that.chartView.chart.series = model.get('data');
+					//that.chartView.chart.render();
 				}
 			});
 		},
