@@ -6,7 +6,8 @@ define(['jquery-ui', 'underscore', 'backbone', 'd3', 'rickshaw'], function($, _,
 			this.graph = new Rickshaw.Graph({
 				element: this.$el.find('#chart')[0],
 				series: this.model.get('data'),
-				renderer: 'line'
+				renderer: 'line',
+				interpolation: 'linear'
 			});
 
 			this.graph.render();
@@ -14,7 +15,7 @@ define(['jquery-ui', 'underscore', 'backbone', 'd3', 'rickshaw'], function($, _,
 				graph: this.graph
 			});
 
-			var x_axis = new Rickshaw.Graph.Axis.Time({
+			var x_axis = new Rickshaw.Graph.Axis.X({
 				graph: this.graph
 			});
 
