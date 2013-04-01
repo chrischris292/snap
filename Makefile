@@ -9,7 +9,7 @@ TEX := $(patsubst %.markdown,%.markdown.tex,$(wildcard *.markdown))
 all : $(PDFS) $(DOCX) $(TEX)
 
 # makes all markdown into PDFs
-pdfs : $(PDFS)
+pdf : $(PDFS)
 
 # makes all markdown into docx
 docx : $(DOCX)
