@@ -36,6 +36,8 @@ What is `snap` composed of?
     developing `snap`. Furthermore, `git` will be used for versioning
     and tracking model development.
 
+![`snap` architecture](images/architecture.png)
+
 Why is `snap` useful?
 ---------------------
 
