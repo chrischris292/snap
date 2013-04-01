@@ -20,17 +20,17 @@ tex : $(TEX)
 # This generic rule accepts PDF targets with corresponding Markdown 
 # source, and makes them using pandoc
 %.markdown.pdf : %.markdown
-	pandoc $< -o $@
+	pandoc $< -o $@ -N --toc
 
 # This generic rule accepts docx targets with corresponding Markdown 
 # source, and makes them using pandoc
 %.markdown.docx : %.markdown
-	pandoc $< -o $@
+	pandoc $< -o $@ -N --toc
 
 # This generic rule accepts docx targets with corresponding Markdown 
 # source, and makes them using pandoc
 %.markdown.tex : %.markdown
-	pandoc -s $< -o $@
+	pandoc -s $< -o $@ -N --toc
 
 # Remove all outputs
 clean :
