@@ -19,7 +19,7 @@ entirely within a web browser.
 
 ### Browser
 
--   **JavaScript libraries.** The application logic uses and builds upon a
+-	**JavaScript libraries.** The application logic uses and builds upon a
 	number of open-source and actively developed libraries to produce a rich
 	graphical user interface to load, manipulate, and simulate bio-models.
 	Using software libraries is encouraged because it reduces the amount of
@@ -40,39 +40,41 @@ entirely within a web browser.
 		(*e.g.* SBML, MATLAB, etc.).
 
 ### Server
--   **`Node.js` server.** In order to use perform heavy server-side
-    computation and use non-JavaScript libraries, `snap` uses a
-    `node.js` backend. While a more traditional server technology could
-    have been used, such as `Apache`, `node.js` was selected because its
-    single-process, asynchronous-execution capabilities would allow for
-    rapid communications between server and client that is necessary for
-    interactive simulations. Furthermore, since `node.js` is implemented
-    entirely in JavaScript, both the front-end and back-end, program
-    logic can be reused on either end, and code maintenance and
-    development is all in a single language.
+-	**`Node.js` server.** In order to use perform heavy server-side
+	computation and use non-JavaScript libraries, `snap` uses a
+	`node.js` backend. While a more traditional server technology could
+	have been used, such as `Apache`, `node.js` was selected because its
+	single-process, asynchronous-execution capabilities would allow for
+	rapid communications between server and client that is necessary for
+	interactive simulations. Furthermore, since `node.js` is implemented
+	entirely in JavaScript, both the front-end and back-end, program
+	logic can be reused on either end, and code maintenance and
+	development is all in a single language.
+
+-	
 
 ### Development Tools
--   **Source Control with `git`.** `Git` is used as a source control system in
+-	**Source Control with `git`.** `Git` is used as a source control system in
 	developing `snap`. Furthermore, `git` is planned to be used as the back-end
 	for versioning and tracking model development.
 
 ## Advantages of a Bio-Model Designer Web Application
 
--   **A no-install and always-updated, modeling platform.** The end user
-    will never have to install any software
+-	**A no-install and always-updated, modeling platform.** The end user
+	will never have to install any software
 
--   **Quickly view and interact with published models.** Mathematical
-    models in scientific publications are often difficult to reproduce
-    exactly, even if the underlying SBML is included with the
-    publication. `snap` will allow a publication to directly link to a
-    live and interactive version of their model.
+-	**Quickly view and interact with published models.** Mathematical
+	models in scientific publications are often difficult to reproduce
+	exactly, even if the underlying SBML is included with the
+	publication. `snap` will allow a publication to directly link to a
+	live and interactive version of their model.
 
--   **Always have models available on any computer.** Models can be
-    stored and edited online, with version control of the model
-    development done through `git`.
+-	**Always have models available on any computer.** Models can be
+	stored and edited online, with version control of the model
+	development done through `git`.
 
--   **Collaborate with other modelers.** Multiple users can work on
-    building the same model and sharing experimental data.
+-	**Collaborate with other modelers.** Multiple users can work on
+	building the same model and sharing experimental data.
 
 # Project Timeline
 
