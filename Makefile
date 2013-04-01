@@ -1,5 +1,4 @@
 # Produce PDFs from all Markdown files in a directory
-# Lincoln Mullen | http://lincolnmullen.com | lincoln@lincolnmullen.com
 
 # List files to be made by finding all *.markdown files and appending .pdf
 PDFS := $(patsubst %.markdown,%.markdown.pdf,$(wildcard *.markdown))
@@ -9,9 +8,14 @@ TEX := $(patsubst %.markdown,%.markdown.tex,$(wildcard *.markdown))
 # The all rule makes all the PDF files listed
 all : $(PDFS) $(DOCX) $(TEX)
 
+# makes all markdown into PDFs
 pdfs : $(PDFS)
 
+# makes all markdown into docx
 docx : $(DOCX)
+
+# makes all markdown into tex
+tex : $(TEX)
 
 # This generic rule accepts PDF targets with corresponding Markdown 
 # source, and makes them using pandoc
