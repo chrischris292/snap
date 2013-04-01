@@ -89,9 +89,21 @@ entirely within a web browser.
 -	**Collaborate with other modelers.** Multiple users can work on
 	building the same model and sharing experimental data.
 
-# Project Timeline
+# Project Timeline Overview
 
-## Current Progress
+## Progress
+
+-	October 2012. Thorough literature review and search of currently
+-	November 2012.
+-	December 2012.
+-	January 2013.
+-	February 2013.
+-	March 2013.
 
 ## Future Directions
 
+-	Spring 2013.
+-	Summer 2013.
+-	Autumn 2013.
+-	Winter 2014.
+-	Spring 2014.
