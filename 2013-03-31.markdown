@@ -63,9 +63,13 @@ entirely within a web browser.
 		the automated layout of the model.
 
 ### Development Tools
+
 -	**Source Control with `git`.** `Git` is used as a source control system in
 	developing `snap`. Furthermore, `git` is planned to be used as the back-end
 	for versioning and tracking model development.
+-	**Online Open-Source Code Hosting.** [GitHub](https://github.com/) will be
+	used to host the source. The address of the repository is located at
+	[https://github.com/stanley-gu/snap](https://github.com/stanley-gu/snap).
 
 ## Advantages of a Bio-Model Designer Web Application
 
