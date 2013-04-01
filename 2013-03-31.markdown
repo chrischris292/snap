@@ -93,17 +93,23 @@ entirely within a web browser.
 
 ## Progress
 
--	October 2012. Thorough literature review and search of currently
--	November 2012.
--	December 2012.
--	January 2013.
--	February 2013.
--	March 2013.
+-	October 2012. Thorough literature review and search of currently available
+	software.
+-	November 2012. Experimental designs of user interface with JavaScript and
+	JQuery.
+-	December 2012. Implementation of powerful JavaScript client-side and
+	`node.js` libraries to accelerate application development.
+-	January 2013. Development of multiple libraries and modules for custom
+	functions, such as model layout within the browser and accessing models
+	from [BioModels Database](http://www.ebi.ac.uk/biomodels-main/).
+-	February 2013. Redesigned application layout and logic using `backbone.js`.
+-	March 2013. Implemented server-side simulation through RoadRunner engine
+	and layout using GraphFab.
 
 ## Future Directions
 
--	Spring 2013.
--	Summer 2013.
--	Autumn 2013.
--	Winter 2014.
--	Spring 2014.
+-	Spring 2013. Static layout and simulation of SBML models.
+-	Summer 2013. Dynamic GUI with user-controlled model layout.
+-	Autumn 2013. User accounts and test suite.
+-	Winter 2014. Dynamic model creation and editing.
+-	Spring 2014. GUI enhancements through user testing and feedback.
