@@ -3,12 +3,12 @@ Introduction
 
 Mathematical models of biological networks (bio-models) are important
 biomedical research tools. The design, development, and curation of
-these models may involve collaborations between a large number of
+these models may involve collaborations between many
 scientists within a research team or amongst the bio-modeling community
-at large. However, no current tool provides the means to instantly share
+at large. However, no current tool provides the means to build, share,
 and publish interactive models on the web.
 
-To meet this need, [`snap`](http://stanley-gu.github.com/sbmlNodes/)
+To meet this need, [`snap`](http://stanley-gu.github.com/snap/)
 (SBML Network Ajax Publisher) is an SBML model viewer, editor, and
 simulator that is written in JavaScript and can run entirely within a
 web browser.
