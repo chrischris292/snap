@@ -13,7 +13,7 @@ To meet this need, [`snap`](http://stanley-gu.github.com/snap/) is an SBML
 model viewer, editor, and simulator that is written in JavaScript and can run
 entirely within a web browser.
 
-## Advantages of a Bio-Model Designer Web Application
+## Advantages
 
 -	**A no-install and always-updated, modeling platform.** The end user
 	will never have to install any software
