@@ -51,7 +51,16 @@ entirely within a web browser.
 	logic can be reused on either end, and code maintenance and
 	development is all in a single language.
 
--	
+-	**Libraries**. A number of popular software libraries for systems biology
+	written in languages other than Javascript (such as C/C++) will be used on
+	the server 
+	-	[libSBML](http://sbml.org/Software/libSBML) is popular library for
+		reading and writing SBML files.
+	-	[RoadRunner](https://code.google.com/p/roadrunnerlib/) is a powerful
+		simulation engine for simulating the models viewed through the browser
+		front-end.
+	-	[GraphFab](https://code.google.com/p/graphfab/) will be used to perform
+		the automated layout of the model.
 
 ### Development Tools
 -	**Source Control with `git`.** `Git` is used as a source control system in
