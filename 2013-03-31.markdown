@@ -1,8 +1,7 @@
 % `snap`: An Online SBML Model Designer
 % Stanley Gu; Herbert Sauro
 
-Introduction
-============
+# Introduction
 
 Mathematical models of biological networks (bio-models) are important
 biomedical research tools. The design, development, and curation of these
@@ -14,13 +13,33 @@ To meet this need, [`snap`](http://stanley-gu.github.com/snap/) is an SBML
 model viewer, editor, and simulator that is written in JavaScript and can run
 entirely within a web browser.
 
-What is `snap` composed of?
----------------------------
+## Components
 
--   **JavaScript libraries.** `snap` depends on open-source and actively
-    developed libraries to produce a rich graphical user interface to
-    load, manipulate, and simulate bio-models.
+![`snap` architecture](images/architecture.png)
 
+### Browser
+
+-   **JavaScript libraries.** The application logic uses and builds upon a
+	number of open-source and actively developed libraries to produce a rich
+	graphical user interface to load, manipulate, and simulate bio-models.
+	Using software libraries is encouraged because it reduces the amount of
+	custom code needed to be written and embraces best practices set by the
+	development industry and community.
+
+	-	[Backbone.js](http://backbonejs.org/) provides a Model-View-Controller
+		(MVC) framework for handling the application logic.
+	-	[Require.js](http://requirejs.org/) is module loader that helps
+		organize re-usable JavaScript components and increases loading and
+		latency times for clients.
+	-	[D3.js](http://d3js.org/) is a flexible library used to manipulate the
+		browser document object model (DOM) to visualize data. This is used for
+		drawing visual diagram representations of the bio-models and plotting
+		simulation results.
+	-	[Ace](http://ace.ajax.org/) is an in-browser editor which will allow
+		users to input, edit, and export code in a variety of different formats
+		(*e.g.* SBML, MATLAB, etc.).
+
+### Server
 -   **`Node.js` server.** In order to use perform heavy server-side
     computation and use non-JavaScript libraries, `snap` uses a
     `node.js` backend. While a more traditional server technology could
@@ -32,14 +51,12 @@ What is `snap` composed of?
     logic can be reused on either end, and code maintenance and
     development is all in a single language.
 
--   **Built with `git`.** `Git` is used as a version control system in
-    developing `snap`. Furthermore, `git` will be used for versioning
-    and tracking model development.
+### Development Tools
+-   **Source Control with `git`.** `Git` is used as a source control system in
+	developing `snap`. Furthermore, `git` is planned to be used as the back-end
+	for versioning and tracking model development.
 
-![`snap` architecture](images/architecture.png)
-
-Why is `snap` useful?
----------------------
+## Advantages of a Bio-Model Designer Web Application
 
 -   **A no-install and always-updated, modeling platform.** The end user
     will never have to install any software
@@ -52,7 +69,14 @@ Why is `snap` useful?
 
 -   **Always have models available on any computer.** Models can be
     stored and edited online, with version control of the model
-    development done through `git`, like Google Docs for bio-models.
+    development done through `git`.
 
 -   **Collaborate with other modelers.** Multiple users can work on
     building the same model and sharing experimental data.
+
+# Project Timeline
+
+## Current Progress
+
+## Future Directions
+
