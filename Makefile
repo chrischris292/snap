@@ -6,7 +6,7 @@ PDFS := $(patsubst %.markdown,%.markdown.pdf,$(wildcard *.markdown))
 DOCX := $(patsubst %.markdown,%.markdown.docx,$(wildcard *.markdown))
 
 # The all rule makes all the PDF files listed
-all : $(PDFS)
+all : $(PDFS) $(DOCX)
 
 pdfs : $(PDFS)
 
