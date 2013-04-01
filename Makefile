@@ -4,9 +4,10 @@
 # List files to be made by finding all *.markdown files and appending .pdf
 PDFS := $(patsubst %.markdown,%.markdown.pdf,$(wildcard *.markdown))
 DOCX := $(patsubst %.markdown,%.markdown.docx,$(wildcard *.markdown))
+TEX := $(patsubst %.markdown,%.markdown.tex,$(wildcard *.markdown))
 
 # The all rule makes all the PDF files listed
-all : $(PDFS) $(DOCX)
+all : $(PDFS) $(DOCX) $(TEX)
 
 pdfs : $(PDFS)
 
@@ -22,9 +23,14 @@ docx : $(DOCX)
 %.markdown.docx : %.markdown
 	pandoc $< -o $@
 
-# Remove all PDF outputs
+# This generic rule accepts docx targets with corresponding Markdown 
+# source, and makes them using pandoc
+%.markdown.tex : %.markdown
+	pandoc -s $< -o $@
+
+# Remove all outputs
 clean :
-	rm $(PDFS)
+	rm $(PDFS) $(DOCX) $(TEX)
 
 # Remove all PDF outputs then build them again
 rebuild : clean all
