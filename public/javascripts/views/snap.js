@@ -132,9 +132,6 @@ define([
 					that.chartPanelView = new PanelView({
 						model: that.chartPanel
 					});
-					//that.chartView.model = model;
-					//that.chartView.chart.series = model.get('data');
-					//that.chartView.chart.render();
 				}
 			});
 		},
@@ -145,8 +142,8 @@ define([
 				editorView: view
 			};
 		},
-					   // generates a list of all biomodels that match search criteria and
-					   // then adds all the models to the collection
+		   // generates a list of all biomodels that match search criteria and
+		   // then adds all the models to the collection
 		getBiomodels: function () {
 						  // searching by model ID
 			var mId = this.$elImportModel.children().find('input#modelId')[0].value;
