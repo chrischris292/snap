@@ -61,7 +61,7 @@ define([
 			// Simulation
 			this.$elSim = this.$el.find('div#sim');
 			this.simSettingsPanel = new Panel({
-				view: new Backbone.view({
+				view: new Backbone.View({
 					el: this.$elSim[0]
 				}),
 				span: 'span8'
