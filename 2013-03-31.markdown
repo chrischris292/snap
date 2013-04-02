@@ -89,9 +89,9 @@ entirely within a web browser.
 	used to host the source. The address of the repository is located at
 	[https://github.com/stanley-gu/snap](https://github.com/stanley-gu/snap).
 
-# Project Timeline Overview
+# Progress
 
-## Progress
+## Current Work Timeline
 
 -	October 2012. Thorough literature review and search of currently available
 	software.
