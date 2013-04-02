@@ -25,9 +25,7 @@ exports.graphfab = function (req, res) {
 			command = 'graphfab tmp.sbml'
 			exec(command, options, function (error, stdout, stderr) {
 				if (error) {
-					console.log('Error in executing child process: ' + error);
-				} else if (stderr) {
-					console.log('Error in GraphFab: ' + stderr);
+					console.log('Error in executing child process: ' + error + stderr + stdout);
 				} else {
 					console.log('GraphFab Ran Successfully: ' + stdout);
 					res.send(200);

@@ -25,9 +25,7 @@ exports.sim = function(req, res) {
 				out = 'out.csv';
 				exec(command, options, function(error, stdout, stderr) {
 					if (error) {
-						console.log('Error in executing child process: ' + error);
-					} else if (stderr) {
-						console.log('Error in simulation: ' + stderr);
+						console.log('Error in executing child process: ' + error + stderr + stdout);
 					} else {
 						console.log('Simulation Successful: ' + stdout);
 						var data = [],
@@ -48,6 +46,7 @@ exports.sim = function(req, res) {
 		var rr = r.createRRInstance();
 		r.setTempFolder(rr, '/tmp');
 		r.loadSBML(rr, req.body.sbml);
+		//var results = r.simulateEx(rr, 0, req.body.sim.time, req.body.sim.steps);
 		var results = r.simulateEx(rr, 0, parseInt(req.body.sim.time, 10), parseInt(req.body.sim.steps, 10));
 		var simData = r.resultToString(results).split('\n');
 		simData.forEach(function(element, index, array) {
