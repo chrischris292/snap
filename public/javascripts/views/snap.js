@@ -57,10 +57,18 @@ define([
 			//this.listenTo(BiomodelsCollection, 'add', this.addModel);
 			this.biomodels = new BiomodelsCollection();
 			this.listenTo(this.biomodels, 'sync', this.addModelView);
-			//this.biomodels.fetch();
 
 			// Simulation
 			this.$elSim = this.$el.find('div#sim');
+			this.simSettingsPanel = new Panel({
+				view: new Backbone.view({
+					el: this.$elSim[0]
+				}),
+				span: 'span8'
+			});
+			this.simSettingsPanelView = new PanelView({
+				model: this.simSettingsPanel
+			});
 
 			// Chart
 			this.$elChart = this.$el.children().find('div#chart_container');
@@ -70,7 +78,7 @@ define([
 			'click #loadSbml.btn' : 'toggleLoadSbml',
 			'click #importModel.btn' : 'toggleImportModel',
 			'click #searchBiomodels.btn' : 'getBiomodels',
-			'click #run.btn' : 'runSimulation',
+			'click #simSettings.btn' : 'toggleSimSettings',
 			'click #submitSim.btn' : 'runSimulation'
 		},
 		toggleVisible: function (p) {
@@ -79,6 +87,9 @@ define([
 			} else {
 				p.set('visible', true);
 			}
+		},
+		toggleSimSettings: function () {
+			this.toggleVisible(this.simSettingsPanel);
 		},
 		toggleLoadSbml: function () {
 			this.toggleVisible(this.loadSbmlPanel);
