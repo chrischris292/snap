@@ -46,9 +46,9 @@ exports.sim = function(req, res) {
 	} else if (req.body.sim.simulator === 'rr') {
 		console.log('Selected Road Runner');
 		var rr = r.createRRInstance();
+		r.setTempFolder(rr, '/tmp');
 		r.loadSBML(rr, req.body.sbml);
-		//var results = r.simulateEx(rr, 0, req.body.sim.time, req.body.sim.steps);
-		var results = r.simulate(rr);
+		var results = r.simulateEx(rr, 0, parseInt(req.body.sim.time, 10), parseInt(req.body.sim.steps, 10));
 		var simData = r.resultToString(results).split('\n');
 		simData.forEach(function(element, index, array) {
 			array[index] = element.split('\t');
