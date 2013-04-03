@@ -9,6 +9,7 @@ var express = require('express'),
 	chebi = require('./routes/chebi'),
 	simulator = require('./routes/simulator'),
 	graphfab = require('./routes/graphfab').graphfab,
+	show = require('./routes/show').show,
 	http = require('http'),
 	path = require('path');
 var app = express();
@@ -36,6 +37,7 @@ app.all('/chebi', chebi.getModelIds);
 app.post('/sbml2matlab', sbml2matlab.translate);
 app.post('/simulator', simulator.sim);
 app.post('/graphfab', graphfab);
+app.all('/show', show)
 http.createServer(app).listen(app.get('port'), function () {
 	console.log("Express server listening on port " + app.get('port'));
 });
