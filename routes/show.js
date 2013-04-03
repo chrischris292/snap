@@ -1,8 +1,8 @@
 /*global require console exports*/
-exports.show = function (req, res) {
+exports.show = function (request, response) {
 	'use strict';
 
-	var fs = require('fs'),
+	var fs = require('fs');
 
 	fs.readFile("/tmp/pic34.png", "binary", function(error, file) {
 		if(error) {
