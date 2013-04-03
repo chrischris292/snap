@@ -1,35 +1,35 @@
 # Produce PDFs from all Markdown files in a directory
 
-# List files to be made by finding all *.markdown files and appending .pdf
-PDFS := $(patsubst %.markdown,%.markdown.pdf,$(wildcard *.markdown))
-DOCX := $(patsubst %.markdown,%.markdown.docx,$(wildcard *.markdown))
-TEX := $(patsubst %.markdown,%.markdown.tex,$(wildcard *.markdown))
+# List files to be made by finding all *.md files and appending .pdf
+PDFS := $(patsubst %.md,%.md.pdf,$(wildcard *.md))
+DOCX := $(patsubst %.md,%.md.docx,$(wildcard *.md))
+TEX := $(patsubst %.md,%.md.tex,$(wildcard *.md))
 
 # The all rule makes all the PDF files listed
 all : $(PDFS) $(DOCX) $(TEX)
 
-# makes all markdown into PDFs
+# makes all Markdown into PDFs
 pdf : $(PDFS)
 
-# makes all markdown into docx
+# makes all Markdown into docx
 docx : $(DOCX)
 
-# makes all markdown into tex
+# makes all Markdown into tex
 tex : $(TEX)
 
 # This generic rule accepts PDF targets with corresponding Markdown 
 # source, and makes them using pandoc
-%.markdown.pdf : %.markdown
+%.md.pdf : %.md
 	pandoc $< -o $@ -N --toc
 
 # This generic rule accepts docx targets with corresponding Markdown 
 # source, and makes them using pandoc
-%.markdown.docx : %.markdown
+%.md.docx : %.md
 	pandoc $< -o $@ -N --toc
 
 # This generic rule accepts docx targets with corresponding Markdown 
 # source, and makes them using pandoc
-%.markdown.tex : %.markdown
+%.md.tex : %.md
 	pandoc -s $< -o $@ -N --toc
 
 # Remove all outputs
