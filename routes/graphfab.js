@@ -22,7 +22,7 @@ exports.graphfab = function (req, res) {
 
 			console.log('Beginning GraphFab algorithm')
 
-			command = 'graphfab tmp.sbml'
+			command = 'basic tmp.sbml'
 			exec(command, options, function (error, stdout, stderr) {
 				if (error) {
 					console.log('Error in executing child process: ' + error + stderr + stdout);
