@@ -2,7 +2,7 @@
 define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
 	'use strict';
 	var SbmlView = Backbone.View.extend({
-		template: _.template('<img src="<%= url %>" />'),
+		template: _.template('<h2>Auto-Layout</h2><img src="<%= url %>" class="img-polaroid" />'),
 		render: function() {
 			var that = this;
 			var sbml = this.model.get('sbml')
