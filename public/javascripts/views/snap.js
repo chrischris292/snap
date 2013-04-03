@@ -8,12 +8,14 @@ define([
 	'views/ace',
 	'views/panel',
 	'views/biomodels',
+	'views/sbml',
+	'models/sbml',
 	'models/biomodel',
 	'models/simulation',
 	'text!templates/biomodels.html',
 	'collections/biomodels',
 	'views/chart'
-], function ($, _, Backbone, Panel, AceModel, AceView, PanelView, BiomodelsView, Biomodel, SimResultsModel, ImportModelHtml, BiomodelsCollection, ChartView) {
+], function ($, _, Backbone, Panel, AceModel, AceView, PanelView, BiomodelsView, SbmlView, SbmlModel, Biomodel, SimResultsModel, ImportModelHtml, BiomodelsCollection, ChartView) {
 	'use strict';
 
 	var SnapView = Backbone.View.extend({
@@ -70,6 +72,20 @@ define([
 				model: this.simSettingsPanel
 			});
 
+			// SBMLView
+			this.$elSbmlView = this.$el.find('div#modelView');
+			this.sbmlPanel = new Panel({
+				view: new SbmlView({
+					el: this.$elSbmlView[0],
+					model: new SbmlModel()
+				}),
+				span: 'span8',
+				visible: true
+			});
+			this.sbmlPanelView = new PanelView({
+				model: this.simSettingsPanel
+			});
+
 			// Chart
 			this.$elChart = this.$el.children().find('div#chart_container');
 			this.render();
@@ -79,7 +95,8 @@ define([
 			'click #importModel.btn' : 'toggleImportModel',
 			'click #searchBiomodels.btn' : 'getBiomodels',
 			'click #simSettings.btn' : 'toggleSimSettings',
-			'click #submitSim.btn' : 'runSimulation'
+			'click #submitSim.btn' : 'runSimulation',
+			'click #viewModel.btn' : 'layoutModel'
 		},
 		toggleVisible: function (p) {
 			if (p.get('visible')) {
@@ -99,6 +116,10 @@ define([
 		},
 		toggleChart: function () {
 			this.toggleVisible(this.chartPanel);
+		},
+		layoutModel: function () {
+			this.sbmlPanel.get('view').model.set('sbml', this.loadSbmlView.editor.getValue());
+			this.sbmlPanel.get('view').render();
 		},
 		runSimulation: function () {
 			var sbml = this.loadSbmlView.editor.getValue(),
