@@ -2,7 +2,7 @@
 define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
 	'use strict';
 	var SbmlView = Backbone.View.extend({
-		template: _.template('<h2>Auto-Layout</h2><img src="<%= url %>" class="img-polaroid" />'),
+		template: _.template('<img src="<%= url %>" class="img-polaroid" />'),
 		render: function() {
 			var that = this;
 			var sbml = this.model.get('sbml')
@@ -15,7 +15,7 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
 				url: 'graphfab',
 				success: function (data, textStatus, jqXHR) {
 					console.log('Called GraphFab on Model');
-					that.$el.html(that.template({
+					that.$el.find('#layout').html(that.template({
 						url: '/show'
 					}))
 				}

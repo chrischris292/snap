@@ -79,11 +79,10 @@ define([
 					el: this.$elSbmlView[0],
 					model: new SbmlModel()
 				}),
-				span: 'span8',
-				visible: true
+				span: 'span8'
 			});
 			this.sbmlPanelView = new PanelView({
-				model: this.simSettingsPanel
+				model: this.sbmlPanel
 			});
 
 			// Chart
@@ -96,7 +95,8 @@ define([
 			'click #searchBiomodels.btn' : 'getBiomodels',
 			'click #simSettings.btn' : 'toggleSimSettings',
 			'click #submitSim.btn' : 'runSimulation',
-			'click #viewModel.btn' : 'layoutModel'
+			'click #viewModel.btn' : 'toggleLayout',
+			'click #autolayout.btn' : 'layoutModel'
 		},
 		toggleVisible: function (p) {
 			if (p.get('visible')) {
@@ -116,6 +116,9 @@ define([
 		},
 		toggleChart: function () {
 			this.toggleVisible(this.chartPanel);
+		},
+		toggleLayout: function () {
+			this.toggleVisible(this.sbmlPanel);
 		},
 		layoutModel: function () {
 			this.sbmlPanel.get('view').model.set('sbml', this.loadSbmlView.editor.getValue());
