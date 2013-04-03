@@ -93,53 +93,61 @@ entirely within a web browser.
 
 ## Current Work Timeline
 
-Time				Major Tasks Completed
-----				---------------------
-October 2012		Thorough literature review and search of currently available
-					software.
-					-  Reviewed current standards available for systems biology
-					   modeling: [SBML](http://sbml.org/Main_Page), [SED-ML](http://sed-ml.org/), [SBRML](http://www.comp-sys-bio.org/tiki-index.php?page=SBRML), et al.
-					-  Explored current software tools to inspire new design:
-					[SBW](http://sbw.sourceforge.net/), [JDesigner](http://jdesigner.sourceforge.net/Site/JDesigner.html), et al.
-					-  Identified online resouces for developing systems
-					   biology web application: [BioModels Database](http://www.ebi.ac.uk/biomodels-main/), et al.
-November 2012		Experimental designs of user interface with JavaScript and
-					JQuery.
-					-  Used HTML/JavaScript/CSS and the JQuery JavaScript
-					   library to create a experimental web app.
-					-  Accepted SBML text input to produce a force-directed,
-					   node-edge layout of model species and reactions.
-					-  Performed basic simulation of model equations within the
-					   browser.
-					-  Limited by lack of server-side programming.
-December 2012		Implementation of JavaScript client-side and
-					`node.js` libraries to accelerate application development.
-					-  Identified Node.js as the ideal server platform.
-					-  Developed Node.js server.
-					-  Implemented a software deployment system using `git`,
-					   `npm`, and `bower`.
-January 2013		Development of multiple libraries and modules for custom
-					functions. 
-					-  Developed multiple components on server and client side
-					   for handling application logic.
-					-  Use of server-side Java library to access models from
-					   the [BioModels Database](http://www.ebi.ac.uk/biomodels-main/).
-February 2013		Redesigned application layout and logic using `backbone.js`
-					and `bootstrap`.
-					-  Responsive web design: GUI adapts to browser screen
-					   dimensions, allowing any internet-connected device with
-					   a modern browser able to use the application.
-					-  Implemented MVC archictecture to facilitate application
-					   development and maintenance by "separating concerns" of
-					   the different parts of the application.
-March 2013			Implemented server-side simulation through RoadRunner engine
-					and layout using GraphFab.
-					-  Native C/C++ libraries are accessed from the Node server
-					   and allow clients to perform heavy computations on the
-					   server-side 
-					-  Also implemented libSBMLSim simulation engine
-					   capabilities as a option for users to try a different
-					   simulator.
+### October 2012
+Thorough literature review and search of currently available software.
+
+- Reviewed current standards available for systems biology modeling:
+  [SBML](http://sbml.org/Main_Page), [SED-ML](http://sed-ml.org/),
+  [SBRML](http://www.comp-sys-bio.org/tiki-index.php?page=SBRML), et al.
+- Explored current software tools to inspire new design:
+  [SBW](http://sbw.sourceforge.net/),
+  [JDesigner](http://jdesigner.sourceforge.net/Site/JDesigner.html), et al.
+- Identified online resouces for developing systems biology web application:
+  [BioModels Database](http://www.ebi.ac.uk/biomodels-main/), et al.
+
+### November 2012
+Experimental designs of user interface with JavaScript and JQuery.
+
+- Used HTML/JavaScript/CSS and the JQuery JavaScript library to create a
+  experimental web app.
+- Accepted SBML text input to produce a force-directed, node-edge layout of
+  model species and reactions.
+- Performed basic simulation of model equations within the browser.
+- Limited by lack of server-side programming.
+
+### December 2012
+Implementation of JavaScript client-side and `node.js` libraries to accelerate
+application development.
+
+- Identified Node.js as the ideal server platform.
+- Developed Node.js server.
+- Implemented a software deployment system using `git`, `npm`, and `bower`.
+
+### January 2013
+Development of multiple libraries and modules for custom functions.
+
+- Developed multiple components on server and client side for handling
+  application logic.
+- Use of server-side Java library to access models from the [BioModels
+  Database](http://www.ebi.ac.uk/biomodels-main/).
+
+### February 2013
+Redesigned application layout and logic using `backbone.js` and `bootstrap`.
+
+- Responsive web design: GUI adapts to browser screen dimensions, allowing any
+  internet-connected device with a modern browser able to use the application.
+- Implemented MVC archictecture to facilitate application development and
+  maintenance by "separating concerns" of the different parts of the
+  application.
+
+### March 2013
+Implemented server-side simulation through RoadRunner engine and layout using
+GraphFab.
+
+- Native C/C++ libraries are accessed from the Node server and allow clients to
+  perform heavy computations on the server-side 
+- Also implemented libSBMLSim simulation engine capabilities as a option for
+  users to try a different simulator.
 
 ## Future Directions
 
