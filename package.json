@@ -14,7 +14,8 @@
     "biomodels": "0.0.3",
     "libsbmlsimjs": "0.0.2",
     "ya-csv": "~0.9.2",
-    "librr": "0.0.2"
+    "librr": "0.0.2",
+    "libsbmljs": "~1.2.0"
   },
   "devDependencies": {
     "bower": "*"
