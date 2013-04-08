@@ -49,6 +49,7 @@ exports.sim = function(req, res) {
 			global.r.loadSBML(rr, req.body.sbml);
 		}
 		//var results = r.simulateEx(rr, 0, req.body.sim.time, req.body.sim.steps);
+		global.r.reset(global.rr); // resets species concentrations to initial values
 		var results = global.r.simulateEx(rr, 0, parseInt(req.body.sim.time, 10), parseInt(req.body.sim.steps, 10));
 		var simData = global.r.resultToString(results).split('\n');
 		simData.forEach(function(element, index, array) {
