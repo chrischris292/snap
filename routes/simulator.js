@@ -5,7 +5,6 @@ exports.sim = function(req, res) {
 	var fs = require('fs'),
 		exec = require('child_process').exec,
 		csv = require('ya-csv'),
-		r = require('librr').librr_c_api,
 		command, options, out;
 
 	if (req.body.sim.simulator === 'libsbmlsim') {
@@ -43,12 +42,15 @@ exports.sim = function(req, res) {
 		});
 	} else if (req.body.sim.simulator === 'rr') {
 		console.log('Selected Road Runner');
-		var rr = r.createRRInstance();
-		r.setTempFolder(rr, '/tmp');
-		r.loadSBML(rr, req.body.sbml);
+		if (global.r === undefined) { // initializes the global roadrunner object
+			global.r = require('librr').librr_c_api;
+			global.rr = r.createRRInstance();
+			global.r.setTempFolder(rr, '/tmp');
+			global.r.loadSBML(rr, req.body.sbml);
+		}
 		//var results = r.simulateEx(rr, 0, req.body.sim.time, req.body.sim.steps);
-		var results = r.simulateEx(rr, 0, parseInt(req.body.sim.time, 10), parseInt(req.body.sim.steps, 10));
-		var simData = r.resultToString(results).split('\n');
+		var results = global.r.simulateEx(rr, 0, parseInt(req.body.sim.time, 10), parseInt(req.body.sim.steps, 10));
+		var simData = global.r.resultToString(results).split('\n');
 		simData.forEach(function(element, index, array) {
 			array[index] = element.split('\t');
 		});
