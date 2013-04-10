@@ -13,21 +13,24 @@
 					#layout
 			.row-fluid
 				#sim
-					form
-						fieldset
-							legend Simulation Settings
-							label.lead Simulator
-								label.radio
-									input(type='radio', name='simulatorRadio', value='rr', checked)
-									p RoadRunner
-								label.radio
-									input(type='radio', name='simulatorRadio', value='libsbmlsim')
-									p LibSBMLSim
-							label.lead Simulation Time
-								input(type='text', id='simTime', placeholder='Enter Total Time')
-							label.lead Simulation Steps
-								input(type='text', id='simSteps', placeholder='Enter Total Steps')
-							button.btn(type='button', id='submitSim') Simulate
+					div.span6#settings
+						form
+							fieldset
+								legend Simulation Settings
+								label.lead Simulator
+									label.radio
+										input(type='radio', name='simulatorRadio', value='rr', checked)
+										p RoadRunner
+									label.radio
+										input(type='radio', name='simulatorRadio', value='libsbmlsim')
+										p LibSBMLSim
+								label.lead Simulation Time
+									input(type='text', id='simTime', placeholder='Enter Total Time')
+								label.lead Simulation Steps
+									input(type='text', id='simSteps', placeholder='Enter Total Steps')
+								button.btn(type='button', id='submitSim') Simulate
+					div.span6#parameters
+						legend Parameters
 			#chart_container
 				#chart
 				#legend
