@@ -8,19 +8,22 @@ define([
 
 	var SBMLModel = Backbone.Model.extend({
 
+		url: 'libsbml/validate',
 		validate: function (attributes, options) {
 			$.ajax({
 				data: {
 					sbml: attributes.sbml
 				},
-				type: 'POST',
-				processData: true,
 				url: 'libsbml/validate',
+				type: 'POST',
 				success: function (data, textStatus, jqXHR) {
 					console.log('Called libSBML Validate');
-					if (data === 'false') {
+					if (data.valid === true) {
+						attributes.valid = true;
+						console.log('SBML is valid');
+					} else {
 						attributes.valid = false;
-						console.log('SBML is not valid');
+						console.log('SBML is NOT valid');
 					}
 				}
 			});

@@ -121,8 +121,11 @@ define([
 			this.toggleVisible(this.sbmlPanel);
 		},
 		layoutModel: function () {
-			this.sbmlPanel.get('view').model.set('sbml', this.loadSbmlView.editor.getValue());
-			this.sbmlPanel.get('view').render();
+			//this.sbmlPanel.get('view').model.set('sbml', this.loadSbmlView.editor.getValue());
+			this.sbmlPanel.get('view').model.save({'sbml': this.loadSbmlView.editor.getValue()});
+			if (this.sbmlPanel.get('view').model.get('valid')) {
+				this.sbmlPanel.get('view').render();
+			}
 		},
 		runSimulation: function () {
 			var sbml = this.loadSbmlView.editor.getValue(),
