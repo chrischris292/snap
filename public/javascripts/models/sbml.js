@@ -22,7 +22,6 @@ define([
 					if (data.valid === true) {
 						attributes.valid = true;
 						console.log('SBML is valid');
-						that.fetch();
 					} else {
 						attributes.valid = false;
 						console.log('SBML is NOT valid');
@@ -33,7 +32,8 @@ define([
 		},
 		updateParameters: function () {
 			var model = this;
-			this.fetch({
+			this.save({
+				data: {sbml: model.get('sbml')},
 				url: 'libsbml/parameters',
 				success: function (data, textStatus, jqXHR) {
 					var parameters = model.get('parameters') || {};
