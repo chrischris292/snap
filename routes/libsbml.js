@@ -21,12 +21,13 @@ exports.methods = function(req, res) {
 			}
 			res.send({numErrors: numErrors, valid: valid, sbml: sbml});
 		} else if (req.params.method === 'parameters') {
-			var params = {};
+			var params = {},
+			i;
 			params.ids = [];
 			params.values = [];
 			var parameters = libsbml.Model_getListOfParameters(model);
 			for (i = 0; i < libsbml.ListOf_size(parameters); i += 1) {
-				var parameter = (libsbml.Model_getParameter(mod, i));
+				var parameter = (libsbml.Model_getParameter(model, i));
 				params.ids.push(libsbml.Parameter_getId(parameter));
 				params.values.push(libsbml.Parameter_getValue(parameter));
 			}
