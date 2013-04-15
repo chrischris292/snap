@@ -6,20 +6,22 @@ define(['jquery', 'underscore', 'backbone'], function($, _, Backbone) {
 		render: function() {
 			var that = this;
 			var sbml = this.model.get('sbml')
-			$.ajax({
-				data: {
-					sbml: sbml
-				},
-				type: 'POST',
-				processData: true,
-				url: 'graphfab',
-				success: function (data, textStatus, jqXHR) {
-					console.log('Called GraphFab on Model');
-					that.$el.find('#layout').html(that.template({
-						url: '/show'
-					}))
-				}
-			});
+			if (this.model.get('valid')) {
+				$.ajax({
+					data: {
+						sbml: sbml
+					},
+					type: 'POST',
+					processData: true,
+					url: 'graphfab',
+					success: function (data, textStatus, jqXHR) {
+						console.log('Called GraphFab on Model');
+						that.$el.find('#layout').html(that.template({
+							url: '/show'
+						}))
+					}
+				});
+			}
 		}
 	});
 	return SbmlView;
