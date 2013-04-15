@@ -10,6 +10,7 @@ define([
 
 		url: 'libsbml/validate',
 		validate: function (attributes, options) {
+			var that = this;
 			$.ajax({
 				data: {
 					sbml: attributes.sbml
@@ -21,13 +22,26 @@ define([
 					if (data.valid === true) {
 						attributes.valid = true;
 						console.log('SBML is valid');
+						that.fetch();
 					} else {
 						attributes.valid = false;
 						console.log('SBML is NOT valid');
+						return false;
 					}
 				}
 			});
-
+		},
+		updateParameters: function () {
+			var model = this;
+			this.fetch({
+				url: 'libsbml/parameters',
+				success: function (data, textStatus, jqXHR) {
+					var parameters = model.get('parameters') || {};
+					parameters.ids = data.ids;
+					parameters.values = data.values;
+					model.set('parameters', parameters);
+				}
+			});
 		}
 	});
 
