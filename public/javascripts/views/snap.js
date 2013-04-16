@@ -40,6 +40,7 @@ define([
 			this.loadSbmlPanelView = new PanelView({
 				model: this.loadSbmlPanel
 			});
+			this.listenTo(this.loadSbmlView.model, 'change', 'saveModel');
 
 			this.$elImportModel = this.$el.children().find('div#importModel');
 			var template = _.template(ImportModelHtml);
@@ -127,8 +128,20 @@ define([
 				this.sbmlPanel.get('view').render();
 			}
 		},
+		saveModel: function () {
+			console.log('calling saveModel');
+			this.sbmlPanel.get('view').model.save({'sbml': this.loadSbmlView.editor.getValue()});
+		},
 		runSimulation: function () {
-			var sbml = this.loadSbmlView.editor.getValue(),
+			//var sbml = this.loadSbmlView.editor.getValue(),
+			this.saveModel();
+
+			// adding parameter sliders
+			if (this.parametersView === null) {
+				this.parametersView = new ParametersView();
+			}
+
+			var sbml = this.sbmlPanel.get('view').model.get('sbml'),
 				that = this;
 			console.log(sbml);
 			$.ajax({
@@ -148,7 +161,7 @@ define([
 				url: 'simulator',
 				success: function (data, textStatus, jqXHR) {
 					console.log('simulated model!');
-					var model = new SimResultsModel({simulator: 'libSbmlSim', rawData: data})
+					var model = new SimResultsModel({simulator: 'libSbmlSim', rawData: data});
 					that.$elChart.find('div').empty();
 					that.chartView = new ChartView({el: that.$elChart[0], model: model});
 					that.chartPanel = new Panel({
